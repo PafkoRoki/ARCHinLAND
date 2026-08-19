@@ -37,19 +37,6 @@
      id="title2">Architecture in Land Development</title>
   <text
      xml:space="preserve"
-     style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;fill:#ff8709;fill-opacity:1;stroke:none"
-     x="-0.01953125"
-     y="16.560547"
-     id="text2277"><tspan
-       sodipodi:role="line"
-       id="tspan2275"
-       x="-0.01953125"
-       y="16.560547"
-       style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:20px;font-family:Arial;-inkscape-font-specification:'Arial, Heavy';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ff8709;fill-opacity:1">ARCH <tspan
-   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.3333px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ff8709;fill-opacity:1"
-   id="tspan43821">in</tspan> LAND</tspan></text>
-  <text
-     xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none"
      x="68.433556"
      y="-18.463442"
@@ -57,7 +44,7 @@
        sodipodi:role="line"
        id="tspan62289"
        x="68.433556"
-       y="-18.463442"></tspan></text>
+       y="-18.463442" /></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none"
@@ -67,7 +54,7 @@
        sodipodi:role="line"
        id="tspan64423"
        x="61.296894"
-       y="-38.194214"></tspan></text>
+       y="-38.194214" /></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none"
@@ -77,7 +64,7 @@
        sodipodi:role="line"
        id="tspan66407"
        x="43.560188"
-       y="-40.922935"></tspan></text>
+       y="-40.922935" /></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none"
@@ -87,19 +74,5 @@
        sodipodi:role="line"
        id="tspan67643"
        x="38.732449"
-       y="-38.928871"></tspan></text>
-  <rect
-     style="fill:#ff8709;fill-opacity:1;stroke-width:1.08295;stroke-linecap:round;stroke-linejoin:round;paint-order:markers stroke fill"
-     id="rect76902"
-     width="146.92101"
-     height="1"
-     x="0"
-     y="18" />
-  <rect
-     style="fill:#ff8709;fill-opacity:1;stroke-width:1.08295;stroke-linecap:round;stroke-linejoin:round;paint-order:markers stroke fill"
-     id="rect76902-4"
-     width="146.92101"
-     height="1"
-     x="0"
-     y="0" />
+       y="-38.928871" /></text>
 </svg>
