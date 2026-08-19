@@ -40,7 +40,7 @@ export default function ImageGrid() {
         <figure ref={topRef} className="hero-grid__item hero-grid__center-top reveal reveal-delay-1">
 
   <RippleDistortion
-    src="https://raw.githubusercontent.com/PafkoRoki/ARCHinLAND/main/frontend/public/images/Hero1.jpg"
+    src="https://raw.githubusercontent.com/PafkoRoki/ARCHinLAND/main/frontend/public/images/Hero2.jpg"
     brushSize={150}
     strength={0.2}
     swirl={1}
@@ -64,7 +64,7 @@ export default function ImageGrid() {
         <figure ref={bottomRef} className="hero-grid__item hero-grid__center-bottom reveal reveal-delay-2">
 
   <RippleDistortion
-    src="https://raw.githubusercontent.com/PafkoRoki/ARCHinLAND/main/frontend/public/images/Hero1.jpg"
+    src="https://raw.githubusercontent.com/PafkoRoki/ARCHinLAND/main/frontend/public/images/Hero3.jpg"
     brushSize={150}
     strength={0.2}
     swirl={1}
@@ -90,7 +90,7 @@ export default function ImageGrid() {
       <figure ref={rightRef} className="hero-grid__item hero-grid__right reveal reveal-delay-3">
 
   <RippleDistortion
-    src="https://raw.githubusercontent.com/PafkoRoki/ARCHinLAND/main/frontend/public/images/Hero1.jpg"
+    src="https://raw.githubusercontent.com/PafkoRoki/ARCHinLAND/main/frontend/public/images/Hero4.jpg"
     brushSize={150}
     strength={0.2}
     swirl={1}
