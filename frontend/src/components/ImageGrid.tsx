@@ -18,13 +18,12 @@ export default function ImageGrid() {
     strength={0.2}
     swirl={1}
     rings={4}
-    grayscale
     spread={5}
     fade={3}
     spacing={15}
     dispersion={0}
     glint={0}
-    tint="#a855f7"
+    tint="#ff7600"
     tintAmount={0.1}
     highlightColor="#ffffff"
     trigger="hover"
