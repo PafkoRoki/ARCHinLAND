@@ -20,6 +20,8 @@ export default function Projects() {
 
   return (
     <section id="projects" className="section section-border projects">
+      <div className="container">
+
       <AccordionGallery
   items={items}
   defaultIndex={2}
@@ -40,7 +42,7 @@ export default function Projects() {
   radius={16}
   orientation="horizontal"
 />
-      <div className="container">
+
         <div className="projects__header">
           <span className="eyebrow">02 — portfolio</span>
           <h2 ref={headingRef} className="projects__title display reveal">
