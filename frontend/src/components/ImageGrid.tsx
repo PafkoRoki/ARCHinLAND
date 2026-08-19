@@ -1,5 +1,4 @@
 import { useReveal } from '../hooks/useReveal'
-import RippleDistortion from './RippleDistortion';
 import './ImageGrid.css'
 
 export default function ImageGrid() {
@@ -11,26 +10,6 @@ export default function ImageGrid() {
   return (
     <div className="hero-grid">
       <figure ref={leftRef} className="hero-grid__item hero-grid__left reveal">
-          <RippleDistortion
-    src="/hero.jpg"
-    brushSize={150}
-    strength={0.2}
-    swirl={1}
-    rings={4}
-    grayscale
-    spread={5}
-    fade={3}
-    spacing={15}
-    dispersion={0}
-    glint={0}
-    tint="#a855f7"
-    tintAmount={0.1}
-    highlightColor="#ffffff"
-    trigger="hover"
-    clickStrength={2}
-    quality="low"
-    enabled
-/>
         <img
           src="https://raw.githubusercontent.com/PafkoRoki/ARCHinLAND/main/frontend/public/images/Hero1.jpg"
           alt="Minimal timber house set into a sloped, forested plot"
