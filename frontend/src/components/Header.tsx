@@ -1,5 +1,6 @@
 import StaggeredMenu from './StaggeredMenu'
 import './Header.css'
+import logoUrl from '../assets/logo.svg'
 
 const menuItems = [
   { label: 'Home', ariaLabel: 'Go to home section', link: '#top' },
@@ -27,6 +28,7 @@ function Header() {
             openMenuButtonColor="#ff8709"
             changeMenuColorOnOpen={true}
             colors={["#f0f0f0", "#f0f0f0", "#ff8709"]}
+            logoUrl={logoUrl}
             accentColor="#ff8709"
           />
         </div>

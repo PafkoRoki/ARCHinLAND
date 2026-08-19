@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   viewBox="0 0 146.92101 19"
+   viewBox="0 0 10 10"
    role="img"
    aria-label="Architecture in Land Development logo"
    version="1.1"
    id="svg8"
    sodipodi:docname="logo.svg"
-   width="146.92101"
-   height="19"
+   width="10"
+   height="10"
    inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -25,8 +25,8 @@
      inkscape:pagecheckerboard="0"
      showgrid="false"
      inkscape:zoom="13.475"
-     inkscape:cx="78.144712"
-     inkscape:cy="5.9369202"
+     inkscape:cx="25.157699"
+     inkscape:cy="-0.33395176"
      inkscape:window-width="3840"
      inkscape:window-height="2066"
      inkscape:window-x="2869"
@@ -38,41 +38,47 @@
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none"
-     x="68.433556"
-     y="-18.463442"
+     x="19.110737"
+     y="-24.372532"
      id="text62291"><tspan
        sodipodi:role="line"
        id="tspan62289"
-       x="68.433556"
-       y="-18.463442" /></text>
+       x="19.110737"
+       y="-24.372532" /></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none"
-     x="61.296894"
-     y="-38.194214"
+     x="11.974075"
+     y="-44.103306"
      id="text64425"><tspan
        sodipodi:role="line"
        id="tspan64423"
-       x="61.296894"
-       y="-38.194214" /></text>
+       x="11.974075"
+       y="-44.103306" /></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none"
-     x="43.560188"
-     y="-40.922935"
+     x="-5.7626305"
+     y="-46.832027"
      id="text66409"><tspan
        sodipodi:role="line"
        id="tspan66407"
-       x="43.560188"
-       y="-40.922935" /></text>
+       x="-5.7626305"
+       y="-46.832027" /></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none"
-     x="38.732449"
-     y="-38.928871"
+     x="-10.59037"
+     y="-44.837963"
      id="text67645"><tspan
        sodipodi:role="line"
        id="tspan67643"
-       x="38.732449"
-       y="-38.928871" /></text>
+       x="-10.59037"
+       y="-44.837963" /></text>
+  <circle
+     style="fill:#fe5000;fill-opacity:1;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;paint-order:markers stroke fill"
+     id="path948"
+     cx="5"
+     cy="5"
+     r="5" />
 </svg>
