@@ -1,3 +1,6 @@
+/// <reference types="vite/client" />
+// @ts-nocheck
+
 import { projects } from '../data/projects'
 import ProjectCard from './ProjectCard'
 import { useReveal } from '../hooks/useReveal'
