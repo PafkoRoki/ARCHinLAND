@@ -10,7 +10,24 @@ export default function Hero() {
       <ScrollExpand
         src="/hero.jpg"
         alt="Product hero"
-        title="Built to scale"
+          title={
+            <StrokeText
+              text="ARCH in LAND"
+              strokeColor="#2d2d2d"
+              fillColor="#2d2d2d"
+              strokeWidth={1}
+              drawDuration={1.6}
+              fillDelay={0.2}
+              stagger={0.095}
+              ease="power2.out"
+              trigger="mount"
+              fillMode="wipe"
+              fontSize={150}
+              fontWeight={900}
+              letterSpacing={-5}
+              reverse={false}
+            />
+          }
         scrollHint="Scroll inside the frame"
         useWindowScroll
       >
