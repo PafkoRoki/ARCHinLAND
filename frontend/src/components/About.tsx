@@ -27,7 +27,7 @@ export default function About() {
 
           <div ref={imageRef} className="about__image reveal reveal-delay-1">
             <img
-              src="/assets/budynek-uslugowo-mieszkalny.jpg"
+              src="https://raw.githubusercontent.com/PafkoRoki/ARCHHinLAND/main/frontend/public/images/blizniak.png"
               alt="Architect reviewing a site model on a studio table"
               loading="lazy"
             />

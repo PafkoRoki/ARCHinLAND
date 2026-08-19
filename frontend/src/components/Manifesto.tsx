@@ -19,7 +19,7 @@ export default function Manifesto() {
         <div className="manifesto__side">
           <div ref={imageRef} className="manifesto__image reveal reveal-delay-1">
             <img
-              src="/assets/budynek-uslugowo-mieszkalny.jpg"
+              src="https://raw.githubusercontent.com/PafkoRoki/ARCHHinLAND/main/frontend/public/images/blizniak.png"
               alt="Open landscape at dusk with a low horizon line"
               loading="lazy"
             />
