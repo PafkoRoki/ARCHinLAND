@@ -10,11 +10,11 @@ export default function Projects() {
     <section id="projects" className="section section-border projects">
       <div className="container">
         <div className="projects__header">
-          <span className="eyebrow">02 — Selected work</span>
+          <span className="eyebrow">02 — portfolio</span>
           <h2 ref={headingRef} className="projects__title display reveal">
-            SELECTED
+            WYBRANE
             <br />
-            <span className="text-orange">PROJECTS</span>
+            <span className="text-orange">PROJEKTY</span>
           </h2>
         </div>
 

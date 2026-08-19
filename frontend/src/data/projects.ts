@@ -12,26 +12,24 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    id: 'house-land',
+    id: 'Baltic Cliff',
     number: '01',
-    name: 'HOUSE / LAND',
-    location: 'Mazury, Poland',
-    year: '2025',
-    category: 'Private residence',
-    image:
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=80&auto=format&fit=crop',
+    name: 'BALTIC CLIFF',
+    location: 'Niechorze, Poland',
+    year: '2015',
+    category: 'Hotele',
+    image: '/images/baltic-cliff.jpg'
     size: 'large',
     orientation: 'horizontal',
   },
   {
-    id: 'courtyard-house',
+    id: 'Baltic Riviera',
     number: '02',
-    name: 'COURTYARD HOUSE',
-    location: 'Warsaw, Poland',
-    year: '2024',
-    category: 'Urban infill',
-    image:
-      'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1200&q=80&auto=format&fit=crop',
+    name: 'BALTIC RIVIERA',
+    location: 'Dziwnówek, Poland',
+    year: '2019',
+    category: 'Apartamentowce',
+    image: '/images/baltic-riviera.jpg',
     size: 'medium',
     orientation: 'vertical',
   },
