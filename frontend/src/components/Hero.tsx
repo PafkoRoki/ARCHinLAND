@@ -20,18 +20,37 @@ export default function Hero() {
 </ScrollExpand>
 
 <div style={{ height: '520px' }}>
-  <ScrollExpand src="/hero.jpg" title="Built to scale" 
-  startWidth={42}
-  startHeight={58}
-  startRadius={24}
-  endRadius={0}
-  mediaZoom={1.35}
-  scrollDistance={1.2}
-  holdDistance={0.35}
-  smoothing={0.1}
-  overlayScrim={0.45}
-  enabled
-/>
+  <ScrollExpand
+    src="/hero.jpg"
+    title={
+      <StrokeText
+        text="ARCH in LAND"
+        strokeColor="#2d2d2d"
+        fillColor="#2d2d2d"
+        strokeWidth={1}
+        drawDuration={1.6}
+        fillDelay={0.2}
+        stagger={0.095}
+        ease="power2.out"
+        trigger="mount"
+        fillMode="wipe"
+        fontSize={150}
+        fontWeight={900}
+        letterSpacing={-5}
+        reverse={false}
+      />
+    }
+    startWidth={42}
+    startHeight={58}
+    startRadius={24}
+    endRadius={0}
+    mediaZoom={1.35}
+    scrollDistance={1.2}
+    holdDistance={0.35}
+    smoothing={0.1}
+    overlayScrim={0.45}
+    enabled
+  />
 </div>
 
       <div className="container">
