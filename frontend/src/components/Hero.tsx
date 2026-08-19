@@ -8,7 +8,7 @@ export default function Hero() {
     <section id="top" className="hero">
 
       <ScrollExpand
-        src="https://raw.githubusercontent.com/PafkoRoki/ARCHinLAND/main/frontend/public/images/Hero4.jpg"
+        src="https://raw.githubusercontent.com/PafkoRoki/ARCHinLAND/main/frontend/public/images/budynek-uslugowo-mieszkalny.jpg"
         alt="Product hero"
           title={
             <StrokeText
