@@ -118,10 +118,6 @@ button {
   padding-bottom: var(--section-pad);
 }
 
-.section-border {
-  border-top: 1px solid var(--line);
-}
-
 .eyebrow {
   display: inline-flex;
   align-items: center;
