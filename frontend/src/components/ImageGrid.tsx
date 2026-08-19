@@ -20,14 +20,14 @@ export default function ImageGrid() {
       <div className="hero-grid__center">
         <figure ref={topRef} className="hero-grid__item hero-grid__center-top reveal reveal-delay-1">
           <img
-            src="https://raw.githubusercontent.com/PafkoRoki/ARCHHinLAND/main/frontend/public/images/Hero2.jpg"
+            src="https://raw.githubusercontent.com/PafkoRoki/ARCHinLAND/main/frontend/public/images/Hero2.jpg"
             alt="Wide view of a low concrete residence facing open land"
             loading="lazy"
           />
         </figure>
         <figure ref={bottomRef} className="hero-grid__item hero-grid__center-bottom reveal reveal-delay-2">
           <img
-            src="https://raw.githubusercontent.com/PafkoRoki/ARCHHinLAND/main/frontend/public/images/Hero3.jpg"
+            src="https://raw.githubusercontent.com/PafkoRoki/ARCHinLAND/main/frontend/public/images/Hero3.jpg"
             alt="Architectural site plan and technical drawing"
             loading="lazy"
           />
@@ -36,7 +36,7 @@ export default function ImageGrid() {
 
       <figure ref={rightRef} className="hero-grid__item hero-grid__right reveal reveal-delay-3">
         <img
-          src="https://raw.githubusercontent.com/PafkoRoki/ARCHHinLAND/main/frontend/public/images/Hero4.jpg"
+          src="https://raw.githubusercontent.com/PafkoRoki/ARCHinLAND/main/frontend/public/images/Hero4.jpg"
           alt="Tall vertical facade of a residence framed by trees"
           loading="lazy"
         />
