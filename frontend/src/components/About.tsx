@@ -14,7 +14,7 @@ export default function About() {
 
         <div className="about__body">
           <h2 ref={statementRef} className="about__statement display reveal">
-            TWORZYMYE ARCHITEKTURĘ
+            TWORZYMY ARCHITEKTURE
             <br />
             <span className="text-orange">OD 30 LAT.</span>
           </h2>

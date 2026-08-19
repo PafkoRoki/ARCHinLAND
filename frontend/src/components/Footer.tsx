@@ -3,7 +3,7 @@ import './Footer.css'
 const SOCIALS = [
   { label: 'Instagram', href: 'https://instagram.com' },
   { label: 'LinkedIn', href: 'https://linkedin.com' },
-  { label: 'Email', href: 'mailto:hello@archinland.com' },
+  { label: 'Email', href: 'mailto:andrzejkurka70@wp.pl' },
 ]
 
 export default function Footer() {
@@ -11,7 +11,7 @@ export default function Footer() {
     <footer className="footer">
       <div className="container footer__inner">
         <a href="#top" className="footer__wordmark">
-          ARCH <span className="text-black">in</span> LAND
+          ARCHinLAND
         </a>
 
         <ul className="footer__socials">
@@ -24,7 +24,7 @@ export default function Footer() {
           ))}
         </ul>
 
-        <p className="footer__copyright">© {new Date().getFullYear()} ARCH in LAND. All rights reserved.</p>
+        <p className="footer__copyright">© {new Date().getFullYear()} ARCHinLAND. All rights reserved.</p>
       </div>
     </footer>
   )

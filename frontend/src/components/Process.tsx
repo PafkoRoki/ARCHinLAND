@@ -4,28 +4,28 @@ import './Process.css'
 const STEPS = [
   {
     number: '01',
-    title: 'Poznanie potrzeb',
-    text: 'Zaczynamy od rozmowy, analizy działki lub inwestycji oraz ustalenia budżetu, priorytetów i oczekiwań.',
+    title: 'POZNANIE POTRZEB',
+    text: 'Pierwsze spotkanie z klientem, analiza potrzeb i oczekiwań.',
   },
   {
     number: '02',
-    title: 'IDEA',
-    text: 'Developing the architectural concept.',
+    title: 'KONCEPCJA',
+    text: 'Tworzenie koncepcji architektonicznej.',
   },
   {
     number: '03',
-    title: 'DESIGN',
-    text: 'Translating the idea into space, structure and material.',
+    title: 'MODELOWANIE 3D',
+    text: 'Przekształcanie pomysłu w przestrzeń, strukturę i materiał.',
   },
   {
     number: '04',
-    title: 'DEVELOPMENT',
-    text: 'Working through technical and planning requirements.',
+    title: 'PROJEKT BUDOWLANY',
+    text: 'Praca nad wymaganiami technicznymi i planistycznymi.',
   },
   {
     number: '05',
-    title: 'REALIZATION',
-    text: 'Bringing the project into physical form.',
+    title: 'DOKUMENTACJA WYKONAWCZA',
+    text: 'Przekształcanie projektu w formę fizyczną.',
   },
 ]
 
@@ -48,9 +48,9 @@ export default function Process() {
     <section id="process" className="section section-border process">
       <div className="container">
         <div className="process__header">
-          <span className="eyebrow">03 — How we work</span>
+          <span className="eyebrow">03 — Jak działamy</span>
           <h2 ref={headingRef} className="process__title display reveal">
-            PROCESS
+            PROCES
           </h2>
         </div>
 
