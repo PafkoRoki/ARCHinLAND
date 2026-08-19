@@ -8,11 +8,11 @@ import AccordionGallery from './AccordionGallery'
 import './Projects.css'
 
 const items = [
-  { image: 'https://picsum.photos/id/1015/900/1200', label: 'Canyon', link: '#' },
-  { image: 'https://picsum.photos/id/1018/900/1200', label: 'Ridgeline', link: '#' },
-  { image: 'https://picsum.photos/id/1039/900/1200', label: 'Falls', link: '#' },
-  { image: 'https://picsum.photos/id/1043/900/1200', label: 'Harbour', link: '#' },
-  { image: 'https://picsum.photos/id/1044/900/1200', label: 'Skyline', link: '#' }
+  { image: '/images/baltic-cliff.jpg', label: 'BALTIC CLIFF', link: '#' },
+  { image: '/images/baltic-riviera.jpg', label: 'BALTIC RIVIERA', link: '#' },
+  { image: '/images/osiedle-panorama.jpg', label: 'OSIEDLE PANORAMA', link: '#' },
+  { image: '/images/budynek-uslugowy-mieszkalny.jpg', label: 'BUDYNEK USŁUGOWO MIESZKALNY', link: '#' },
+  { image: '/images/dom-w-konstrukcji-szkieletowej.jpg', label: 'DOM SZKIELETOWY', link: '#' }
 ];
 
 export default function Projects() {
@@ -28,7 +28,7 @@ export default function Projects() {
   expandRatio={0.52}
   trigger="hover"
   accentColor="#ffffff"
-  overlayColor="#060010"
+  overlayColor="#2d2d2d"
   textColor="#ffffff"
   grayscale
   showLabels
