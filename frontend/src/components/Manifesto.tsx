@@ -19,7 +19,7 @@ export default function Manifesto() {
         <div className="manifesto__side">
           <div ref={imageRef} className="manifesto__image reveal reveal-delay-1">
             <img
-              src="/images/budynek-uslugowo-mieszkalny.jpg"
+              src="/assets/budynek-uslugowo-mieszkalny.jpg"
               alt="Open landscape at dusk with a low horizon line"
               loading="lazy"
             />

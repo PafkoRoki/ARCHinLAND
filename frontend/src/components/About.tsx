@@ -27,7 +27,7 @@ export default function About() {
 
           <div ref={imageRef} className="about__image reveal reveal-delay-1">
             <img
-              src="/images/budynek-uslugowo-mieszkalny.jpg"
+              src="/assets/budynek-uslugowo-mieszkalny.jpg"
               alt="Architect reviewing a site model on a studio table"
               loading="lazy"
             />
