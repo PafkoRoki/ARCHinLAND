@@ -8,7 +8,7 @@ export default function Hero() {
     <section id="top" className="hero">
 
       <ScrollExpand
-        src="/hero.jpg"
+        src="/images/budynek-uslugowo-mieszkalny.jpg"
         alt="Product hero"
           title={
             <StrokeText

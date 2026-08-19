@@ -1,10 +1,5 @@
 .hero {
-  padding-top: clamp(120px, 26vh, 260px);
   padding-bottom: clamp(48px, 8vw, 96px);
-}
-
-.hero__top {
-  margin-bottom: clamp(48px, 14vh, 220px);
 }
 
 .hero__headline {
