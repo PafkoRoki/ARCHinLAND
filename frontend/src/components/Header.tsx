@@ -1,6 +1,6 @@
 import StaggeredMenu from './StaggeredMenu'
 import './Header.css'
-import logoUrl from '../assets/logo.svg'
+import logoUrl from '../assets/logobox.svg'
 
 const menuItems = [
   { label: 'Home', ariaLabel: 'Go to home section', link: '#top' },
