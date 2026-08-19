@@ -31,8 +31,6 @@ export default function Hero() {
         scrollHint="Scroll inside the frame"
         useWindowScroll
       >
-        <h2>OD 30 LAT</h2>
-        <p>TWORZYMY ARCHITEKTURE</p>
       </ScrollExpand>
 
 
