@@ -9,12 +9,12 @@ const STEPS = [
   },
   {
     number: '02',
-    title: 'KONCEPCJA',
+    title: 'FAZA KONCEPCYJA',
     text: 'Tworzenie koncepcji architektonicznej.',
   },
   {
     number: '03',
-    title: 'MODELOWANIE 3D',
+    title: 'MODELOWANIE\n3D',
     text: 'Przekształcanie pomysłu w przestrzeń, strukturę i materiał.',
   },
   {

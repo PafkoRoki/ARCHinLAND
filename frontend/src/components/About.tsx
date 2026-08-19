@@ -27,7 +27,7 @@ export default function About() {
 
           <div ref={imageRef} className="about__image reveal reveal-delay-1">
             <img
-              src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1400&q=80&auto=format&fit=crop"
+              src="/images/budynek-uslugowo-mieszkalny.jpg"
               alt="Architect reviewing a site model on a studio table"
               loading="lazy"
             />
