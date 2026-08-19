@@ -31,8 +31,8 @@ export default function Hero() {
         scrollHint="Scroll inside the frame"
         useWindowScroll
       >
-        <h2>Every pixel, everywhere</h2>
-        <p>The frame opens up as you scroll and hands the whole stage to your media.</p>
+        <h2>OD 30 LAT</h2>
+        <p>TWORZYMY ARCHITEKTURE</p>
       </ScrollExpand>
 
 
