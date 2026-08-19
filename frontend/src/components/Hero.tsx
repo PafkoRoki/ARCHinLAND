@@ -1,12 +1,8 @@
-import { useReveal } from '../hooks/useReveal'
 import ImageGrid from './ImageGrid'
 import StrokeText from './StrokeText';
-import ParticleText from './ParticleText';
 import './Hero.css'
 
 export default function Hero() {
-  const headlineRef = useReveal<HTMLHeadingElement>()
-
   return (
     <section id="top" className="hero">
       <div className="container hero__top">
