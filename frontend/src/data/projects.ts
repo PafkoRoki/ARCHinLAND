@@ -18,7 +18,7 @@ export const projects: Project[] = [
     location: 'Niechorze, Poland',
     year: '2015',
     category: 'Hotele',
-    image: '/images/baltic-cliff.jpg'
+    image: '/images/baltic-cliff.jpg',
     size: 'large',
     orientation: 'horizontal',
   },
