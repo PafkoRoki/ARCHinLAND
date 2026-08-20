@@ -8,12 +8,12 @@ export default function Hero() {
     <section id="top" className="hero">
 
       <ScrollExpand
-        src="https://raw.githubusercontent.com/PafkoRoki/ARCHinLAND/main/frontend/public/images/Hero3.jpg"
+        src="https://raw.githubusercontent.com/PafkoRoki/ARCHinLAND/main/frontend/public/images/osiedle-panorama.jpg"
         alt="Product hero"
           title={
             <StrokeText
               text="ARCH in LAND"
-              strokeColor="#2d2d2d"
+              strokeColor="#ff7600"
               fillColor="#ff7600"
               strokeWidth={1.4}
               drawDuration={1.6}
