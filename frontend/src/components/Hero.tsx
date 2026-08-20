@@ -15,7 +15,7 @@ export default function Hero() {
               text="ARCH in LAND"
               strokeColor="#ff7600"
               fillColor="#ff7600"
-              strokeWidth={5}
+              strokeWidth={1}
               drawDuration={3}
               fillDelay={0.2}
               stagger={0.095}
