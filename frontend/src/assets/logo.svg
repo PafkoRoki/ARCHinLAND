@@ -26,7 +26,7 @@
      showgrid="false"
      inkscape:zoom="13.475"
      inkscape:cx="16.326531"
-     inkscape:cy="7.458256"
+     inkscape:cy="7.4211503"
      inkscape:window-width="3840"
      inkscape:window-height="2066"
      inkscape:window-x="2869"
@@ -75,10 +75,4 @@
        id="tspan67643"
        x="-19.356602"
        y="-37.056885" /></text>
-  <circle
-     style="fill:#f5f4f1;fill-opacity:1;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;paint-order:markers stroke fill"
-     id="path936"
-     cx="10"
-     cy="10"
-     r="10" />
 </svg>
