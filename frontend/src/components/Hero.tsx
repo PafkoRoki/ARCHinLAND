@@ -14,7 +14,7 @@ export default function Hero() {
             <StrokeText
               text="ARCH in LAND"
               strokeColor="#ff7600"
-              fillColor="#ff770080"
+              fillColor="#fffffff0"
               strokeWidth={1.4}
               drawDuration={2.6}
               fillDelay={0.2}
