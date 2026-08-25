@@ -254,12 +254,38 @@ const RippleDistortion = ({
       window.matchMedia &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const renderer = new Renderer({
-      alpha: false,
-      antialias: false,
-      dpr: Math.min(window.devicePixelRatio || 1, 2)
-    });
+    const renderFallback = () => {
+      const fallback = document.createElement('img');
+      fallback.src = src;
+      fallback.alt = '';
+      fallback.decoding = 'async';
+      fallback.className = 'ripple-distortion__fallback';
+      mount.appendChild(fallback);
+      return () => {
+        if (fallback.parentNode === mount) mount.removeChild(fallback);
+      };
+    };
+
+    let renderer: Renderer;
+    try {
+      const probe = document.createElement('canvas');
+      const hasWebGL = Boolean(
+        probe.getContext('webgl2') ||
+        probe.getContext('webgl') ||
+        probe.getContext('experimental-webgl')
+      );
+      if (!hasWebGL) return renderFallback();
+
+      renderer = new Renderer({
+        alpha: false,
+        antialias: false,
+        dpr: Math.min(window.devicePixelRatio || 1, 2)
+      });
+    } catch {
+      return renderFallback();
+    }
     const gl = renderer.gl;
+    if (!gl) return;
     gl.clearColor(0, 0, 0, 1);
     const canvas = gl.canvas;
     canvas.style.width = '100%';
