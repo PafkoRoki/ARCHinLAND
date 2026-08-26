@@ -1,6 +1,7 @@
 
 import StrokeText from './StrokeText';
 import ScrollExpand from './ScrollExpand';
+import panorama from "../assets/osiedle-panorama.jpg";
 import './Hero.css'
 
 export default function Hero() {
@@ -8,7 +9,7 @@ export default function Hero() {
     <section id="top" className="hero">
 
       <ScrollExpand
-        src="https://raw.githubusercontent.com/PafkoRoki/ARCHinLAND/main/frontend/public/images/osiedle-panorama.jpg"
+        src={panorama}
         alt="Product hero"
         startRadius={0}
         scrollDistance={2}
