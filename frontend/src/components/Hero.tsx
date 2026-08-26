@@ -10,12 +10,15 @@ export default function Hero() {
       <ScrollExpand
         src="https://raw.githubusercontent.com/PafkoRoki/ARCHinLAND/main/frontend/public/images/osiedle-panorama.jpg"
         alt="Product hero"
+        startRadius={0}
+        scrollDistance={2}
+        smoothing={0.1}
           title={
             <StrokeText
               text="ARCH in LAND"
-              strokeColor="#2d2d2d"
-              fillColor="#ff7600"
-              strokeWidth={5}
+              strokeColor="#2d2d2dbb"
+              fillColor="#fff"
+              strokeWidth={50}
               drawDuration={2.6}
               fillDelay={0.2}
               stagger={0.095}
@@ -33,15 +36,6 @@ export default function Hero() {
       >
       </ScrollExpand>
 
-
-      <div className="container hero__composition">
-        <ImageGrid />
-      </div>
-
-      <div className="container hero__scroll">
-        <span>Scroll</span>
-        <span className="hero__scroll-line" aria-hidden="true" />
-      </div>
     </section>
   )
 }

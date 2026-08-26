@@ -67,6 +67,7 @@
   overflow: visible;
   border: 1px solid #2d2d2d;
   padding: 8px;
+  background: #fff;
 }
 
 .sm-toggle:focus-visible {
@@ -276,9 +277,9 @@
 
 .sm-panel-item {
   position: relative;
-  color: #000;
+  color: #2d2d2d;
   font-weight: 600;
-  font-size: 3.5rem;
+  font-size: 3.0rem;
   cursor: pointer;
   line-height: 1;
   letter-spacing: -2px;
@@ -328,10 +329,10 @@
   content: counter(smItem, decimal-leading-zero);
   position: absolute;
   top: 0.1em;
-  right: 2.8em;
+  right: 1.8em;
   font-size: 18px;
   font-weight: 400;
-  color: var(--sm-accent, #5227ff);
+  color: #fff;
   letter-spacing: 0;
   pointer-events: none;
   user-select: none;

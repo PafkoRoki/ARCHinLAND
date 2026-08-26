@@ -7,7 +7,10 @@ const menuItems = [
   { label: 'About', ariaLabel: 'Go to about section', link: '#about' },
   { label: 'Projects', ariaLabel: 'Go to projects section', link: '#projects' },
   { label: 'Process', ariaLabel: 'Go to process section', link: '#process' },
-  { label: 'Contact', ariaLabel: 'Go to contact section', link: '#contact' }
+  { label: '____________', ariaLabel: '___', link: '#' },
+  { label: 'Kontakt', ariaLabel: 'Go to contact section', link: '#contact' },
+  { label: "790 820 114", ariaLabel: "Call me",  link: "tel:+48790820114" },
+  { label: "534 498 293", ariaLabel: "Call me",  link: "tel:+48534498293" }
 ]
 
 const socialItems = [
@@ -26,11 +29,11 @@ function Header() {
             displaySocials={true}
             displayItemNumbering={true}
             menuButtonColor="#2d2d2d"
-            openMenuButtonColor="#ff8709"
+            openMenuButtonColor="#FE5000"
             changeMenuColorOnOpen={true}
-            colors={["#f0f0f0", "#f0f0f0", "#ff8709"]}
+            colors={["#f0f0f0", "#f0f0f0", "#FE5000"]}
             logoUrl={logoUrl}
-            accentColor="#ff8709"
+            accentColor="#FE5000"
           />
         </div>
   )
