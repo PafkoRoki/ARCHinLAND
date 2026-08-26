@@ -12,14 +12,14 @@ export default function Hero() {
         alt="Product hero"
         startRadius={0}
         scrollDistance={2}
-        smoothing={0.1}
+        smoothing={0.0}
           title={
             <StrokeText
               text="ARCH in LAND"
               strokeColor="#2d2d2dbb"
               fillColor="#fff"
               strokeWidth={50}
-              drawDuration={2.6}
+              drawDuration={1.6}
               fillDelay={0.2}
               stagger={0.095}
               ease="power2.out"
