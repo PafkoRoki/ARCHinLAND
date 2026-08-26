@@ -1,4 +1,4 @@
-import ImageGrid from './ImageGrid'
+
 import StrokeText from './StrokeText';
 import ScrollExpand from './ScrollExpand';
 import './Hero.css'
