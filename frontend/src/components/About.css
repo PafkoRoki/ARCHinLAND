@@ -1,18 +1,91 @@
+.about {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
 .about__grid {
   display: grid;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   grid-template-columns: minmax(160px, 0.6fr) 1fr;
-  gap: clamp(24px, 5vw, 64px);
+  gap: clamp(32px, 7vw, 112px);
+  padding-top: clamp(8px, 2vw, 24px);
+}
+
+.about__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.about__index {
+  color: rgba(17, 17, 17, 0.42);
+  font-size: 11px;
+  letter-spacing: 0.12em;
 }
 
 .about__statement {
-  font-size: clamp(2.2rem, 5vw, 4.6rem);
-  max-width: 15ch;
+  max-width: 12ch;
+  font-size: clamp(3rem, 7vw, 7rem);
+  letter-spacing: -0.045em;
   margin-bottom: clamp(28px, 4vw, 44px);
 }
 
 .about__paragraph {
-  max-width: 46ch;
+  max-width: 50ch;
+  margin-bottom: clamp(32px, 5vw, 58px);
+}
+
+.about__body {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+.about__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 760px;
   margin-bottom: clamp(36px, 6vw, 72px);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.about__stat {
+  display: grid;
+  gap: 12px;
+  min-height: 126px;
+  min-width: 0;
+  padding: 18px 20px 18px 0;
+  border-right: 1px solid var(--line);
+}
+
+.about__stat + .about__stat {
+  padding-left: 20px;
+}
+
+.about__stat:last-child {
+  border-right: 0;
+}
+
+.about__stat strong {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  font-weight: 500;
+  line-height: 0.9;
+}
+
+.about__stat span {
+  align-self: end;
+  overflow-wrap: anywhere;
+  color: rgba(17, 17, 17, 0.52);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  line-height: 1.35;
 }
 
 .about__image {
@@ -37,5 +110,27 @@
   .about__image {
     margin-left: 0;
     aspect-ratio: 4 / 3;
+  }
+
+  .about__statement {
+    max-width: 100%;
+    font-size: clamp(1.8rem, 10vw, 4.4rem);
+    overflow-wrap: break-word;
+  }
+
+  .about__stats {
+    grid-template-columns: 1fr;
+  }
+
+  .about__stat,
+  .about__stat + .about__stat {
+    min-height: 92px;
+    padding: 16px 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .about__stat:last-child {
+    border-bottom: 0;
   }
 }
