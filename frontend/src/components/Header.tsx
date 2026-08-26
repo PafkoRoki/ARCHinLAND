@@ -11,7 +11,8 @@ const menuItems = [
 ]
 
 const socialItems = [
-  { label: 'Instagram', link: 'https://instagram.com' }
+  { label: 'Instagram', link: 'https://instagram.com' },
+  { label: 'Sketchfab', link: 'https://sketchfab.com/PafkoRoki' }
 ]
 
 function Header() {
