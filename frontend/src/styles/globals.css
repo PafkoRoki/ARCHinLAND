@@ -1,6 +1,29 @@
 
 @import "tailwindcss";
 
+* {
+  scrollbar-width: none; 
+  -ms-overflow-style: none;
+
+}
+
+*::-webkit-scrollbar {
+    display: none; 
+}
+
+::-moz-selection {
+  background: var(--orange);
+  color: var(--bg);
+  text-shadow: none;
+}
+
+
+a {
+  color: inherit; /* dziedziczy kolor tekstu z elementu nadrzędnego */
+  text-decoration: none; /* usuwa podkreślenie */
+}
+
+
 /* -------------------------------------------------- */
 /* Tokens                                              */
 /* -------------------------------------------------- */

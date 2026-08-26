@@ -1,85 +1,157 @@
-import './Footer.css'
+"use client";
 
-const NAV = [
-  { label: 'Home', href: '#top' },
-  { label: 'Work', href: '#work' },
-]
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-const SOCIALS = [
-  { label: 'Instagram', href: 'https://instagram.com' },
-  { label: 'LinkedIn', href: 'https://linkedin.com' },
-]
+import "./Footer.css";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const links = [
+  ["O NAS", "#about"],
+  ["REALIZACJE", "#work"],
+  ["PROCES", "#process"],
+  ["KONTAKT", "#contact"],
+];
+
+const socials = [
+  { label: "INSTAGRAM", href: "https://instagram.com" },
+  { label: "LINKEDIN", href: "https://linkedin.com" },
+  { label: "EMAIL", href: "mailto:andrzejkurka70@wp.pl" },
+];
 
 export default function Footer() {
+  const footerRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const linksRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const footer = footerRef.current;
+    const title = titleRef.current;
+    const linksContainer = linksRef.current;
+
+    if (!footer || !title || !linksContainer) return;
+
+    const ctx = gsap.context(() => {
+      if (
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ) {
+        return;
+      }
+
+      gsap.fromTo(
+        title,
+        { y: 100, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1.1,
+          ease: "power4.out",
+          scrollTrigger: {
+            trigger: footer,
+            start: "top 85%",
+            once: true,
+          },
+        }
+      );
+
+      gsap.fromTo(
+        linksContainer.querySelectorAll(".footer__link"),
+        { y: 20, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.6,
+          stagger: 0.08,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: linksContainer,
+            start: "top 90%",
+            once: true,
+          },
+        }
+      );
+    }, footer);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <footer className="footer" id="contact">
-      <div className="footer__grid-bg" aria-hidden="true" />
+    <footer id="contact" ref={footerRef} className="footer">
+      <div className="footer__frame">
+        <div className="footer__top">
+          <div className="footer__brand">
+            <h2>
+              <span>
+                ARCH
+                <br />
+              </span>
+              <span>
+                in
+                <br />
+              </span>
+              <span>
+                LAND
+                <br />
+              </span>
+            </h2>
 
-      <div className="container footer__cta">
-        <p className="eyebrow footer__eyebrow">
-          <span className="footer__dot" />
-          Let&apos;s talk
-        </p>
+            <p>KAMIEŃ POMORSKI</p>
+          </div>
 
-        <div className="footer__cta-row">
-          <h2 className="display footer__heading">
-            Got a site
-            <br />
-            worth <span className="text-orange">building</span> on?
-          </h2>
+          <div className="footer__column" ref={linksRef}>
+            <h3>Nawigacja</h3>
 
-          <a href="mailto:archinland@wp.pl" className="btn-outline footer__cta-btn">
-            Start a project <span className="plus">+</span>
-          </a>
-        </div>
-      </div>
+            <nav className="footer__nav" aria-label="Nawigacja">
+              {links.map(([label, href]) => (
+                <a key={label} href={href} className="footer__link">
+                  {label}
+                </a>
+              ))}
+            </nav>
+          </div>
 
-      <div className="container footer__cols">
-        <div className="footer__col">
-          <p className="footer__col-title">Index</p>
-          <ul className="footer__list">
-            {NAV.map((item) => (
-              <li key={item.label}>
-                <a href={item.href}>{item.label}</a>
-              </li>
-            ))}
-          </ul>
-        </div>
+          <div className="footer__column footer__contact">
+            <h3>Kontakt</h3>
 
-        <div className="footer__col">
-          <p className="footer__col-title">Elsewhere</p>
-          <ul className="footer__list">
-            {SOCIALS.map((social) => (
-              <li key={social.label}>
-                <a href={social.href} target="_blank" rel="noreferrer">
+            <nav className="footer__nav" aria-label="Social media">
+              {socials.map((social) => (
+                <a key={social.label} href={social.href} className="footer__link">
                   {social.label}
                 </a>
-              </li>
-            ))}
-          </ul>
+              ))}
+            </nav>
+
+            <form
+              className="footer__email"
+              onSubmit={(event) => event.preventDefault()}
+            >
+              <label htmlFor="footer-email">E-MAIL</label>
+
+              <div className="footer__email-row">
+                <input
+                  id="footer-email"
+                  type="email"
+                  placeholder="Twój adres e-mail"
+                  required
+                />
+                <button type="submit">WYŚLIJ ↗</button>
+              </div>
+            </form>
+          </div>
         </div>
 
-        <div className="footer__col footer__col--wide">
-          <p className="footer__col-title">Studio</p>
-          <p className="footer__address">Kamień Pomorski, Poland</p>
-          <a href="mailto:archinland@wp.pl" className="footer__email">
-            archinland@wp.pl
-          </a>
+        <div className="footer__hero">
+          <h1 ref={titleRef}>ARCHinLAND</h1>
         </div>
-      </div>
 
-      <div className="container footer__base">
-        <a href="#top" className="footer__wordmark display">
-          ARCHinLAND
-        </a>
-
-        <div className="footer__base-meta">
-          <p className="footer__copyright">© {new Date().getFullYear()} ARCHinLAND. All rights reserved.</p>
-          <a href="#top" className="footer__totop">
-            Back to top <span aria-hidden="true">↑</span>
-          </a>
+        <div className="footer__bottom">
+          <span>© {new Date().getFullYear()}</span>
+          <span>WSZELKIE PRAWA ZASTRZEŻONE</span>
+          <a href="#top">BACK UP ↑</a>
         </div>
       </div>
     </footer>
-  )
+  );
 }
