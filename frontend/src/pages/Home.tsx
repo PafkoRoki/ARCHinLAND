@@ -4,6 +4,7 @@ import About from '../components/About'
 import Projects from '../components/Projects'
 import Process from '../components/Process'
 import Manifesto from '../components/Manifesto'
+import GoogleReviews from '../components/GoogleReviews'
 import Footer from '../components/Footer'
 
 export default function Home() {
@@ -19,6 +20,7 @@ export default function Home() {
         <Projects />
         <Process />
         <Manifesto />
+        <GoogleReviews />
       </main>
       <Footer />
     </>
