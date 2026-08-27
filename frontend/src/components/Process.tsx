@@ -60,7 +60,7 @@ export default function Process() {
                   <iframe
                     title="Bliźniak"
                     src={step.embed}
-                    frameborder="0"
+                    frameBorder="0"
                     allowFullScreen
                     allow="autoplay; fullscreen; xr-spatial-tracking"
                   />
