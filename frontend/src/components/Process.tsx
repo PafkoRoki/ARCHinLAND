@@ -19,13 +19,13 @@ const STEPS = [
     number: '03',
     title: 'MODELOWANIE\n3D',
     text: 'Przekształcamy pomysł w przestrzeń, strukturę i materiał, sprawdzając proporcje, światło oraz relacje budynku z otoczeniem.',
-    embed: 'https://sketchfab.com/models/7665cc6803674d0b897008057b3b0e0c/embed',
+    embed: 'https://sketchfab.com/models/7665cc6803674d0b897008057b3b0e0c/embed?autostart=1&transparent=1&ui_theme=dark',
   },
   {
     number: '04',
     title: 'PROJEKT BUDOWLANY',
     text: 'Dopracowujemy rozwiązania techniczne i planistyczne, koordynujemy branże oraz przygotowujemy projekt zgodny z wymaganiami formalnymi.',
-    image: '/images/4.png',
+    image: '/images/3.png',
   },
   {
     number: '05',
@@ -42,7 +42,6 @@ export default function Process() {
     <section id="process" className="section section-border process">
       <div className="container">
         <div className="process__header">
-          <span className="eyebrow">03 — Jak działamy</span>
           <h2 ref={headingRef} className="process__title display reveal">
             PROCES
           </h2>
@@ -61,7 +60,7 @@ export default function Process() {
                   <iframe
                     title="Bliźniak"
                     src={step.embed}
-                    frameBorder="0"
+                    frameborder="0"
                     allowFullScreen
                     allow="autoplay; fullscreen; xr-spatial-tracking"
                   />

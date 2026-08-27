@@ -9,7 +9,6 @@
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  grid-template-columns: minmax(0, 0.6fr) minmax(0, 1fr);
   gap: clamp(32px, 7vw, 112px);
   padding-top: clamp(8px, 2vw, 24px);
 }
@@ -30,14 +29,15 @@
 .about__statement {
   width: 100%;
   max-width: 100%;
+  color: #fff;
   font-size: clamp(2.5rem, 5.6vw, 5.5rem);
   letter-spacing: -0.045em;
   margin-bottom: clamp(28px, 4vw, 44px);
   overflow-wrap: break-word;
+  -webkit-text-stroke: 2px #2d2d2dbb;
 }
 
 .about__paragraph {
-  max-width: 50ch;
   margin-bottom: clamp(32px, 5vw, 58px);
 }
 

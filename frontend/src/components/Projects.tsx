@@ -23,11 +23,9 @@ export default function Projects() {
       <div className="container">
 
         <div className="projects__header">
-          <span className="eyebrow">02 — portfolio</span>
           <h2 ref={headingRef} className="projects__title display reveal">
-            WYBRANE
+            PROJEKTY
             <br />
-            <span className="text-orange">PROJEKTY</span>
           </h2>
         </div>
 

@@ -1,5 +1,5 @@
 .reviews {
-  background: var(--bg-alt);
+  background: var(--bg);
 }
 
 .reviews__heading {
@@ -26,6 +26,8 @@
 .reviews__title {
   max-width: 760px;
   font-size: clamp(2.5rem, 6.5vw, 6.2rem);
+  color: #fff;
+  -webkit-text-stroke: 1px #2d2d2dbb;
 }
 
 .reviews__score {

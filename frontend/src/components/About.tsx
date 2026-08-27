@@ -9,16 +9,11 @@ export default function About() {
   return (
     <section id="about" className="section section-border about">
       <div className="container about__grid">
-        <div className="about__heading">
-          <span className="eyebrow">01 — Pracownia</span>
-          <span className="about__index">/ 001</span>
-        </div>
+
 
         <div className="about__body">
           <h2 ref={statementRef} className="about__statement display reveal">
             PROJEKTUJEMY
-            <br />
-            <span className="text-orange">DLA MIEJSCA.</span>
           </h2>
 
           <p className="body-lg about__paragraph">

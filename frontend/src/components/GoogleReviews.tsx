@@ -48,14 +48,12 @@ export default function GoogleReviews() {
     <section className="section section-border reviews" aria-labelledby="reviews-title">
       <div className="container">
         <div ref={headingRef} className="reviews__heading reveal">
-          <p className="eyebrow"><span className="eyebrow__dot" /> GŁOSY KLIENTÓW</p>
+
           <div className="reviews__intro">
             <div>
-              <p className="reviews__eyebrow">Google Reviews</p>
+
               <h2 id="reviews-title" className="display reviews__title">
-                DOBRE MIEJSCA<br />
-                <span className="text-orange">ZACZYNAJĄ SIĘ</span><br />
-                OD ZAUFANIA.
+                Trust Factor<br />
               </h2>
             </div>
             <div className="reviews__score" aria-label="Ocena 5,0 na 5 w Google">
