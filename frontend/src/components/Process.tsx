@@ -19,7 +19,7 @@ const STEPS = [
     number: '03',
     title: 'MODELOWANIE\n3D',
     text: 'Przekształcamy pomysł w przestrzeń, strukturę i materiał, sprawdzając proporcje, światło oraz relacje budynku z otoczeniem.',
-    image: '/images/3.png',
+    embed: 'https://sketchfab.com/models/7665cc6803674d0b897008057b3b0e0c/embed',
   },
   {
     number: '04',
@@ -56,11 +56,21 @@ export default function Process() {
                 <h3 className="process__title-sm display">{step.title}</h3>
                 <p className="process__text">{step.text}</p>
               </div>
-              {step.image && (
+              {step.embed ? (
+                <div className="process__image-slot process__embed-slot">
+                  <iframe
+                    title="Bliźniak"
+                    src={step.embed}
+                    frameBorder="0"
+                    allowFullScreen
+                    allow="autoplay; fullscreen; xr-spatial-tracking"
+                  />
+                </div>
+              ) : step.image ? (
                 <div className="process__image-slot">
                   <img src={step.image} alt="" />
                 </div>
-              )}
+              ) : null}
             </ScrollStackItem>
           ))}
         </ScrollStack>
