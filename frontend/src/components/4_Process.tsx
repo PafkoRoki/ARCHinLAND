@@ -17,7 +17,7 @@ export default function Process() {
 
           <Stepper
             initialStep={1}
-            onStepChange={(step) => {
+            onStepChange={(step: number) => {
               console.log(step);
             }}
             onFinalStepCompleted={() => console.log("All steps completed!")}
