@@ -5,7 +5,7 @@ import { projects } from '../data/projects'
 import ProjectCard from './ProjectCard'
 import { useReveal } from '../hooks/useReveal'
 import AccordionGallery from './AccordionGallery'
-import './Projects.css'
+import './3_Projects.css'
 
 const items = [
   { image: '/images/baltic-cliff.jpg', label: 'BALTIC CLIFF', link: '#' },

@@ -44,6 +44,32 @@
   100% { transform: translateX(100%); }
 }
 
+.hero__cta {
+  margin-top: clamp(48px, 8vw, 80px);
+  display: flex;
+  justify-content: center;
+}
+
+.hero__button {
+  display: inline-block;
+  padding: 16px 48px;
+  background: var(--orange);
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 8px;
+  transition: all 0.3s var(--ease);
+  text-decoration: none;
+}
+
+.hero__button:hover {
+  background: #e54800;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(254, 80, 0, 0.3);
+}
+
 @media (max-width: 560px) {
   .hero__scroll { display: none; }
 }

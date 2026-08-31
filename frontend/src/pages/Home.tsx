@@ -1,9 +1,9 @@
-import Header from '../components/Header'
-import Hero from '../components/Hero'
-import About from '../components/About'
-import Projects from '../components/Projects'
-import Process from '../components/Process'
-import GoogleReviews from '../components/GoogleReviews'
+import Header from '../components/0_Header'
+import Hero from '../components/1_Hero'
+import About from '../components/2_About'
+import Projects from '../components/3_Projects'
+import Process from '../components/4_Process'
+import Reviews from '../components/5_Reviews'
 import Footer from '../components/Footer'
 
 export default function Home() {
@@ -18,7 +18,7 @@ export default function Home() {
         <About />
         <Projects />
         <Process />
-        <GoogleReviews />
+        <Reviews />
       </main>
       <Footer />
     </>

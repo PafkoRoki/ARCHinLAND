@@ -1,5 +1,5 @@
 import { useReveal } from '../hooks/useReveal'
-import './About.css'
+import './2_About.css'
 import panorama from "../assets/1.png";
 
 export default function About() {
@@ -13,7 +13,7 @@ export default function About() {
 
         <div className="about__body">
           <h2 ref={statementRef} className="about__statement display reveal">
-            PROJEKTUJEMY
+            O NAS
           </h2>
 
           <p className="body-lg about__paragraph">
@@ -29,7 +29,7 @@ export default function About() {
             </div>
             <div className="about__stat">
               <strong>01</strong>
-              <span>PUNKT WSPÓLNY: MIEJSCE</span>
+              <span>PUNKTY WSPÓLNE</span>
             </div>
             <div className="about__stat">
               <strong>∞</strong>

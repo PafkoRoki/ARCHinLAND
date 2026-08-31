@@ -2,7 +2,7 @@
 import StrokeText from './StrokeText';
 import ScrollExpand from './ScrollExpand';
 import panorama from "../assets/osiedle-panorama.jpg";
-import './Hero.css'
+import './1_Hero.css'
 
 export default function Hero() {
   return (
@@ -18,7 +18,7 @@ export default function Hero() {
             <StrokeText
               text="ARCH in LAND"
               strokeColor="#2d2d2dbb"
-              fillColor="#fff"
+              fillColor="#ffffff"
               strokeWidth={50}
               drawDuration={1.6}
               fillDelay={0.2}
@@ -35,6 +35,11 @@ export default function Hero() {
         scrollHint="Scroll inside the frame"
         useWindowScroll
       >
+        <div className="hero__cta">
+          <a href="#contact" className="hero__button">
+            Kontakt
+          </a>
+        </div>
       </ScrollExpand>
 
     </section>
