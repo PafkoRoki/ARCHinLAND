@@ -57,7 +57,7 @@
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 12px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -65,9 +65,14 @@
   font-weight: 1000;
   line-height: 1;
   overflow: visible;
-  border: 1px solid #2d2d2d;
+  border: 1px solid #2d2d2ddd;
   padding: 8px;
-  background: #fff;
+  background: #2d2d2ddd;
+}
+
+.sm-toggle:hover {
+  border: 1px solid #2d2d2ddd;
+  background: #2d2d2d;
 }
 
 .sm-toggle:focus-visible {

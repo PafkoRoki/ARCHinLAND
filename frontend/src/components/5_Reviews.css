@@ -25,9 +25,11 @@
 
 .reviews__title {
   max-width: 760px;
-  font-size: clamp(2.5rem, 6.5vw, 6.2rem);
-  color: #fff;
-  -webkit-text-stroke: 1px #2d2d2dbb;
+  font-size: clamp(2.8rem, 6.5vw, 6.2rem);
+  color: var(--black);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
 }
 
 .reviews__score {

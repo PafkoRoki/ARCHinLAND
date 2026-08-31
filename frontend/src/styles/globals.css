@@ -145,6 +145,14 @@ button {
   padding-bottom: var(--section-pad);
 }
 
+.section-border {
+  border-top: 0px solid var(--line);
+}
+
+.section-border:first-child {
+  border-top: none;
+}
+
 .eyebrow {
   display: inline-flex;
   align-items: center;

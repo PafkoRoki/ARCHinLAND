@@ -9,7 +9,13 @@ export default function About() {
   return (
     <section id="about" className="section section-border about">
       <div className="container about__grid">
-
+        <div ref={imageRef} className="about__image reveal reveal-delay-1">
+          <img
+            src={panorama}
+            alt="Architect reviewing a site model on a studio table"
+            loading="lazy"
+          />
+        </div>
 
         <div className="about__body">
           <h2 ref={statementRef} className="about__statement display reveal">
@@ -28,21 +34,9 @@ export default function About() {
               <span>LAT DOŚWIADCZENIA</span>
             </div>
             <div className="about__stat">
-              <strong>01</strong>
-              <span>PUNKTY WSPÓLNE</span>
-            </div>
-            <div className="about__stat">
               <strong>∞</strong>
               <span>MOŻLIWOŚCI PROJEKTOWE</span>
             </div>
-          </div>
-
-          <div ref={imageRef} className="about__image reveal reveal-delay-1">
-            <img
-              src={panorama}
-              alt="Architect reviewing a site model on a studio table"
-              loading="lazy"
-            />
           </div>
         </div>
       </div>

@@ -28,31 +28,33 @@
 .stroke-text-button {
   display: inline-flex;
   align-items: center;
-  gap: 24px;
-  padding: 8px 16px;
-  background: #2d2d2dcc;
+  padding: 8px;
+  gap: 12px;
+  background: #2d2d2ddd;
   color: var(--white);
-  font-size: 14px;
+  font-size: clamp(12px, 1.2vw, 14px);
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   text-decoration: none;
-  transition: all 0.3s var(--ease);
-  border: none;
+  transition: all 0.35s var(--ease);
   cursor: pointer;
+  backdrop-filter: blur(8px);
+  border: 1px solid #2d2d2ddd;
 }
 
 .stroke-text-button__icon {
-  width: 20px;
-  height: 20px;
-  transition: transform 0.3s var(--ease);
+  width: clamp(16px, 1.5vw, 22px);
+  height: clamp(16px, 1.5vw, 22px);
+  transition: transform 0.35s var(--ease);
 }
 
 .stroke-text-button:hover {
   background: #2d2d2d;
-  padding: 8px 32px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border: 1px solid #2d2d2ddd;
 }
 
 .stroke-text-button:hover .stroke-text-button__icon {
-  transform: translateX(16px);
+  transform: translateX(18px);
 }
