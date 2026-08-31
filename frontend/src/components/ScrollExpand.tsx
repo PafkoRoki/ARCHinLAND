@@ -114,7 +114,7 @@ const ScrollExpand: React.FC<ScrollExpandProps> = ({
 
     media.style.transform = `scale(${c.mediaZoom + (1 - c.mediaZoom) * e})`;
 
-    if (scrimRef.current) scrimRef.current.style.opacity = `${c.overlayScrim * e}`;
+    if (scrimRef.current) scrimRef.current.style.opacity = `${c.overlayScrim * (1 - e)}`;
 
     if (titleRef.current) {
       const out = smoothstep(0.4, 0.88, p);

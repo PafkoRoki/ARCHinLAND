@@ -83,8 +83,13 @@
   letter-spacing: -0.03em;
   line-height: 1;
   color: #fff;
-  pointer-events: none;
+  pointer-events: auto;
   will-change: opacity, transform;
+}
+
+.scroll-expand__title a,
+.scroll-expand__title button {
+  pointer-events: auto;
 }
 
 .scroll-expand__hint {

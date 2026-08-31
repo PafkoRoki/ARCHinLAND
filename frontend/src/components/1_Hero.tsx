@@ -30,16 +30,14 @@ export default function Hero() {
               fontWeight={900}
               letterSpacing={-5}
               reverse={false}
+              showButton={true}
+              buttonText="Kontakt"
+              buttonHref="#contact"
             />
           }
         scrollHint="Scroll inside the frame"
         useWindowScroll
       >
-        <div className="hero__cta">
-          <a href="#contact" className="hero__button">
-            Kontakt
-          </a>
-        </div>
       </ScrollExpand>
 
     </section>

@@ -18,3 +18,40 @@
 .stroke-text__fill {
   user-select: none;
 }
+
+.stroke-text-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stroke-text-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: #2d2d2dcc;
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.3s var(--ease);
+  border: none;
+  cursor: pointer;
+}
+
+.stroke-text-button__icon {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s var(--ease);
+}
+
+.stroke-text-button:hover {
+  background: #2d2d2d;
+}
+
+.stroke-text-button:hover .stroke-text-button__icon {
+  transform: translateX(4px);
+}

@@ -28,6 +28,9 @@ export interface StrokeTextProps {
   reverse?: boolean;
   className?: string;
   style?: CSSProperties;
+  showButton?: boolean;
+  buttonText?: string;
+  buttonHref?: string;
 }
 
 interface StrokeTextBox {
@@ -55,7 +58,10 @@ const StrokeText = ({
   letterSpacing = -4,
   reverse = false,
   className = '',
-  style = {}
+  style = {},
+  showButton = false,
+  buttonText = 'Kontakt',
+  buttonHref = '#contact'
 }: StrokeTextProps) => {
   const rootRef = useRef<HTMLSpanElement | null>(null);
   const strokeTextRef = useRef<SVGTextElement | null>(null);
@@ -223,7 +229,7 @@ const StrokeText = ({
 
   const viewBox = box ? `${box.x} ${box.y} ${box.width} ${box.height}` : `0 ${-fontSize} 600 ${fontSize * 1.3}`;
 
-  return (
+  const strokeTextContent = (
     <span
       ref={rootRef}
       className={`stroke-text ${trigger === 'hover' ? 'stroke-text--hover' : ''} ${className}`.trim()}
@@ -277,6 +283,22 @@ const StrokeText = ({
       </svg>
     </span>
   );
+
+  if (showButton) {
+    return (
+      <div className="stroke-text-wrapper">
+        {strokeTextContent}
+        <a href={buttonHref} className="stroke-text-button">
+          <span>{buttonText}</span>
+          <svg className="stroke-text-button__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="m11.293 17.293l1.414 1.414L19.414 12l-6.707-6.707l-1.414 1.414L15.586 11H6v2h9.586z" />
+          </svg>
+        </a>
+      </div>
+    );
+  }
+
+  return strokeTextContent;
 };
 
 export default StrokeText;
