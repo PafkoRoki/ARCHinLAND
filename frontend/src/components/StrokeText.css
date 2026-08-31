@@ -28,7 +28,7 @@
 .stroke-text-button {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 24px;
   padding: 8px 16px;
   background: #2d2d2dcc;
   color: var(--white);
@@ -50,8 +50,9 @@
 
 .stroke-text-button:hover {
   background: #2d2d2d;
+  padding: 8px 32px;
 }
 
 .stroke-text-button:hover .stroke-text-button__icon {
-  transform: translateX(4px);
+  transform: translateX(16px);
 }

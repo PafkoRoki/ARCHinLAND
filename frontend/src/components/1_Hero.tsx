@@ -14,6 +14,7 @@ export default function Hero() {
         startRadius={0}
         scrollDistance={2}
         smoothing={0.0}
+        overlayScrim={0.7}
           title={
             <StrokeText
               text="ARCH in LAND"
@@ -31,7 +32,7 @@ export default function Hero() {
               letterSpacing={-5}
               reverse={false}
               showButton={true}
-              buttonText="Kontakt"
+              buttonText="Kontakt."
               buttonHref="#contact"
             />
           }
