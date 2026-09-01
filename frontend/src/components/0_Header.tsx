@@ -5,17 +5,15 @@ import logoUrl from '../assets/logo.svg'
 const menuItems = [
   { label: 'Home', ariaLabel: 'Go to home section', link: '#top' },
   { label: 'About', ariaLabel: 'Go to about section', link: '#about' },
-  { label: 'Projects', ariaLabel: 'Go to projects section', link: '#projects' },
-  { label: 'Process', ariaLabel: 'Go to process section', link: '#process' },
-  { label: '____________', ariaLabel: '___', link: '#' },
+  { label: 'Projekty', ariaLabel: 'Go to projects section', link: '#projects' },
   { label: 'Kontakt', ariaLabel: 'Go to contact section', link: '#contact' },
-  { label: "790 820 114", ariaLabel: "Call me",  link: "tel:+48790820114" },
-  { label: "534 498 293", ariaLabel: "Call me",  link: "tel:+48534498293" }
+  { label: "790 820 114", ariaLabel: "Call me",  link: "tel:+48790820114" }
 ]
 
 const socialItems = [
   { label: 'Instagram', link: 'https://instagram.com' },
-  { label: 'Sketchfab', link: 'https://sketchfab.com/ARCHinLAND' }
+  { label: 'Sketchfab', link: 'https://sketchfab.com/ARCHinLAND' },
+  { label: "ARCHinLAND@wp.pl", ariaLabel: "Email me",  link: "mailto:ARCHinLAND@wp.pl" }
 ]
 
 function Header() {
