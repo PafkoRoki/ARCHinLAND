@@ -1,41 +1,82 @@
-import { useEffect, useState, useRef, useId } from 'react';
+import React, { useEffect, useRef, useState, useId } from 'react';
 import './GlassSurface.css';
 
-const GlassSurface = ({
+export interface GlassSurfaceProps {
+  children?: React.ReactNode;
+  width?: number | string;
+  height?: number | string;
+  borderRadius?: number;
+  borderWidth?: number;
+  brightness?: number;
+  opacity?: number;
+  blur?: number;
+  displace?: number;
+  backgroundOpacity?: number;
+  saturation?: number;
+  distortionScale?: number;
+  redOffset?: number;
+  greenOffset?: number;
+  blueOffset?: number;
+  xChannel?: 'R' | 'G' | 'B';
+  yChannel?: 'R' | 'G' | 'B';
+  mixBlendMode?:
+    | 'normal'
+    | 'multiply'
+    | 'screen'
+    | 'overlay'
+    | 'darken'
+    | 'lighten'
+    | 'color-dodge'
+    | 'color-burn'
+    | 'hard-light'
+    | 'soft-light'
+    | 'difference'
+    | 'exclusion'
+    | 'hue'
+    | 'saturation'
+    | 'color'
+    | 'luminosity'
+    | 'plus-darker'
+    | 'plus-lighter';
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+const GlassSurface: React.FC<GlassSurfaceProps> = ({
   children,
   width = 200,
   height = 80,
   borderRadius = 20,
   borderWidth = 0.07,
-  brightness = 95,
-  opacity = 0.4,
-  blur = 12,
+  brightness = 50,
+  opacity = 0.93,
+  blur = 11,
   displace = 0,
   backgroundOpacity = 0,
   saturation = 1,
-  distortionScale = 0,
+  distortionScale = -180,
   redOffset = 0,
-  greenOffset = 0,
-  blueOffset = 0,
+  greenOffset = 10,
+  blueOffset = 20,
   xChannel = 'R',
   yChannel = 'G',
-  mixBlendMode = 'screen',
+  mixBlendMode = 'difference',
   className = '',
   style = {}
 }) => {
-  const uniqueId = useId().replace(/:/g, '-');
-  const filterId = `glass-filter-${uniqueId}`;
-  const redGradId = `red-grad-${uniqueId}`;
-  const blueGradId = `blue-grad-${uniqueId}`;
+  const id = useId();
+  const filterId = `glass-filter-${id}`;
+  const redGradId = `red-grad-${id}`;
+  const blueGradId = `blue-grad-${id}`;
 
-  const [svgSupported, setSvgSupported] = useState(false);
+  const [svgSupported, setSvgSupported] = useState<boolean>(false);
 
-  const containerRef = useRef(null);
-  const feImageRef = useRef(null);
-  const redChannelRef = useRef(null);
-  const greenChannelRef = useRef(null);
-  const blueChannelRef = useRef(null);
-  const gaussianBlurRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const feImageRef = useRef<SVGFEImageElement>(null);
+  const redChannelRef = useRef<SVGFEDisplacementMapElement>(null);
+  const greenChannelRef = useRef<SVGFEDisplacementMapElement>(null);
+  const blueChannelRef = useRef<SVGFEDisplacementMapElement>(null);
+  const gaussianBlurRef = useRef<SVGFEGaussianBlurElement>(null);
 
   const generateDisplacementMap = () => {
     const rect = containerRef.current?.getBoundingClientRect();
@@ -142,7 +183,7 @@ const GlassSurface = ({
     return div.style.backdropFilter !== '';
   };
 
-  const containerStyle = {
+  const containerStyle: React.CSSProperties = {
     ...style,
     width: typeof width === 'number' ? `${width}px` : width,
     height: typeof height === 'number' ? `${height}px` : height,
@@ -150,7 +191,7 @@ const GlassSurface = ({
     '--glass-frost': backgroundOpacity,
     '--glass-saturation': saturation,
     '--filter-id': `url(#${filterId})`
-  };
+  } as React.CSSProperties;
 
   return (
     <div
