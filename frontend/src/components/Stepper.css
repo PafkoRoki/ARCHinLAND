@@ -66,12 +66,12 @@
   transition: all 350ms;
   border-radius: 0.25rem;
   padding: 0.25rem 0.5rem;
-  color: #a3a3a3;
+  color: var(--orange);
   cursor: pointer;
 }
 
 .back-button:hover {
-  color: #52525b;
+  color: var(--orange);
 }
 
 .back-button.inactive {
@@ -86,7 +86,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
-  background-color: #5227ff;
+  background-color: var(--orange);
   color: #fff;
   font-weight: 500;
   letter-spacing: -0.025em;
@@ -95,11 +95,11 @@
 }
 
 .next-button:hover {
-  background-color: #5227ff;
+  background-color: var(--orange);
 }
 
 .next-button:active {
-  background-color: #5227ff;
+  background-color: var(--orange);
 }
 
 .step-indicator {

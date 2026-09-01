@@ -1,5 +1,6 @@
 import { CSSProperties, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import GlassSurface from './GlassSurface'
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import './StrokeText.css';
@@ -288,12 +289,22 @@ const StrokeText = ({
     return (
       <div className="stroke-text-wrapper">
         {strokeTextContent}
-        <a href={buttonHref} className="stroke-text-button">
-          <span>{buttonText}</span>
-          <svg className="stroke-text-button__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-            <path d="m11.293 17.293l1.414 1.414L19.414 12l-6.707-6.707l-1.414 1.414L15.586 11H6v2h9.586z" />
-          </svg>
-        </a>
+
+        <GlassSurface 
+          borderRadius={999}
+          width="auto"
+          height="auto"
+          className="stroke-text-button-glass"
+          opacity={0.8}
+          blur={12}
+        >
+          <a href={buttonHref} className="stroke-text-button-link">
+            <span>{buttonText}</span>
+            <svg className="stroke-text-button__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="m11.293 17.293l1.414 1.414L19.414 12l-6.707-6.707l-1.414 1.414L15.586 11H6v2h9.586z" />
+            </svg>
+          </a>
+        </GlassSurface>
       </div>
     );
   }

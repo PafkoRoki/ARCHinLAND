@@ -28,7 +28,7 @@ function Header() {
             socialItems={socialItems}
             displaySocials={true}
             displayItemNumbering={true}
-            menuButtonColor="#fff"
+            menuButtonColor="#2d2d2d"
             openMenuButtonColor="#FE5000"
             changeMenuColorOnOpen={true}
             colors={["#f0f0f0", "#f0f0f0", "#FE5000"]}
