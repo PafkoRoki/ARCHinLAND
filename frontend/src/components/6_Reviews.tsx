@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useReveal } from '../hooks/useReveal'
 import ScrollStack, { ScrollStackItem } from './ScrollStack'
-import './5_Reviews.css'
+import './6_Reviews.css'
 
 const STEPS = [
   {

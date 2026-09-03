@@ -78,5 +78,5 @@
 }
 
 .stroke-text-button:hover .stroke-text-button__icon {
-  transform: translateX(0px);
+  transform: translateX(14px);
 }

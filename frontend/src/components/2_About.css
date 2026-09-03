@@ -6,7 +6,8 @@
 
 .about__grid {
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, auto));
   align-items: start;
   gap: clamp(48px, 8vw, 96px);
   padding-top: clamp(8px, 2vw, 24px);
@@ -29,9 +30,10 @@
   font-size: clamp(3rem, 6vw, 5.5rem);
   letter-spacing: -0.04em;
   margin-bottom: clamp(32px, 5vw, 56px);
-  font-weight: 700;
-  color: var(--black);
+  font-weight: 900;
   line-height: 1.1;
+  color: var(--white);  
+  -webkit-text-stroke: 1px #2d2d2dbb;
 }
 
 .about__paragraph {
@@ -40,9 +42,13 @@
 
 .about__glass-showcase {
   width: 100%;
-  min-height: 210px;
-  margin-bottom: clamp(32px, 5vw, 58px);
   color: var(--white);
+}
+
+.about__glass-map-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
 }
 
 .about__glass-content {
@@ -81,6 +87,25 @@
   background: rgba(255, 255, 255, 0.4);
 }
 
+.about__glass-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+  transition: color 0.25s ease, gap 0.25s ease;
+}
+
+.about__glass-link:hover {
+  gap: 24px;
+  color: var(--white);
+}
+
 .about__body {
   width: 100%;
   max-width: 100%;
@@ -90,20 +115,26 @@
   gap: clamp(12px, 2vw, 16px);
 }
 .about__stats {
+  width: 100%;
+  min-height: 210px;
+  color: var(--white);
+}
+
+.about__stats-content {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: clamp(32px, 5vw, 48px);
-  max-width: 600px;
-  padding: clamp(24px, 4vw, 32px) 0;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: clamp(24px, 4vw, 48px);
+  width: 100%;
+  min-height: 210px;
+  padding: clamp(24px, 4vw, 40px);
 }
 
 .about__stat {
   display: grid;
   gap: clamp(12px, 2vw, 16px);
   min-width: 0;
-  padding-bottom: clamp(20px, 3vw, 24px);
+  align-content: space-between;
 }
 
 .about__stat + .about__stat {
@@ -115,16 +146,14 @@
   font-size: clamp(2.2rem, 5vw, 4rem);
   font-weight: 700;
   line-height: 1;
-  color: var(--orange);
+  color: var(--white);
 }
 
 .about__stat span {
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
   line-height: 1.4;
-  color: rgba(17, 17, 17, 0.55);
+  color: rgba(255, 255, 255, 0.62);
 }
 
 .about__image {
@@ -140,6 +169,7 @@
 @media (max-width: 860px) {
   .about__grid {
     grid-template-columns: 1fr;
+    grid-template-rows: none;
     gap: clamp(32px, 5vw, 48px);
   }
 
@@ -149,6 +179,7 @@
 
   .about__image {
     order: 1;
+    grid-row: auto;
     aspect-ratio: 4 / 3;
   }
 
@@ -156,13 +187,16 @@
     font-size: clamp(2rem, 8vw, 4rem);
   }
 
-  .about__glass-showcase,
-  .about__glass-content {
-    min-height: 185px;
+  .about__glass-showcase {
+    order: 3;
   }
 
   .about__stats {
-    grid-template-columns: repeat(2, 1fr);
+    order: 4;
     max-width: none;
+  }
+
+  .about__stats-content {
+    grid-template-columns: 1fr;
   }
 }

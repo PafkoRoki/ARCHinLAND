@@ -5,7 +5,7 @@ import { projects } from '../data/projects'
 import ProjectCard from './ProjectCard'
 import { useReveal } from '../hooks/useReveal'
 import AccordionGallery from './AccordionGallery'
-import './3_Projects.css'
+import './4_Projects.css'
 
 const items = [
   { image: '/images/baltic-cliff.jpg', label: 'BALTIC CLIFF', link: '#' },
@@ -24,7 +24,7 @@ export default function Projects() {
 
         <div className="projects__header">
           <h2 ref={headingRef} className="projects__title display reveal">
-            PROJEKTY
+            REALIZACJE
             <br />
           </h2>
         </div>

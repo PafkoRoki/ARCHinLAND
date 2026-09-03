@@ -1,5 +1,5 @@
 import { useReveal } from '../hooks/useReveal'
-import './4_Process.css'
+import './5_Process.css'
 
 
 export default function Process() {

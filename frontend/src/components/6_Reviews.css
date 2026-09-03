@@ -26,7 +26,7 @@
 .reviews__title {
   max-width: 760px;
   font-size: clamp(2.5rem, 6.5vw, 6.2rem);
-  color: #fff;
+  color: var(--white);  
   -webkit-text-stroke: 1px #2d2d2dbb;
 }
 
