@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useId } from 'react';
+import RippleDistortion from './RippleDistortion';
 import './GlassSurface.css';
 
 export interface GlassSurfaceProps {
@@ -39,6 +40,7 @@ export interface GlassSurfaceProps {
     | 'plus-darker'
     | 'plus-lighter';
   className?: string;
+  ripple?: boolean;
   style?: React.CSSProperties;
 }
 
@@ -62,6 +64,7 @@ const GlassSurface: React.FC<GlassSurfaceProps> = ({
   yChannel = 'G',
   mixBlendMode = 'screen',
   className = '',
+  ripple = true,
   style = {}
 }) => {
   const id = useId();
@@ -199,6 +202,33 @@ const GlassSurface: React.FC<GlassSurfaceProps> = ({
       className={`glass-surface ${svgSupported ? 'glass-surface--svg' : 'glass-surface--fallback'} ${className}`}
       style={containerStyle}
     >
+      {ripple ? (
+        <>
+          <span className="glass-surface__ripple-backdrop" aria-hidden="true" />
+          <RippleDistortion
+            overlay
+            src=""
+            brushSize={150}
+            strength={0.2}
+            swirl={1}
+            rings={4}
+            grayscale
+            spread={5}
+            fade={3}
+            spacing={15}
+            dispersion={0}
+            glint={0}
+            tint="#a855f7"
+            tintAmount={0.1}
+            highlightColor="#ffffff"
+            trigger="hover"
+            clickStrength={2}
+            quality="low"
+            enabled
+            className="glass-surface__ripple"
+          />
+        </>
+      ) : null}
       <svg className="glass-surface__filter" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id={filterId} colorInterpolationFilters="sRGB" x="0%" y="0%" width="100%" height="100%">

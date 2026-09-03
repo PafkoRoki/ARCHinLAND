@@ -32,7 +32,7 @@ export default function Hero() {
               letterSpacing={-5}
               reverse={false}
               showButton={true}
-              buttonText="Kontakt."
+              buttonText="790 820 114"
               buttonHref="#contact"
             />
           }

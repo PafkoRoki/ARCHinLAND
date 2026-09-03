@@ -47,7 +47,8 @@ void main() {
 
   brush *= 0.55 + 0.45 * cos(sqrt(r) * PI * 2.0 * uRings);
 
-  gl_FragColor = vec4(vec3(brush * vOpacity * vOpacity), 1.0);
+  float intensity = brush * vOpacity * vOpacity;
+  gl_FragColor = vec4(vec3(intensity), intensity);
 }
 `;
 
@@ -149,6 +150,7 @@ export interface RippleDistortionProps {
   tintAmount?: number;
   grayscale?: boolean;
   highlightColor?: string;
+  overlay?: boolean;
   trigger?: RippleTrigger;
   clickStrength?: number;
   quality?: RippleQuality;
@@ -232,6 +234,7 @@ const RippleDistortion = ({
   tintAmount = 0.1,
   grayscale = true,
   highlightColor = '#ffffff',
+  overlay = false,
   trigger = 'hover',
   clickStrength = 2,
   quality = 'low',
@@ -277,16 +280,16 @@ const RippleDistortion = ({
       if (!hasWebGL) return renderFallback();
 
       renderer = new Renderer({
-        alpha: false,
+        alpha: overlay,
         antialias: false,
-        dpr: Math.min(window.devicePixelRatio || 1, 2)
+        dpr: Math.min(window.devicePixelRatio || 1, overlay ? 1.25 : 2)
       });
     } catch {
       return renderFallback();
     }
     const gl = renderer.gl;
     if (!gl) return;
-    gl.clearColor(0, 0, 0, 1);
+    gl.clearColor(0, 0, 0, overlay ? 0 : 1);
     const canvas = gl.canvas;
     canvas.style.width = '100%';
     canvas.style.height = '100%';
@@ -427,19 +430,33 @@ const RippleDistortion = ({
       return [clientX - rect.left, rect.height - (clientY - rect.top)];
     };
 
-    let previousX = 0;
-    let previousY = 0;
+    let previousPoint: [number, number] | null = null;
 
     const onMove = (event: PointerEvent) => {
       const cfg = configRef.current;
       if (!cfg.enabled || reduceMotion || cfg.trigger === 'click') return;
       const point = localPoint(event.clientX, event.clientY);
-      if (!point) return;
+      if (!point) {
+        previousPoint = null;
+        return;
+      }
       const step = Math.max(1, cfg.spacing);
-      if (Math.abs(point[0] - previousX) > step || Math.abs(point[1] - previousY) > step) {
+      if (!previousPoint) {
         setNewWave(point[0], point[1], 1);
-        previousX = point[0];
-        previousY = point[1];
+        previousPoint = point;
+        return;
+      }
+
+      const dx = point[0] - previousPoint[0];
+      const dy = point[1] - previousPoint[1];
+      const distance = Math.hypot(dx, dy);
+      if (distance >= step) {
+        const count = Math.min(Math.ceil(distance / step), 12);
+        for (let i = 1; i <= count; i += 1) {
+          const progress = i / count;
+          setNewWave(previousPoint[0] + dx * progress, previousPoint[1] + dy * progress, 1);
+        }
+        previousPoint = point;
       }
     };
 
@@ -449,6 +466,7 @@ const RippleDistortion = ({
       const point = localPoint(event.clientX, event.clientY);
       if (!point) return;
       setNewWave(point[0], point[1], Math.max(1, cfg.clickStrength));
+      previousPoint = point;
     };
 
     window.addEventListener('pointermove', onMove, { passive: true });
@@ -494,8 +512,12 @@ const RippleDistortion = ({
       geometry.attributes.iScale.needsUpdate = true;
       geometry.attributes.iOpacity.needsUpdate = true;
 
-      renderer.render({ scene: waveMesh, target: displacementTarget, clear: true });
-      renderer.render({ scene: compositeMesh });
+      if (overlay) {
+        renderer.render({ scene: waveMesh, clear: true });
+      } else {
+        renderer.render({ scene: waveMesh, target: displacementTarget, clear: true });
+        renderer.render({ scene: compositeMesh });
+      }
     };
     raf = requestAnimationFrame(loop);
 
@@ -511,7 +533,7 @@ const RippleDistortion = ({
       if (ext) ext.loseContext();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [src, quality]);
+  }, [src, quality, overlay]);
 
   useEffect(() => {
     const u = uniformsRef.current;

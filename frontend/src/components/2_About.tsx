@@ -1,6 +1,7 @@
 import { useReveal } from '../hooks/useReveal'
 import './2_About.css'
 import panorama from "../assets/1.png";
+import GlassSurface from './GlassSurface'
 
 export default function About() {
   const statementRef = useReveal<HTMLHeadingElement>()
@@ -27,6 +28,21 @@ export default function About() {
             łączymy projektowanie architektoniczne z wiedzą techniczną, tworząc wielobranżowe,
             nowoczesne realizacje dopasowane do miejsca i wymagań prawa budowlanego.
           </p>
+
+          <GlassSurface
+            className="about__glass-showcase"
+            width="100%"
+            height="auto"
+            borderRadius={16}
+            ripple
+          >
+            <div className="about__glass-content">
+              <span className="about__glass-label">MATERIAŁ / PRZESTRZEŃ</span>
+              <strong>FORMA, KTÓRA REAGUJE NA ŚWIATŁO</strong>
+              <span className="about__glass-line" aria-hidden="true" />
+              <span className="about__glass-meta">ARCHinLAND / 2024—2025</span>
+            </div>
+          </GlassSurface>
 
           <div className="about__stats" aria-label="Informacje o pracowni">
             <div className="about__stat">
