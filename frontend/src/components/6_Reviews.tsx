@@ -3,18 +3,25 @@ import { useReveal } from '../hooks/useReveal'
 import ScrollStack, { ScrollStackItem } from './ScrollStack'
 import './6_Reviews.css'
 
+// Importy zamiast ścieżek "/images/..." — te pliki nie istnieją w public/,
+// więc wcześniej renderowały się jako złamane obrazki (404).
+import step1Img from '../assets/1.webp'
+import step2Img from '../assets/2.webp'
+import step3Img from '../assets/3.webp'
+import step4Img from '../assets/4.webp'
+
 const STEPS = [
   {
     number: '01',
     title: 'POZNANIE POTRZEB',
     text: 'Pierwsze spotkanie z klientem, dokładna analiza potrzeb, stylu życia, oczekiwań oraz możliwości, jakie daje dana przestrzeń.',
-    image: '/images/1.png',
+    image: step1Img,
   },
   {
     number: '02',
     title: 'FAZA KONCEPCYJA',
     text: 'Na podstawie zebranych informacji tworzymy kierunek projektu, układ funkcjonalny i pierwsze decyzje dotyczące charakteru przyszłej architektury.',
-    image: '/images/2.png',
+    image: step2Img,
   },
   {
     number: '03',
@@ -26,13 +33,13 @@ const STEPS = [
     number: '04',
     title: 'PROJEKT BUDOWLANY',
     text: 'Dopracowujemy rozwiązania techniczne i planistyczne, koordynujemy branże oraz przygotowujemy projekt zgodny z wymaganiami formalnymi.',
-    image: '/images/3.png',
+    image: step3Img,
   },
   {
     number: '05',
     title: 'DOKUMENTACJA WYKONAWCZA',
     text: 'Finalizujemy wszystkie rysunki, zestawienia i detale potrzebne do sprawnego przeprowadzenia realizacji projektu w formie fizycznej.',
-    image: '/images/4.png',
+    image: step4Img,
   },
 ]
 
@@ -131,6 +138,7 @@ export default function GoogleReviews() {
                   <iframe
                     title="Bliźniak"
                     src={step.embed}
+                    loading="lazy"
                     frameBorder="0"
                     allowFullScreen
                     allow="autoplay; fullscreen; xr-spatial-tracking"
@@ -138,7 +146,10 @@ export default function GoogleReviews() {
                 </div>
               ) : step.image ? (
                 <div className="process__image-slot">
-                  <img src={step.image} alt="" />
+                  <img
+                    src={step.image}
+                    alt={`Etap ${step.number} procesu projektowego ARCHinLAND: ${step.title.replace('\n', ' ')}`}
+                  />
                 </div>
               ) : null}
             </ScrollStackItem>

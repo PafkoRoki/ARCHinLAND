@@ -10,7 +10,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const links = [
   ["O NAS", "#about"],
-  ["REALIZACJE", "#work"],
+  ["REALIZACJE", "#projects"],
   ["PROCES", "#process"],
   ["KONTAKT", "#contact"],
 ];
@@ -143,7 +143,7 @@ export default function Footer() {
         </div>
 
         <div className="footer__hero">
-          <h1 ref={titleRef}>ARCHinLAND</h1>
+          <h2 ref={titleRef}>ARCHinLAND</h2>
         </div>
 
         <div className="footer__bottom">

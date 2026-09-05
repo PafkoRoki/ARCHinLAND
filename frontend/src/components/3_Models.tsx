@@ -7,7 +7,7 @@ export default function Models() {
   const headingRef = useReveal<HTMLHeadingElement>()
 
   return (
-    <section id="projects" className="section section-border projects">
+    <section id="models" className="section section-border projects">
       <div className="container">
 
         <div className="projects__header">
@@ -24,6 +24,7 @@ export default function Models() {
             <iframe
               title="GRYF - Bliźniak Dom jednorodzinny"
               src={modelUrl}
+              loading="lazy"
               frameBorder="0"
               allowFullScreen
               allow="autoplay; fullscreen; xr-spatial-tracking; execution-while-in-viewport; execution-while-not-rendered; web-share"

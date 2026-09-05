@@ -2,18 +2,31 @@
 // @ts-nocheck
 
 import { projects } from '../data/projects'
-import ProjectCard from './ProjectCard'
 import { useReveal } from '../hooks/useReveal'
 import AccordionGallery from './AccordionGallery'
 import './4_Projects.css'
 
-const items = [
-  { image: '/images/baltic-cliff.jpg', label: 'BALTIC CLIFF', link: '#' },
-  { image: '/images/baltic-riviera.jpg', label: 'BALTIC RIVIERA', link: '#' },
-  { image: '/images/osiedle-panorama.jpg', label: 'OSIEDLE PANORAMA', link: '#' },
-  { image: '/images/budynek-uslugowo-mieszkalny.jpg', label: 'BUDYNEK USŁUGOWO MIESZKALNY', link: '#' },
-  { image: '/images/dom-w-konstrukcji-szkieletowej.jpg', label: 'DOM SZKIELETOWY', link: '#' }
-];
+// Realne pliki, które faktycznie są w src/assets — importowane przez Vite,
+// więc trafią do bundla z poprawnym hashem/URL (w przeciwieństwie do
+// wcześniejszych ścieżek "/images/..." wskazujących na pliki, których nie ma).
+import osiedlePanoramaImg from '../assets/osiedle-panorama.jpg'
+import budynekUslugowoImg from '../assets/budynek-uslugowo-mieszkalny.jpg'
+// TODO: podmienić na docelowe zdjęcia realizacji, gdy będą dostępne.
+// Na razie używamy render.png jako tymczasowego zastępstwa, żeby galeria
+// nie wyświetlała złamanych obrazków (404 szkodzi UX i SEO).
+import placeholderImg from '../assets/render.webp'
+
+const projectImageMap: Record<string, string> = {
+  'Osiedle Panorama': osiedlePanoramaImg,
+  'Budynek usługowo-mieszkalny': budynekUslugowoImg,
+}
+
+const items = projects.map((project) => ({
+  image: projectImageMap[project.id] ?? placeholderImg,
+  label: project.name,
+  link: '#',
+  alt: `${project.name} — ${project.category}, ${project.location}${project.year ? `, ${project.year}` : ''}`,
+}))
 
 export default function Projects() {
   const headingRef = useReveal<HTMLHeadingElement>()
@@ -52,8 +65,16 @@ export default function Projects() {
           orientation="horizontal"
         />
 
+        <div className="projects__header">
+          <h2 ref={headingRef} className="projects__title display reveal">
+            GOTOWE PROJEKTY
+            <br />
+          </h2>
+        </div>
+
 
       </div>
+
     </section>
   )
 }

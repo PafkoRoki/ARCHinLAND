@@ -1,6 +1,6 @@
 import { useReveal } from '../hooks/useReveal'
 import './2_About.css'
-import panorama from "../assets/1.png";
+import panorama from "../assets/1.webp";
 import GlassSurface from './GlassSurface'
 
 export default function About() {
@@ -26,7 +26,7 @@ export default function About() {
         <div ref={imageRef} className="about__image reveal reveal-delay-1">
           <img
             src={panorama}
-            alt="Architect reviewing a site model on a studio table"
+            alt="Rzuty i przekroje architektoniczne domu jednorodzinnego przygotowane przez biuro ARCHinLAND"
             loading="lazy"
           />
         </div>
