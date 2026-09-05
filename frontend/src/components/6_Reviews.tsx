@@ -1,47 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useReveal } from '../hooks/useReveal'
-import ScrollStack, { ScrollStackItem } from './ScrollStack'
 import './6_Reviews.css'
 
-// Importy zamiast ścieżek "/images/..." — te pliki nie istnieją w public/,
-// więc wcześniej renderowały się jako złamane obrazki (404).
-import step1Img from '../assets/1.webp'
-import step2Img from '../assets/2.webp'
-import step3Img from '../assets/3.webp'
-import step4Img from '../assets/4.webp'
 
-const STEPS = [
-  {
-    number: '01',
-    title: 'POZNANIE POTRZEB',
-    text: 'Pierwsze spotkanie z klientem, dokładna analiza potrzeb, stylu życia, oczekiwań oraz możliwości, jakie daje dana przestrzeń.',
-    image: step1Img,
-  },
-  {
-    number: '02',
-    title: 'FAZA KONCEPCYJA',
-    text: 'Na podstawie zebranych informacji tworzymy kierunek projektu, układ funkcjonalny i pierwsze decyzje dotyczące charakteru przyszłej architektury.',
-    image: step2Img,
-  },
-  {
-    number: '03',
-    title: 'MODELOWANIE\n3D',
-    text: 'Przekształcamy pomysł w przestrzeń, strukturę i materiał, sprawdzając proporcje, światło oraz relacje budynku z otoczeniem.',
-    embed: 'https://sketchfab.com/models/7665cc6803674d0b897008057b3b0e0c/embed?autostart=1&transparent=1&ui_theme=dark',
-  },
-  {
-    number: '04',
-    title: 'PROJEKT BUDOWLANY',
-    text: 'Dopracowujemy rozwiązania techniczne i planistyczne, koordynujemy branże oraz przygotowujemy projekt zgodny z wymaganiami formalnymi.',
-    image: step3Img,
-  },
-  {
-    number: '05',
-    title: 'DOKUMENTACJA WYKONAWCZA',
-    text: 'Finalizujemy wszystkie rysunki, zestawienia i detale potrzebne do sprawnego przeprowadzenia realizacji projektu w formie fizycznej.',
-    image: step4Img,
-  },
-]
 
 type Review = {
   author: string
@@ -125,36 +86,6 @@ export default function GoogleReviews() {
           ))}
         </div>
 
-        <ScrollStack useWindowScroll className="process__stack">
-          {STEPS.map((step) => (
-            <ScrollStackItem key={step.number} itemClassName="process__stack-card">
-              <div className="process__content">
-                <span className="process__number display">{step.number}</span>
-                <h3 className="process__title-sm display">{step.title}</h3>
-                <p className="process__text">{step.text}</p>
-              </div>
-              {step.embed ? (
-                <div className="process__image-slot process__embed-slot">
-                  <iframe
-                    title="Bliźniak"
-                    src={step.embed}
-                    loading="lazy"
-                    frameBorder="0"
-                    allowFullScreen
-                    allow="autoplay; fullscreen; xr-spatial-tracking"
-                  />
-                </div>
-              ) : step.image ? (
-                <div className="process__image-slot">
-                  <img
-                    src={step.image}
-                    alt={`Etap ${step.number} procesu projektowego ARCHinLAND: ${step.title.replace('\n', ' ')}`}
-                  />
-                </div>
-              ) : null}
-            </ScrollStackItem>
-          ))}
-        </ScrollStack>
 
         <a
           className="reviews__link"
