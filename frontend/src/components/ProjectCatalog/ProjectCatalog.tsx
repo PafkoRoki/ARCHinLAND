@@ -170,10 +170,10 @@ export function ProjectCatalog({
           }
         >
           <option>Wszystkie</option>
-          <option>Nowoczesny</option>
-          <option>Tradycyjny</option>
-          <option>Stodoła</option>
-          <option>Parterowy</option>
+          <option value="do 70m²">do 70m²</option>
+          <option value="Tradycyjny">Tradycyjny</option>
+          <option value="Stodoła">Stodoła</option>
+          <option value="Parterowy">Parterowy</option>
         </select>
 
         <select
@@ -209,9 +209,9 @@ export function ProjectCatalog({
           }
         >
           <option>Wszystkie</option>
-          <option>Dwuspadowy</option>
-          <option>Czterospadowy</option>
-          <option>Płaski</option>
+          <option value="🡶">Dwuspadowy</option>
+          <option value="🡵">Czterospadowy</option>
+          <option value="🡲">Płaski</option>
         </select>
 
         <select
