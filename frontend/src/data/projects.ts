@@ -4,7 +4,7 @@ import nastjaImage from '../assets/ProjectCatalog/Nastja.png'
 export interface Project {
   id: string;
   name: string;
-  category: "Nowoczesny" | "Tradycyjny" | "Stodoła" | "Parterowy";
+  category: "do 70m²" | "Tradycyjny" | "Stodoła" | "Parterowy";
 
   image: string;
 
@@ -16,7 +16,7 @@ export interface Project {
   floors: number;
   rooms: number;
 
-  roofType: "Dwuspadowy" | "Czterospadowy" | "Płaski";
+  roofType: "🡶" | "🡵" | "🡲";
   roofAngle: number;
 
   garage: 0 | 1 | 2;
@@ -32,7 +32,7 @@ export const projects: Project[] = [
   {
     id: "i-001",
     name: "IGOR",
-    category: "Nowoczesny",
+    category: "do 70m²",
     image: igorImage,
     usableArea: 90.26,
     buildingArea: 69.91,
@@ -40,7 +40,7 @@ export const projects: Project[] = [
     totalArea: 93.77,
     floors: 2,
     rooms: 3,
-    roofType: "Dwuspadowy",
+    roofType: "🡶",
     roofAngle: 45,
     garage: 1,
     plotWidth: 20,
@@ -51,7 +51,7 @@ export const projects: Project[] = [
   {
     id: "n-001",
     name: "NASTJA",
-    category: "Nowoczesny",
+    category: "do 70m²",
     image: nastjaImage,
     usableArea: 93.77,
     buildingArea: 69.91,
@@ -59,7 +59,7 @@ export const projects: Project[] = [
     totalArea: 93.77,
     floors: 2,
     rooms: 3,
-    roofType: "Dwuspadowy",
+    roofType: "🡶",
     roofAngle: 30,
     garage: 1,
     plotWidth: 22,
