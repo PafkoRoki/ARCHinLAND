@@ -28,18 +28,18 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
         <div className="projectCard__mainStat">
           <span>Powierzchnia użytkowa</span>
-          <strong>{project.area.usable} m²</strong>
+          <strong>{project.usableArea} m²</strong>
         </div>
 
         <div className="projectCard__stats">
           <div>
             <span>Pow. zabudowy</span>
-            <strong>{project.area.building} m²</strong>
+            <strong>{project.buildingArea} m²</strong>
           </div>
 
           <div>
             <span>Pow. mieszkalna</span>
-            <strong>{project.area.residential} m²</strong>
+            <strong>{project.residentialArea} m²</strong>
           </div>
         </div>
 
@@ -51,7 +51,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
           <div>
             <span>Dach</span>
-            <strong>{project.roof.angle}°</strong>
+            <strong>{project.roofAngle}°</strong>
           </div>
         </div>
       </div>
