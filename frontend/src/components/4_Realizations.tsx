@@ -1,16 +1,16 @@
 /// <reference types="vite/client" />
 // @ts-nocheck
 
-import { projects } from '../data/projects'
-import { useReveal } from '../hooks/useReveal'
+import { projects } from '../data/realizations'
 import AccordionGallery from './AccordionGallery'
-import './4_Projects.css'
+import './4_Realizations.css'
 
 // Realne pliki, które faktycznie są w src/assets — importowane przez Vite,
 // więc trafią do bundla z poprawnym hashem/URL (w przeciwieństwie do
 // wcześniejszych ścieżek "/images/..." wskazujących na pliki, których nie ma).
 import osiedlePanoramaImg from '../assets/osiedle-panorama.jpg'
 import budynekUslugowoImg from '../assets/budynek-uslugowo-mieszkalny.jpg'
+import balticCliffImg from '../assets/Hero 6.jpg'
 // TODO: podmienić na docelowe zdjęcia realizacji, gdy będą dostępne.
 // Na razie używamy render.png jako tymczasowego zastępstwa, żeby galeria
 // nie wyświetlała złamanych obrazków (404 szkodzi UX i SEO).
@@ -19,6 +19,7 @@ import placeholderImg from '../assets/render.webp'
 const projectImageMap: Record<string, string> = {
   'Osiedle Panorama': osiedlePanoramaImg,
   'Budynek usługowo-mieszkalny': budynekUslugowoImg,
+  'Baltic Cliff': balticCliffImg,
 }
 
 const items = projects.map((project) => ({
@@ -29,14 +30,12 @@ const items = projects.map((project) => ({
 }))
 
 export default function Projects() {
-  const headingRef = useReveal<HTMLHeadingElement>()
-
   return (
     <section id="projects" className="section section-border projects">
       <div className="container">
 
         <div className="projects__header">
-          <h2 ref={headingRef} className="projects__title display reveal">
+          <h2 className="projects__title display">
             REALIZACJE
             <br />
           </h2>
@@ -64,13 +63,6 @@ export default function Projects() {
           radius={16}
           orientation="horizontal"
         />
-
-        <div className="projects__header">
-          <h2 ref={headingRef} className="projects__title display reveal">
-            GOTOWE PROJEKTY
-            <br />
-          </h2>
-        </div>
 
 
       </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useReveal } from '../hooks/useReveal'
-import './6_Reviews.css'
+import './7_Reviews.css'
 
 
 

@@ -1,0 +1,126 @@
+.process__header {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: clamp(48px, 8vw, 88px);
+  color: var(--white);
+  -webkit-text-stroke: 1px #2d2d2dbb;
+  -webkit-text-fill-color: var(--white);
+}
+
+.process__stack {
+  width: 100%;
+}
+
+.process__stack-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 44%);
+  align-items: stretch;
+  gap: clamp(28px, 5vw, 80px);
+}
+
+.process__content {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.process__image-slot {
+  height: 100%;
+  min-height: 15rem;
+  overflow: hidden;
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.process__image-slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.process__embed-slot iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.process__title {
+  font-size: clamp(2.8rem, 6.5vw, 5.6rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.process__list {
+  display: flex;
+  flex-direction: column;
+}
+
+.process__step {
+  display: grid;
+  grid-template-columns: 60px 1fr 2fr;
+  align-items: baseline;
+  gap: clamp(20px, 3vw, 32px);
+  padding: clamp(28px, 4vw, 44px) 0;
+  border-top: 1px solid var(--line);
+  transition: background 0.3s var(--ease);
+}
+
+.process__list li:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.process__step:hover {
+  background: var(--bg-alt);
+}
+
+.process__number {
+  font-size: clamp(1.4rem, 2.6vw, 2.2rem);
+  color: var(--orange);
+  font-weight: 700;
+}
+
+.process__title-sm {
+  font-size: clamp(1.4rem, 2.8vw, 2.4rem);
+  font-weight: 800;
+  max-width: 13ch;
+}
+
+.process__text {
+  font-size: clamp(0.95rem, 1.1vw, 1.1rem);
+  color: rgba(17, 17, 17, 0.6);
+  max-width: 42ch;
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+@media (max-width: 720px) {
+  .process__stack-card {
+    grid-template-columns: 1fr;
+    align-content: start;
+    gap: 10px;
+  }
+
+  .process__content {
+    min-height: 14rem;
+  }
+
+  .process__title-sm {
+    font-size: clamp(1.65rem, 8vw, 2.35rem);
+  }
+
+  .process__text {
+    font-size: 1.05rem;
+    line-height: 1.45;
+    margin-top: auto;
+  }
+
+  .process__image-slot {
+    min-height: 13rem;
+    height: 13rem;
+    margin-top: 8px;
+  }
+}

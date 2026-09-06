@@ -1,5 +1,7 @@
 import { useReveal } from '../hooks/useReveal'
-import './5_Process.css'
+import { ProjectCatalog } from "./ProjectCatalog/ProjectCatalog";
+import { projects } from "../data/projects";
+import './5_Projects.css'
 
 
 export default function Process() {
@@ -10,10 +12,10 @@ export default function Process() {
       <div className="container">
         <div className="process__header">
           <h2 ref={headingRef} className="process__title display reveal">
-            PROCES
+            GOTOWE PROJEKTY
           </h2>
         </div>
-
+<ProjectCatalog projects={projects} />
 
       </div>
 
