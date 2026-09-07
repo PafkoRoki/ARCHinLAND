@@ -36,7 +36,7 @@ export default function Projects() {
 
         <div className="projects__header">
           <h2 className="projects__title display">
-            REALIZACJE
+            PROJEKTY
             <br />
           </h2>
         </div>
