@@ -234,15 +234,15 @@ export function Footer({
   links = [
     { label: "Mail", href: "mailto:ARCHinLAND@wp.pl" },
     { label: "790 820 114", href: "tel:+48790820114" },
-    { label: "Biuro", href: "/link3" },
+    { label: "🡶", href: "/link3" },
     { label: "Modele 3D", href: "/link4" },
-    { label: "Realizacje", href: "/link5" }
+    { label: "Projekty", href: "/link5" }
   ],
-  companyDescription = "ARCHITECTURE in LAND DEVELOPMENT tel. 790 820 114",
+  companyDescription = "ARCHITECTURE in LAND DEVELOPMENT",
   copyright = {
-    companyName: "Company Name",
+    companyName: "ARCHinLAND",
     year: new Date().getFullYear(),
-    additionalText: "Optional additional text"
+    additionalText: "ARCHITECTURE in LAND DEVELOPMENT"
   }
 }: FooterProps) {
   return (
@@ -286,18 +286,19 @@ export function Footer({
           <div className="h-40 min-[1250px]:h-40 min-[1250px]:col-span-8 min-[1250px]:row-span-1 border-b border-white/20 min-[1250px]:border-r relative">
             <RippleDistortion
               src="/images/osiedle-panorama.jpg"
-              brushSize={180}
-              strength={0.28}
-              swirl={1.2}
-              rings={5}
-              spread={6}
-              fade={3}
-              spacing={18}
+              brushSize={170}
+              strength={0.16}
+              swirl={0.9}
+              rings={4}
+              spread={5}
+              fade={3.5}
+              spacing={24}
               tint="#FE5000"
-              tintAmount={0.35}
+              tintAmount={0.1}
               grayscale
               trigger="both"
-              quality="medium"
+              quality="low"
+              clickStrength={2}
               className="h-full w-full"
             />
           </div>

@@ -13,7 +13,7 @@ export default function About() {
 
         <div className="about__body">
           <h2 ref={statementRef} className="about__statement display reveal">
-            BIURO
+            🡶
           </h2>
 
           <p className="body-lg about__paragraph">

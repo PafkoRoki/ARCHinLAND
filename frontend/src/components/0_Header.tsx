@@ -3,7 +3,7 @@ import './0_Header.css'
 import logoUrl from '../assets/logo.svg'
 
 const menuItems = [
-  { label: 'Biuro', ariaLabel: 'Go to about section', link: '#about' },
+  { label: '🡶', ariaLabel: 'Go to about section', link: '#about' },
   { label: 'Modele 3D', ariaLabel: 'Go to 3D models section', link: '#models' },
   { label: 'Realizacje', ariaLabel: 'Go to projects section', link: '#projects' },
   { label: 'Kontakt', ariaLabel: 'Go to contact section', link: '#contact' },
