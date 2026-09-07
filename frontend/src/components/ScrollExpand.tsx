@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 
+import RippleDistortion from './RippleDistortion';
 import './ScrollExpand.css';
 
 const clamp = (v: number, a: number, b: number): number => (v < a ? a : v > b ? b : v);
@@ -74,7 +75,7 @@ const ScrollExpand: React.FC<ScrollExpandProps> = ({
   const trackRef = useRef<HTMLDivElement | null>(null);
   const stageRef = useRef<HTMLDivElement | null>(null);
   const frameRef = useRef<HTMLDivElement | null>(null);
-  const mediaRef = useRef<HTMLImageElement & HTMLVideoElement>(null);
+  const mediaRef = useRef<HTMLDivElement | HTMLVideoElement>(null);
   const titleRef = useRef<HTMLDivElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const scrimRef = useRef<HTMLDivElement | null>(null);
@@ -238,7 +239,22 @@ const ScrollExpand: React.FC<ScrollExpandProps> = ({
         playsInline
       />
     ) : (
-      <img ref={mediaRef} className="scroll-expand__media" src={src} alt={alt} draggable={false} />
+      <div ref={mediaRef} className="scroll-expand__media">
+        <RippleDistortion
+          src={src}
+          brushSize={140}
+          strength={0.14}
+          swirl={0.8}
+          rings={3}
+          spread={4}
+          fade={2.8}
+          spacing={18}
+          trigger="hover"
+          quality="low"
+          grayscale={false}
+          className="scroll-expand__ripple"
+        />
+      </div>
     );
 
   return (
