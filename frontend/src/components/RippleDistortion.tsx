@@ -47,8 +47,7 @@ void main() {
 
   brush *= 0.55 + 0.45 * cos(sqrt(r) * PI * 2.0 * uRings);
 
-  float intensity = brush * vOpacity * vOpacity;
-  gl_FragColor = vec4(vec3(intensity), intensity);
+  gl_FragColor = vec4(vec3(brush * vOpacity * vOpacity), 1.0);
 }
 `;
 
@@ -95,21 +94,12 @@ vec2 coverUV(vec2 uv) {
 }
 
 void main() {
-  // Overlapping waves are blended additively (ONE, ONE), so raw amount can
-  // spike well above 1.0 during fast pointer movement. Left unclamped this
-  // produces an oversized UV offset below, which reads as the whole image
-  // being dragged/smeared toward the pointer's direction of travel.
-  float amount = clamp(texture2D(uDisplacement, vUv).r, 0.0, MAX_AMOUNT);
+  float amount = texture2D(uDisplacement, vUv).r;
   vec2 base = coverUV(vUv);
 
-  vec2 dx = vec2(uTexel.x, 0.0);
-  vec2 dy = vec2(0.0, uTexel.y);
-  float gradientX = texture2D(uDisplacement, vUv + dx).r - texture2D(uDisplacement, vUv - dx).r;
-  float gradientY = texture2D(uDisplacement, vUv + dy).r - texture2D(uDisplacement, vUv - dy).r;
-  vec2 gradient = vec2(gradientX, gradientY);
-  float gradientLength = length(gradient);
-  vec2 dir = gradientLength > 0.00001 ? gradient / gradientLength : vec2(0.0);
-  vec2 push = dir * amount * uStrength * (0.35 + 0.65 * uSwirl);
+  float theta = amount * uSwirl * TAU;
+  vec2 dir = vec2(sin(theta), cos(theta));
+  vec2 push = dir * amount * uStrength;
 
   vec3 color;
   if (uDispersion > 0.001) {
@@ -446,7 +436,9 @@ const RippleDistortion = ({
       if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom) {
         return null;
       }
-      return [clientX - rect.left, rect.height - (clientY - rect.top)];
+      const normalizedX = (clientX - rect.left) / rect.width;
+      const normalizedY = (clientY - rect.top) / rect.height;
+      return [normalizedX * width, (1 - normalizedY) * height];
     };
 
     let previousPoint: [number, number] | null = null;
