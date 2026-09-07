@@ -75,7 +75,7 @@ const ScrollExpand: React.FC<ScrollExpandProps> = ({
   const trackRef = useRef<HTMLDivElement | null>(null);
   const stageRef = useRef<HTMLDivElement | null>(null);
   const frameRef = useRef<HTMLDivElement | null>(null);
-  const mediaRef = useRef<HTMLDivElement | HTMLVideoElement>(null);
+  const mediaRef = useRef<HTMLElement | null>(null);
   const titleRef = useRef<HTMLDivElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const scrimRef = useRef<HTMLDivElement | null>(null);
@@ -229,7 +229,9 @@ const ScrollExpand: React.FC<ScrollExpandProps> = ({
   const media =
     mediaType === 'video' ? (
       <video
-        ref={mediaRef}
+        ref={element => {
+          mediaRef.current = element;
+        }}
         className="scroll-expand__media"
         src={src}
         poster={poster}
@@ -239,7 +241,12 @@ const ScrollExpand: React.FC<ScrollExpandProps> = ({
         playsInline
       />
     ) : (
-      <div ref={mediaRef} className="scroll-expand__media">
+      <div
+        ref={element => {
+          mediaRef.current = element;
+        }}
+        className="scroll-expand__media"
+      >
         <RippleDistortion
           src={src}
           brushSize={140}
