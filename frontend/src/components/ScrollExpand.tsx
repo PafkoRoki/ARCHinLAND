@@ -258,7 +258,7 @@ const ScrollExpand: React.FC<ScrollExpandProps> = ({
           spacing={18}
           trigger="hover"
           quality="low"
-          grayscale={false}
+          grayscale
           className="scroll-expand__ripple"
         />
       </div>
