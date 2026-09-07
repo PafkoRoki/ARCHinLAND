@@ -81,8 +81,10 @@ uniform float uDispersion;
 uniform float uGlint;
 uniform float uTintAmount;
 uniform float uGrayscale;
+uniform float uRevealStrength;
 
 const float TAU = 6.283185307179586;
+const float MAX_AMOUNT = 1.3;
 
 vec2 coverUV(vec2 uv) {
   vec2 safe = max(uTextureSize, vec2(1.0));
@@ -93,12 +95,21 @@ vec2 coverUV(vec2 uv) {
 }
 
 void main() {
-  float amount = texture2D(uDisplacement, vUv).r;
+  // Overlapping waves are blended additively (ONE, ONE), so raw amount can
+  // spike well above 1.0 during fast pointer movement. Left unclamped this
+  // produces an oversized UV offset below, which reads as the whole image
+  // being dragged/smeared toward the pointer's direction of travel.
+  float amount = clamp(texture2D(uDisplacement, vUv).r, 0.0, MAX_AMOUNT);
   vec2 base = coverUV(vUv);
 
-  float theta = amount * uSwirl * TAU;
-  vec2 dir = vec2(sin(theta), cos(theta));
-  vec2 push = dir * amount * uStrength;
+  vec2 dx = vec2(uTexel.x, 0.0);
+  vec2 dy = vec2(0.0, uTexel.y);
+  float gradientX = texture2D(uDisplacement, vUv + dx).r - texture2D(uDisplacement, vUv - dx).r;
+  float gradientY = texture2D(uDisplacement, vUv + dy).r - texture2D(uDisplacement, vUv - dy).r;
+  vec2 gradient = vec2(gradientX, gradientY);
+  float gradientLength = length(gradient);
+  vec2 dir = gradientLength > 0.00001 ? gradient / gradientLength : vec2(0.0);
+  vec2 push = dir * amount * uStrength * (0.35 + 0.65 * uSwirl);
 
   vec3 color;
   if (uDispersion > 0.001) {
@@ -111,7 +122,11 @@ void main() {
   }
 
   if (uGrayscale > 0.001) {
-    color = mix(color, vec3(dot(color, vec3(0.2126, 0.7152, 0.0722))), uGrayscale);
+    // Image starts fully grayscale; wherever the ripple is active (amount > 0)
+    // it reveals full color, scaling with uRevealStrength.
+    float reveal = clamp(amount * uRevealStrength, 0.0, 1.0);
+    vec3 gray = vec3(dot(color, vec3(0.2126, 0.7152, 0.0722)));
+    color = mix(gray, color, reveal);
   }
 
   if (uTintAmount > 0.001) {
@@ -149,6 +164,7 @@ export interface RippleDistortionProps {
   tint?: string;
   tintAmount?: number;
   grayscale?: boolean;
+  colorRevealStrength?: number;
   highlightColor?: string;
   overlay?: boolean;
   trigger?: RippleTrigger;
@@ -192,6 +208,7 @@ interface CompositeUniforms {
   uGlint: { value: number };
   uTintAmount: { value: number };
   uGrayscale: { value: number };
+  uRevealStrength: { value: number };
   [key: string]: { value: unknown };
 }
 
@@ -233,6 +250,7 @@ const RippleDistortion = ({
   tint = '#a855f7',
   tintAmount = 0.1,
   grayscale = true,
+  colorRevealStrength = 3.5,
   highlightColor = '#ffffff',
   overlay = false,
   trigger = 'hover',
@@ -373,7 +391,8 @@ const RippleDistortion = ({
       uDispersion: { value: dispersion },
       uGlint: { value: glint },
       uTintAmount: { value: tintAmount },
-      uGrayscale: { value: grayscale ? 1 : 0 }
+      uGrayscale: { value: grayscale ? 1 : 0 },
+      uRevealStrength: { value: colorRevealStrength }
     };
 
     const compositeMesh = new Mesh(gl, {
@@ -545,9 +564,10 @@ const RippleDistortion = ({
     u.composite.uGlint.value = glint;
     u.composite.uTintAmount.value = tintAmount;
     u.composite.uGrayscale.value = grayscale ? 1 : 0;
+    u.composite.uRevealStrength.value = colorRevealStrength;
     u.composite.uHighlight.value = hexToRGB(highlightColor);
     u.composite.uTint.value = hexToRGB(tint);
-  }, [rings, strength, swirl, dispersion, glint, tintAmount, grayscale, highlightColor, tint]);
+  }, [rings, strength, swirl, dispersion, glint, tintAmount, grayscale, colorRevealStrength, highlightColor, tint]);
 
   return <div ref={mountRef} className={`ripple-distortion ${className}`.trim()} style={style} />;
 };
