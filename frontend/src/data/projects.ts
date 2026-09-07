@@ -1,5 +1,9 @@
-import igorImage from '../assets/ProjectCatalog/Igor.png'
-import nastjaImage from '../assets/ProjectCatalog/Nastja.png'
+import igorImage1 from '../assets/ProjectCatalog/Igor1.png'
+import igorImage2 from '../assets/ProjectCatalog/Igor2.png'
+import igorImage3 from '../assets/ProjectCatalog/Igor3.png'
+import nastjaImage1 from '../assets/ProjectCatalog/Nastja1.png'
+import nastjaImage2 from '../assets/ProjectCatalog/Nastja2.png'
+import nastjaImage3 from '../assets/ProjectCatalog/Nastja3.png'
 
 export interface Project {
   id: string;
@@ -33,7 +37,7 @@ export const projects: Project[] = [
     id: "i-001",
     name: "IGOR z garażem",
     category: "do 70m²",
-    image: igorImage,
+    image: igorImage1,
     usableArea: 90.26,
     buildingArea: 69.91,
     residentialArea: 90.26,
@@ -52,7 +56,7 @@ export const projects: Project[] = [
     id: "i-002",
     name: "IGOR bliźniak",
     category: "do 70m²",
-    image: igorImage,
+    image: igorImage2,
     usableArea: 90.26,
     buildingArea: 69.91,
     residentialArea: 90.26,
@@ -71,7 +75,7 @@ export const projects: Project[] = [
     id: "i-003",
     name: "IGOR szeregowiec",
     category: "do 70m²",
-    image: igorImage,
+    image: igorImage3,
     usableArea: 90.26,
     buildingArea: 69.91,
     residentialArea: 90.26,
@@ -90,7 +94,7 @@ export const projects: Project[] = [
     id: "n-001",
     name: "NASTJA z garażem",
     category: "do 70m²",
-    image: nastjaImage,
+    image: nastjaImage1,
     usableArea: 93.77,
     buildingArea: 69.91,
     residentialArea: 93.77,
@@ -109,7 +113,7 @@ export const projects: Project[] = [
     id: "n-002",
     name: "NASTJA bliźniak",
     category: "do 70m²",
-    image: nastjaImage,
+    image: nastjaImage2,
     usableArea: 93.77,
     buildingArea: 69.91,
     residentialArea: 93.77,
@@ -128,7 +132,7 @@ export const projects: Project[] = [
     id: "n-003",
     name: "NASTJA szeregowiec",
     category: "do 70m²",
-    image: nastjaImage,
+    image: nastjaImage3,
     usableArea: 93.77,
     buildingArea: 69.91,
     residentialArea: 93.77,
