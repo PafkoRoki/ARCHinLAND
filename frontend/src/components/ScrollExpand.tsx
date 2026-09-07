@@ -250,17 +250,18 @@ const ScrollExpand: React.FC<ScrollExpandProps> = ({
         <RippleDistortion
           src={src}
           brushSize={180}
-          strength={0.28}
-          swirl={1.2}
-          rings={5}
-          spread={6}
+          strength={0.20}
+          swirl={1.0}
+          rings={4}
+          spread={5}
           fade={3}
-          spacing={18}
+          spacing={15}
           tint="#FE5000"
-          tintAmount={0.35}
+          tintAmount={0.1}
           grayscale
           trigger="both"
-          quality="medium"
+          quality="low"
+          clickStrength={2}
           className="scroll-expand__ripple"
         />
       </div>
