@@ -264,11 +264,6 @@ const RippleDistortion = ({
       typeof window !== 'undefined' &&
       window.matchMedia &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const touchDevice =
-      typeof window !== 'undefined' &&
-      window.matchMedia &&
-      window.matchMedia('(hover: none), (pointer: coarse)').matches;
-
     const renderFallback = () => {
       const fallback = document.createElement('img');
       fallback.src = src;
@@ -281,7 +276,7 @@ const RippleDistortion = ({
       };
     };
 
-    if (reduceMotion || touchDevice) return renderFallback();
+    if (reduceMotion) return renderFallback();
 
     let renderer: Renderer;
     try {
