@@ -94,7 +94,7 @@ export default function GoogleReviews() {
           rel="noreferrer"
         >
           <span>PRZECZYTAJ WSZYSTKIE OPINIE</span>
-          <span aria-hidden="true">-&gt;</span>
+          <span aria-hidden="true">˚ ｡˚ ⁀➷</span>
         </a>
       </div>
     </section>

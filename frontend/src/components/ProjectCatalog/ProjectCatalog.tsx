@@ -8,8 +8,6 @@ interface ProjectCatalogProps {
 
 type SortOption =
   | "recommended"
-  | "priceAsc"
-  | "priceDesc"
   | "areaAsc"
   | "areaDesc";
 
@@ -84,12 +82,6 @@ export function ProjectCatalog({
 
     return [...result].sort((a, b) => {
       switch (sort) {
-        case "priceAsc":
-          return a.price - b.price;
-
-        case "priceDesc":
-          return b.price - a.price;
-
         case "areaAsc":
           return a.usableArea - b.usableArea;
 
@@ -235,12 +227,6 @@ export function ProjectCatalog({
         >
           <option value="recommended">
             Polecane
-          </option>
-          <option value="priceAsc">
-            Cena: rosnąco
-          </option>
-          <option value="priceDesc">
-            Cena: malejąco
           </option>
           <option value="areaAsc">
             Powierzchnia: rosnąco
@@ -399,13 +385,6 @@ function ProjectCard({
         </div>
 
         <div className="projectFooter">
-          <div className="price">
-            <span>Cena projektu</span>
-            <strong>
-              {project.price.toLocaleString("pl-PL")} zł
-            </strong>
-          </div>
-
           <button className="detailsButton">
             Zobacz projekt
             <span>→</span>

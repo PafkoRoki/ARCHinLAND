@@ -29,7 +29,6 @@ export interface Project {
   plotLength: number;
 
   standard: "WT 2021" | "Energooszczędny";
-  price: number;
 }
 
 export const projects: Project[] = [
@@ -50,7 +49,6 @@ export const projects: Project[] = [
     plotWidth: 20,
     plotLength: 28,
     standard: "WT 2021",
-    price: 1,
   },
   {
     id: "i-002",
@@ -69,7 +67,6 @@ export const projects: Project[] = [
     plotWidth: 20,
     plotLength: 28,
     standard: "WT 2021",
-    price: 1,
   },
   {
     id: "i-003",
@@ -88,7 +85,6 @@ export const projects: Project[] = [
     plotWidth: 20,
     plotLength: 28,
     standard: "WT 2021",
-    price: 1,
   },
   {
     id: "n-001",
@@ -107,7 +103,6 @@ export const projects: Project[] = [
     plotWidth: 22,
     plotLength: 30,
     standard: "WT 2021",
-    price: 1,
   },
   {
     id: "n-002",
@@ -126,7 +121,6 @@ export const projects: Project[] = [
     plotWidth: 22,
     plotLength: 30,
     standard: "WT 2021",
-    price: 1,
   },
   {
     id: "n-003",
@@ -145,6 +139,5 @@ export const projects: Project[] = [
     plotWidth: 22,
     plotLength: 30,
     standard: "WT 2021",
-    price: 1,
   },
 ]
