@@ -8,9 +8,12 @@ import './4_Realizations.css'
 // Realne pliki, które faktycznie są w src/assets — importowane przez Vite,
 // więc trafią do bundla z poprawnym hashem/URL (w przeciwieństwie do
 // wcześniejszych ścieżek "/images/..." wskazujących na pliki, których nie ma).
-import osiedlePanoramaImg from '../assets/osiedle-panorama.jpg'
-import budynekUslugowoImg from '../assets/budynek-uslugowo-mieszkalny.jpg'
-import balticCliffImg from '../assets/Hero 6.jpg'
+import osiedlePanoramaImg from '../assets/projects/osiedle-panorama.jpg'
+import budynekUslugowoImg from '../assets/projects/budynek-uslugowo-mieszkalny.jpg'
+import balticCliffImg from '../assets/projects/Baltic-cliff.jpg'
+import balticrivieraImg from '../assets/projects/Baltic-riviera.jpg'
+import domnawyspieImg from '../assets/projects/wyspa.jpg'
+import szwedImg from '../assets/projects/sjas.jpg'
 // TODO: podmienić na docelowe zdjęcia realizacji, gdy będą dostępne.
 // Na razie używamy render.png jako tymczasowego zastępstwa, żeby galeria
 // nie wyświetlała złamanych obrazków (404 szkodzi UX i SEO).
@@ -20,6 +23,9 @@ const projectImageMap: Record<string, string> = {
   'Osiedle Panorama': osiedlePanoramaImg,
   'Budynek usługowo-mieszkalny': budynekUslugowoImg,
   'Baltic Cliff': balticCliffImg,
+  'Baltic Riviera': balticrivieraImg,
+  'Dom na wyspie': domnawyspieImg,
+  'Dom w konstrukcji szkieletowej': szwedImg,
 }
 
 const items = projects.map((project) => ({
