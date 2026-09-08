@@ -234,9 +234,9 @@ export function Footer({
   links = [
     { label: "Mail", href: "mailto:ARCHinLAND@wp.pl" },
     { label: "790 820 114", href: "tel:+48790820114" },
-    { label: "🡶", href: "/link3" },
-    { label: "Modele 3D", href: "/link4" },
-    { label: "Projekty", href: "/link5" }
+    { label: "˚ ✶ ⋆｡˚ ➷", href: "'#about'" },
+    { label: "Modele 3D", href: "#models" },
+    { label: "Projekty", href: "#projects" }
   ],
   companyDescription = "ARCHITECTURE in LAND DEVELOPMENT",
   copyright = {
