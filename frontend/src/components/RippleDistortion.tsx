@@ -264,6 +264,10 @@ const RippleDistortion = ({
       typeof window !== 'undefined' &&
       window.matchMedia &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const touchDevice =
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(hover: none), (pointer: coarse)').matches;
 
     const renderFallback = () => {
       const fallback = document.createElement('img');
@@ -276,6 +280,8 @@ const RippleDistortion = ({
         if (fallback.parentNode === mount) mount.removeChild(fallback);
       };
     };
+
+    if (reduceMotion || touchDevice) return renderFallback();
 
     let renderer: Renderer;
     try {
@@ -290,7 +296,7 @@ const RippleDistortion = ({
       renderer = new Renderer({
         alpha: overlay,
         antialias: false,
-        dpr: Math.min(window.devicePixelRatio || 1, overlay ? 1.25 : 2)
+        dpr: Math.min(window.devicePixelRatio || 1, overlay ? 1 : 1.5)
       });
     } catch {
       return renderFallback();
@@ -453,7 +459,7 @@ const RippleDistortion = ({
       }
       const step = Math.max(1, cfg.spacing);
       if (!previousPoint) {
-        setNewWave(point[0], point[1], 1);
+        scheduleWave(point[0], point[1], 1);
         previousPoint = point;
         return;
       }
@@ -465,7 +471,7 @@ const RippleDistortion = ({
         const count = Math.min(Math.ceil(distance / step), 12);
         for (let i = 1; i <= count; i += 1) {
           const progress = i / count;
-          setNewWave(previousPoint[0] + dx * progress, previousPoint[1] + dy * progress, 1);
+          scheduleWave(previousPoint[0] + dx * progress, previousPoint[1] + dy * progress, 1);
         }
         previousPoint = point;
       }
@@ -476,7 +482,7 @@ const RippleDistortion = ({
       if (!cfg.enabled || reduceMotion || cfg.trigger === 'hover') return;
       const point = localPoint(event.clientX, event.clientY);
       if (!point) return;
-      setNewWave(point[0], point[1], Math.max(1, cfg.clickStrength));
+      scheduleWave(point[0], point[1], Math.max(1, cfg.clickStrength));
       previousPoint = point;
     };
 
@@ -487,7 +493,7 @@ const RippleDistortion = ({
     let previousTime = 0;
 
     const loop = (now: number) => {
-      raf = requestAnimationFrame(loop);
+      raf = 0;
       const delta = previousTime ? Math.min(0.05, (now - previousTime) / 1000) : 0;
       previousTime = now;
       const cfg = configRef.current;
@@ -529,8 +535,20 @@ const RippleDistortion = ({
         renderer.render({ scene: waveMesh, target: displacementTarget, clear: true });
         renderer.render({ scene: compositeMesh });
       }
+
+      if (waves.some(wave => wave.opacity > 0)) raf = requestAnimationFrame(loop);
     };
-    raf = requestAnimationFrame(loop);
+
+    const scheduleRender = () => {
+      if (!raf) raf = requestAnimationFrame(loop);
+    };
+
+    const scheduleWave = (x: number, y: number, power: number) => {
+      setNewWave(x, y, power);
+      scheduleRender();
+    };
+
+    scheduleRender();
 
     return () => {
       disposed = true;

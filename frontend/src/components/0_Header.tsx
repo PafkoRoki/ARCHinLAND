@@ -3,7 +3,7 @@ import './0_Header.css'
 import logoUrl from '../assets/logo.svg'
 
 const menuItems = [
-  { label: '🡶', ariaLabel: 'Go to about section', link: '#about' },
+  { label: '˚ ✶ ⋆｡˚ ➷', ariaLabel: 'Go to about section', link: '#about' },
   { label: 'Modele 3D', ariaLabel: 'Go to 3D models section', link: '#models' },
   { label: 'Realizacje', ariaLabel: 'Go to projects section', link: '#projects' },
   { label: 'Kontakt', ariaLabel: 'Go to contact section', link: '#contact' },
@@ -19,7 +19,7 @@ const socialItems = [
 function Header() {
   return (
 
-        <div style={{ height: '100vh', width: '100vw', position: 'fixed', top: 0, left: 0, zIndex: 1000, pointerEvents: 'none'}}>
+        <div style={{ height: '100svh', width: '100%', position: 'fixed', top: 0, left: 0, zIndex: 1000, pointerEvents: 'none'}}>
           <StaggeredMenu
             position="right"
             items={menuItems}

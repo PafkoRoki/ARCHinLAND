@@ -209,9 +209,9 @@ export function ProjectCatalog({
           }
         >
           <option>Wszystkie</option>
-          <option value="🡶">Dwuspadowy</option>
-          <option value="🡵">Czterospadowy</option>
-          <option value="🡲">Płaski</option>
+          <option value="▲">Dwuspadowy</option>
+          <option value="◆">Czterospadowy</option>
+          <option value="▬">Płaski</option>
         </select>
 
         <select

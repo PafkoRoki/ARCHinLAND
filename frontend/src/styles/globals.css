@@ -61,6 +61,7 @@ a {
 html {
   text-size-adjust: 100%;
   scroll-behavior: smooth;
+  min-height: 100%;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -85,7 +86,16 @@ body {
   font-size: 16px;
   line-height: 1.5;
   overflow-x: hidden;
+  min-width: 320px;
+  min-height: 100%;
+  overscroll-behavior-x: none;
   -webkit-font-smoothing: antialiased;
+}
+
+@supports (height: 100svh) {
+  body {
+    min-height: 100svh;
+  }
 }
 
 h1, h2, h3, h4, p, figure {

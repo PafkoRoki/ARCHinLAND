@@ -20,7 +20,7 @@ export interface Project {
   floors: number;
   rooms: number;
 
-  roofType: "🡶" | "🡵" | "🡲";
+  roofType: "▲" | "◆" | "▬";
   roofAngle: number;
 
   garage: 0 | 1 | 2;
@@ -44,7 +44,7 @@ export const projects: Project[] = [
     totalArea: 93.77,
     floors: 2,
     rooms: 3,
-    roofType: "🡶",
+    roofType: "▲",
     roofAngle: 45,
     garage: 1,
     plotWidth: 20,
@@ -63,7 +63,7 @@ export const projects: Project[] = [
     totalArea: 93.77,
     floors: 2,
     rooms: 3,
-    roofType: "🡶",
+    roofType: "▲",
     roofAngle: 45,
     garage: 1,
     plotWidth: 20,
@@ -82,7 +82,7 @@ export const projects: Project[] = [
     totalArea: 93.77,
     floors: 2,
     rooms: 3,
-    roofType: "🡶",
+    roofType: "▲",
     roofAngle: 45,
     garage: 1,
     plotWidth: 20,
@@ -101,7 +101,7 @@ export const projects: Project[] = [
     totalArea: 93.77,
     floors: 2,
     rooms: 3,
-    roofType: "🡶",
+    roofType: "▲",
     roofAngle: 30,
     garage: 1,
     plotWidth: 22,
@@ -120,7 +120,7 @@ export const projects: Project[] = [
     totalArea: 93.77,
     floors: 2,
     rooms: 3,
-    roofType: "🡶",
+    roofType: "▲",
     roofAngle: 30,
     garage: 1,
     plotWidth: 22,
@@ -139,7 +139,7 @@ export const projects: Project[] = [
     totalArea: 93.77,
     floors: 2,
     rooms: 3,
-    roofType: "🡶",
+    roofType: "▲",
     roofAngle: 30,
     garage: 1,
     plotWidth: 22,
