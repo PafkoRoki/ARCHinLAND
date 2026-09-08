@@ -298,7 +298,7 @@ const RippleDistortion = ({
     }
     const gl = renderer.gl;
     if (!gl) return;
-    gl.clearColor(0, 0, 0, overlay ? 0 : 1);
+    gl.clearColor(0, 0, 0, 0);
     const canvas = gl.canvas;
     canvas.style.width = '100%';
     canvas.style.height = '100%';

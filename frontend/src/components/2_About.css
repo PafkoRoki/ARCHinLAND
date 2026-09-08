@@ -38,6 +38,7 @@
 
 .about__paragraph {
   margin-bottom: clamp(32px, 5vw, 58px);
+  z-index: 1;
 }
 
 .about__glass-showcase {
