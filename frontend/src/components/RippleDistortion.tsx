@@ -308,7 +308,17 @@ const RippleDistortion = ({
     canvas.style.width = '100%';
     canvas.style.height = '100%';
     canvas.style.display = 'block';
+    canvas.style.opacity = overlay ? '1' : '0';
     mount.appendChild(canvas);
+
+    const fallback = overlay ? null : document.createElement('img');
+    if (fallback) {
+      fallback.src = src;
+      fallback.alt = '';
+      fallback.decoding = 'async';
+      fallback.className = 'ripple-distortion__fallback';
+      mount.insertBefore(fallback, canvas);
+    }
 
     const imageTexture = new Texture(gl, {
       generateMipmaps: false,
@@ -326,6 +336,8 @@ const RippleDistortion = ({
       if (disposed) return;
       imageTexture.image = image;
       compositeUniforms.uTextureSize.value = [image.naturalWidth || 1, image.naturalHeight || 1];
+      canvas.style.opacity = '1';
+      if (fallback?.parentNode === mount) mount.removeChild(fallback);
     };
     image.src = src;
 
@@ -557,6 +569,7 @@ const RippleDistortion = ({
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerdown', onDown);
       uniformsRef.current = null;
+      if (fallback?.parentNode === mount) mount.removeChild(fallback);
       if (canvas.parentNode === mount) mount.removeChild(canvas);
       const ext = gl.getExtension('WEBGL_lose_context');
       if (ext) ext.loseContext();

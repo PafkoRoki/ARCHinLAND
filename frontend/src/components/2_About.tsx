@@ -13,11 +13,12 @@ export default function About() {
 
         <div className="about__body">
           <h2 ref={statementRef} className="about__statement display reveal">
-            ˚ ༘✶ ⋆｡˚ ⁀➷
+            ˚ ｡˚ ⁀➷
           </h2>
 
           <p className="body-lg about__paragraph">
-            ARCHITECTURE in LAND DEVELOPMENT to biuro prowadzone przez Andrzeja Kurkę. Od 30 lat
+            ARCHITECTURE in LAND DEVELOPMENT<br/>
+            Biuro prowadzone przez Andrzeja Kurkę. Od 30 lat
             łączymy projektowanie architektoniczne z wiedzą techniczną, tworząc wielobranżowe,
             nowoczesne realizacje dopasowane do miejsca i wymagań prawa budowlanego.
           </p>
