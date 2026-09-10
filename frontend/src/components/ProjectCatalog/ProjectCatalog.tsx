@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import type { Project } from "../../data/projects";
 import "./ProjectCatalog.css";
 
@@ -287,7 +288,10 @@ function ProjectCard({
   project: Project;
 }) {
   return (
-    <article className="projectCard">
+    <Link
+      to={`/projekty/${project.slug}`}
+      className="projectCard"
+    >
       <div className="projectImage">
         <img
           src={project.image}
@@ -297,13 +301,6 @@ function ProjectCard({
 
         <div className="projectImageOverlay">
           <span>{project.category}</span>
-
-          <button
-            className="favoriteButton"
-            aria-label={`Dodaj ${project.name} do ulubionych`}
-          >
-            ♡
-          </button>
         </div>
       </div>
 
@@ -385,12 +382,12 @@ function ProjectCard({
         </div>
 
         <div className="projectFooter">
-          <button className="detailsButton">
+          <span className="detailsButton">
             Zobacz projekt
             <span>→</span>
-          </button>
+          </span>
         </div>
       </div>
-    </article>
+    </Link>
   );
 }

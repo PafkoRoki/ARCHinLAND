@@ -4,8 +4,8 @@ import logoUrl from '../assets/logo.svg'
 
 const menuItems = [
   { label: '˚ ✶ ⋆｡˚ ➷', ariaLabel: 'Go to about section', link: '#about' },
-  { label: 'Modele 3D', ariaLabel: 'Go to 3D models section', link: '#models' },
   { label: 'Projekty', ariaLabel: 'Go to projects section', link: '#projects' },
+  { label: 'Modele 3D', ariaLabel: 'Go to 3D models section', link: '#models' },
   { label: 'Kontakt', ariaLabel: 'Go to contact section', link: '#contact' },
   { label: "790 820 114", ariaLabel: "Call me",  link: "tel:+48790820114" }
 ]

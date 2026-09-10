@@ -3,7 +3,7 @@ import Hero from '../components/1_Hero'
 import About from '../components/2_About'
 import Models from '../components/3_Models'
 import Realizations from '../components/4_Realizations'
-import Process from '../components/6_Process'
+import Projects from '../components/5_Projects'
 import Reviews from '../components/7_Reviews'
 import Footer from '../components/10_Footer'
 
@@ -18,8 +18,8 @@ export default function Home() {
         <Hero />
         <About />
         <Models />
+        <Projects /> 
         <Realizations />
-        <Process />
         <Reviews />
       </main>
       <Footer />

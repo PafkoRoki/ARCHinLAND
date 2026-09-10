@@ -37,7 +37,7 @@ const items = projects.map((project) => ({
 
 export default function Projects() {
   return (
-    <section id="projects" className="section section-border projects">
+    <section id="realizations" className="section section-border projects">
       <div className="container">
 
         <div className="projects__header">

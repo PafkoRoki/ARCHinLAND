@@ -3,16 +3,8 @@ import './3_Models.css'
 
 const models = [
   {
-    title: 'GRYF - Bliźniak Dom jednorodzinny',
+    title: 'ERYK - Dom jednorodzinny',
     url: 'https://sketchfab.com/models/f031c0e298f74d72bffa57cc8f346c1b/embed?autostart=0&annotations_visible=0&preload=0&transparent=0&ui_theme=dark',
-  },
-  {
-    title: 'Model architektoniczny 2',
-    url: 'https://sketchfab.com/models/ee3ad68e9bd242ea980e04a0d437ad9d/embed?autostart=0&annotations_visible=0&preload=0&transparent=0&ui_theme=dark',
-  },
-  {
-    title: 'Model architektoniczny 3',
-    url: 'https://sketchfab.com/models/070bb56b3d4347e081efe243e89d1506/embed?autostart=0&annotations_visible=0&preload=0&transparent=0&ui_theme=dark',
   },
 ]
 
