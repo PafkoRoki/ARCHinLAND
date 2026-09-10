@@ -254,6 +254,10 @@ const RippleDistortion = ({
   const configRef = useRef<WaveConfig>({} as WaveConfig);
   const uniformsRef = useRef<RippleUniforms | null>(null);
 
+  if (!src || !src.trim()) {
+    return <div className={`ripple-distortion ${className}`.trim()} style={style} />;
+  }
+
   configRef.current = { brushSize, spread, fade, spacing, clickStrength, trigger, enabled };
 
   useEffect(() => {
@@ -289,7 +293,7 @@ const RippleDistortion = ({
       if (!hasWebGL) return renderFallback();
 
       renderer = new Renderer({
-        alpha: overlay,
+        alpha: true,
         antialias: false,
         dpr: Math.min(window.devicePixelRatio || 1, overlay ? 1 : 1.5)
       });
@@ -303,6 +307,7 @@ const RippleDistortion = ({
     canvas.style.width = '100%';
     canvas.style.height = '100%';
     canvas.style.display = 'block';
+    canvas.style.background = 'transparent';
     canvas.style.opacity = overlay ? '1' : '0';
     mount.appendChild(canvas);
 

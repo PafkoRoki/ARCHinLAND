@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import type { Project } from "../../data/projects";
 import "./ProjectDetail.css";
@@ -41,6 +41,10 @@ export function ProjectDetail({ projects }: ProjectDetailProps) {
 
   const [activeTab, setActiveTab] = useState<GalleryTab>("visualizations");
   const [activeImage, setActiveImage] = useState(0);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [slug]);
 
   if (!project) {
     return <Navigate to="/projekty" replace />;
