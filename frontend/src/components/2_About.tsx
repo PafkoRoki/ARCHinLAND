@@ -4,7 +4,6 @@ import x2 from '../assets/Projects/2.jpg';
 import x3 from '../assets/Projects/3.jpg';
 import x4 from '../assets/Projects/4.jpg';
 import MagicBento from './MagicBento'
-import DepthCarousel from './DepthCarousel';
 import "./2_About.css";
 
 const items = [

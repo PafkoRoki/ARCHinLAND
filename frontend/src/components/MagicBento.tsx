@@ -53,9 +53,9 @@ const cardData: BentoCardProps[] = [
   {
     image: x3,
     color: '#120F17',
-    title: 'Automation',
+    title: 'Sketchfab',
     description: 'ARCH in LAND',
-    label: 'Efficiency'
+    label: 'MODELE 3D'
   },
   {
     image: x4,
@@ -281,14 +281,12 @@ const ParticleCard: React.FC<{
     element.addEventListener('mouseenter', handleMouseEnter);
     element.addEventListener('mouseleave', handleMouseLeave);
     element.addEventListener('mousemove', handleMouseMove);
-    element.addEventListener('click', handleClick);
 
     return () => {
       isHoveredRef.current = false;
       element.removeEventListener('mouseenter', handleMouseEnter);
       element.removeEventListener('mouseleave', handleMouseLeave);
       element.removeEventListener('mousemove', handleMouseMove);
-      element.removeEventListener('click', handleClick);
       clearAllParticles();
     };
   }, [animateParticles, clearAllParticles, disableAnimations, enableTilt, enableMagnetism, clickEffect, glowColor]);

@@ -5,8 +5,6 @@ import './5_Projects.css'
 
 
 export default function Process() {
-  const headingRef = useReveal<HTMLHeadingElement>()
-
   return (
     <section id="projects" className="section section-border process">
       <div className="container">

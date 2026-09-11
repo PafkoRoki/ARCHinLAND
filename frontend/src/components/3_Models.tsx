@@ -9,8 +9,6 @@ const models = [
 ]
 
 export default function Models() {
-  const headingRef = useReveal<HTMLHeadingElement>()
-
   return (
     <section id="models" className="section section-border projects">
       <div className="container">
