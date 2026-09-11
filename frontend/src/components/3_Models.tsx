@@ -1,4 +1,4 @@
-import { useReveal } from '../hooks/useReveal'
+
 import './3_Models.css'
 
 const models = [

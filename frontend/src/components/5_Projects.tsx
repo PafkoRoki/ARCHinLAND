@@ -1,4 +1,4 @@
-import { useReveal } from '../hooks/useReveal'
+
 import { ProjectCatalog } from "./ProjectCatalog/ProjectCatalog";
 import { projects } from "../data/projects";
 import './5_Projects.css'

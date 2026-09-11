@@ -8,24 +8,23 @@ import './4_Realizations.css'
 // Realne pliki, które faktycznie są w src/assets — importowane przez Vite,
 // więc trafią do bundla z poprawnym hashem/URL (w przeciwieństwie do
 // wcześniejszych ścieżek "/images/..." wskazujących na pliki, których nie ma).
-import osiedlePanoramaImg from '../assets/Projects/osiedle-panorama.jpg'
-import budynekUslugowoImg from '../assets/Projects/budynek-uslugowo-mieszkalny.jpg'
-import balticCliffImg from '../assets/Projects/Baltic-cliff1.jpg'
-import balticrivieraImg from '../assets/Projects/Baltic-riviera.jpg'
-import domnawyspieImg from '../assets/Projects/wyspa.jpg'
-import szwedImg from '../assets/Projects/Sjas.jpg'
+
+import balticCliffImg1 from '../assets/Projects/Baltic-cliff1.jpg'
+import balticCliffImg2 from '../assets/Projects/Baltic-cliff2.jpg'
+import balticCliffImg3 from '../assets/Projects/Baltic-cliff3.jpg'
+import balticCliffImg4 from '../assets/Projects/Baltic-cliff4.jpg'
+import balticCliffImg5 from '../assets/Projects/Baltic-cliff5.jpg'
 // TODO: podmienić na docelowe zdjęcia realizacji, gdy będą dostępne.
 // Na razie używamy render.png jako tymczasowego zastępstwa, żeby galeria
 // nie wyświetlała złamanych obrazków (404 szkodzi UX i SEO).
 import placeholderImg from '../assets/render.webp'
 
 const projectImageMap: Record<string, string> = {
-  'Osiedle Panorama': osiedlePanoramaImg,
-  'Budynek usługowo-mieszkalny': budynekUslugowoImg,
-  'Baltic Cliff': balticCliffImg,
-  'Baltic Riviera': balticrivieraImg,
-  'Dom na wyspie': domnawyspieImg,
-  'Dom w konstrukcji szkieletowej': szwedImg,
+  'Baltic Cliff': balticCliffImg1,
+  'Baltic Cliff': balticCliffImg2,
+  'Baltic Cliff': balticCliffImg3,
+  'Baltic Cliff': balticCliffImg4,
+  'Baltic Cliff': balticCliffImg5,
 }
 
 const items = projects.map((project) => ({
