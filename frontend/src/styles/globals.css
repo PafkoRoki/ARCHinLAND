@@ -44,7 +44,7 @@ a {
 
   --container: 1440px;
   --gutter: clamp(20px, 4vw, 64px);
-  --section-pad: clamp(64px, 10vw, 140px);
+  --section-pad: clamp(32px, 5vw, 70px);
 
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -248,3 +248,20 @@ button {
 .reveal-delay-1 { transition-delay: 0.08s; }
 .reveal-delay-2 { transition-delay: 0.16s; }
 .reveal-delay-3 { transition-delay: 0.24s; }
+
+/* -------------------------------------------------- */
+/* NAGŁÓWEK                                           */
+/* -------------------------------------------------- */
+
+.projects .projects__title {
+  font-size: clamp(2.8rem, 6.5vw, 5.6rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--white);
+  -webkit-text-stroke: 1px #2d2d2dbb;
+  -webkit-text-fill-color: var(--white);
+  background: var(--orange);
+  border-radius: 8px;
+  padding: 8px 16px;
+}

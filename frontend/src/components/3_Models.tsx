@@ -15,13 +15,6 @@ export default function Models() {
     <section id="models" className="section section-border projects">
       <div className="container">
 
-        <div className="projects__header">
-          <h2 ref={headingRef} className="projects__title display reveal">
-            MODELE 3D
-            <br />
-          </h2>
-        </div>
-
  
 
         <div className="models__grid">

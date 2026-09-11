@@ -12,7 +12,9 @@ export default function Hero() {
         src={panorama}
         alt="Osiedle mieszkaniowe zaprojektowane przez pracownię ARCHinLAND w Kamieniu Pomorskim — widok panoramiczny"
         startRadius={0}
-        scrollDistance={2}
+        endRadius={0}
+        mediaZoom={1}
+        scrollDistance={1}
         smoothing={0.0}
         overlayScrim={0.7}
           title={

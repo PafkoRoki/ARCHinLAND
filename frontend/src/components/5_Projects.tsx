@@ -10,11 +10,7 @@ export default function Process() {
   return (
     <section id="projects" className="section section-border process">
       <div className="container">
-        <div className="process__header">
-          <h2 ref={headingRef} className="process__title display reveal">
-            GOTOWE PROJEKTY
-          </h2>
-        </div>
+        
 <ProjectCatalog projects={projects} />
 
       </div>

@@ -1,80 +1,53 @@
-import { useReveal } from '../hooks/useReveal'
-import './2_About.css'
-import panorama from "../assets/1.webp";
-import GlassSurface from './GlassSurface'
 
-export default function About() {
-  const statementRef = useReveal<HTMLHeadingElement>()
-  const imageRef = useReveal<HTMLDivElement>()
+import x1 from '../assets/Projects/1.jpg';
+import x2 from '../assets/Projects/2.jpg';
+import x3 from '../assets/Projects/3.jpg';
+import x4 from '../assets/Projects/4.jpg';
+import MagicBento from './MagicBento'
+import DepthCarousel from './DepthCarousel';
+import "./2_About.css";
 
+const items = [
+  {
+    image: x1,
+    caption: 'ARCHITECTURE in LAND DEVELOPMENT'
+  },
+  {
+    image: x2,
+    caption: "Biuro prowadzone przez Andrzeja Kurkę",
+  },
+  {
+    image: x3,
+    caption: 'Od 30 lat łączymy projektowanie architektoniczne z wiedzą techniczną'
+  },
+  {
+    image: x4,
+    caption: '˚ ✶ ⋆｡˚ ➷'
+  }
+];
+
+const About = () => {
   return (
-    <section id="about" className="section section-border about">
-      <div className="container about__grid">
+    <section className="about" id="about" aria-labelledby="about-heading">
+    <div className="container">
 
-        <div className="about__body">
-          <h2 ref={statementRef} className="about__statement display reveal">
-            ˚ ｡˚ ⁀➷
-          </h2>
+<MagicBento 
+  textAutoHide={true}
+  enableStars={false}
+  enableSpotlight
+  enableBorderGlow={false}
+  enableTilt
+  enableMagnetism
+  clickEffect={false}
+  spotlightRadius={800}
+  particleCount={12}
+  glowColor="254, 80, 0"
+  disableAnimations={false}
+/>
 
-          <p className="body-lg about__paragraph">
-            ARCHITECTURE in LAND DEVELOPMENT<br/>
-            Biuro prowadzone przez Andrzeja Kurkę. Od 30 lat
-            łączymy projektowanie architektoniczne z wiedzą techniczną, tworząc wielobranżowe,
-            nowoczesne realizacje dopasowane do miejsca i wymagań prawa budowlanego.
-          </p>
-        </div>
-
-        <div ref={imageRef} className="about__image reveal reveal-delay-1">
-          <img
-            src={panorama}
-            alt="Rzuty i przekroje architektoniczne domu jednorodzinnego przygotowane przez biuro ARCHinLAND"
-            loading="lazy"
-          />
-        </div>
-
-        <a
-          className="about__glass-map-link"
-          href="https://maps.app.goo.gl/Smgh5WnrprgJWvn59?g_st=ig"
-          target="_blank"
-          rel="noreferrer"
-          aria-label="Otwórz lokalizację ARCHITECTURE IN LAND DEVELOPMENT - Andrzej Kurka w Google Maps"
-        >
-          <GlassSurface
-            className="about__glass-showcase"
-            width="100%"
-            height="auto"
-            borderRadius={16}
-            ripple
-          >
-            <div className="about__glass-content">
-              <strong>ARCHITECTURE IN LAND DEVELOPMENT</strong>
-              <span className="about__glass-line" aria-hidden="true" />
-              <span className="about__glass-link">
-                ANDRZEJ KURKA / OTWÓRZ MAPĘ
-              </span>
-            </div>
-          </GlassSurface>
-        </a>
-
-          <GlassSurface
-            className="about__stats"
-            width="100%"
-            height="auto"
-            borderRadius={16}
-            ripple
-          >
-            <div className="about__stats-content" aria-label="Informacje o pracowni">
-              <div className="about__stat">
-                <strong>30+</strong>
-                <span>LAT DOŚWIADCZENIA</span>
-              </div>
-              <div className="about__stat">
-                <strong>∞</strong>
-                <span>MOŻLIWOŚCI PROJEKTOWE</span>
-              </div>
-          </div>
-          </GlassSurface>
-      </div>
+    </div>
     </section>
-  )
-}
+  );
+};
+
+export default About;

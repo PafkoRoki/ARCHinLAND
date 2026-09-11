@@ -40,18 +40,11 @@ export default function Projects() {
     <section id="realizations" className="section section-border projects">
       <div className="container">
 
-        <div className="projects__header">
-          <h2 className="projects__title display">
-            PROJEKTY
-            <br />
-          </h2>
-        </div>
-
  
 
         <AccordionGallery
           items={items}
-          defaultIndex={2}
+          defaultIndex={1}
           expandRatio={0.52}
           trigger="hover"
           accentColor="#ffffff"
