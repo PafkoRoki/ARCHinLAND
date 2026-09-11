@@ -253,16 +253,17 @@ const RippleDistortion = ({
   const mountRef = useRef<HTMLDivElement | null>(null);
   const configRef = useRef<WaveConfig>({} as WaveConfig);
   const uniformsRef = useRef<RippleUniforms | null>(null);
-
-  if (!src || !src.trim()) {
-    return <div className={`ripple-distortion ${className}`.trim()} style={style} />;
-  }
+  const hasSrc = Boolean(src && src.trim());
 
   configRef.current = { brushSize, spread, fade, spacing, clickStrength, trigger, enabled };
 
   useEffect(() => {
     const mount = mountRef.current;
-    if (!mount) return;
+    // Hooks must run unconditionally on every render, so the empty-src guard
+    // lives inside the effect instead of before it (previously this component
+    // returned early before calling useEffect, which violates the Rules of
+    // Hooks and can throw if `src` ever becomes empty/non-empty between renders).
+    if (!mount || !hasSrc) return;
 
     const reduceMotion =
       typeof window !== 'undefined' &&
@@ -330,16 +331,13 @@ const RippleDistortion = ({
 
     let disposed = false;
     const image = new window.Image();
-    image.crossOrigin = 'anonymous';
+    // Only cross-origin sources need the CORS attribute; setting it on a
+    // same-origin/local asset can occasionally trigger a second, stricter
+    // fetch on some servers, so scope it to absolute (cross-origin) URLs.
+    if (/^https?:\/\//i.test(src)) {
+      image.crossOrigin = 'anonymous';
+    }
     image.decoding = 'async';
-    image.onload = () => {
-      if (disposed) return;
-      imageTexture.image = image;
-      compositeUniforms.uTextureSize.value = [image.naturalWidth || 1, image.naturalHeight || 1];
-      canvas.style.opacity = '1';
-      if (fallback?.parentNode === mount) mount.removeChild(fallback);
-    };
-    image.src = src;
 
     const offsets = new Float32Array(MAX_WAVES * 2);
     const scales = new Float32Array(MAX_WAVES * 2);
@@ -416,13 +414,35 @@ const RippleDistortion = ({
 
     uniformsRef.current = { wave: waveUniforms, composite: compositeUniforms };
 
+    const renderFrame = () => {
+      if (overlay) {
+        renderer.render({ scene: waveMesh, clear: true });
+      } else {
+        renderer.render({ scene: waveMesh, target: displacementTarget, clear: true });
+        renderer.render({ scene: compositeMesh });
+      }
+    };
+
     let width = 1;
     let height = 1;
 
     const resize = () => {
-      width = Math.max(1, mount.clientWidth);
-      height = Math.max(1, mount.clientHeight);
+      // getBoundingClientRect() returns the fractional (subpixel) box size,
+      // matching how the browser lays out the fallback <img> (width/height:
+      // 100%). Using the rounded mount.clientWidth/Height here instead made
+      // the WebGL "cover" crop drift by up to ~1px from the plain <img>'s
+      // native object-fit: cover crop, which reads as the composited image
+      // being slightly shifted relative to the layer shown while loading.
+      const rect = mount.getBoundingClientRect();
+      width = Math.max(1, rect.width);
+      height = Math.max(1, rect.height);
       renderer.setSize(width, height);
+      // ogl's setSize() sets canvas.style.width/height to an integer "Npx"
+      // value. Put it back to fluid 100%/100% (as in the stylesheet) so the
+      // canvas always tracks the container exactly like the fallback <img>
+      // does, rather than being pinned to a stale rounded pixel size.
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
       compositeUniforms.uResolution.value = [width, height];
 
       const scale = QUALITY_SCALE[quality] || QUALITY_SCALE.high;
@@ -435,6 +455,33 @@ const RippleDistortion = ({
     const ro = new ResizeObserver(resize);
     ro.observe(mount);
     resize();
+
+    image.onload = () => {
+      if (disposed) return;
+      imageTexture.image = image;
+      compositeUniforms.uTextureSize.value = [image.naturalWidth || 1, image.naturalHeight || 1];
+      // Render a real frame with the now-loaded texture BEFORE swapping
+      // visibility. Previously the canvas was made visible on load without
+      // forcing a fresh render, so it kept showing whatever was last drawn
+      // while the texture was still empty (i.e. a solid black frame) — that
+      // stale black frame is the "black screen" flash. Rendering first, then
+      // fading the canvas in over the fallback, removes the flash.
+      renderFrame();
+      canvas.style.opacity = '1';
+      if (fallback) {
+        fallback.style.opacity = '0';
+        const removeFallback = () => {
+          if (fallback.parentNode === mount) mount.removeChild(fallback);
+        };
+        fallback.addEventListener('transitionend', removeFallback, { once: true });
+        // Safety net in case transitionend never fires (e.g. element hidden,
+        // reduced-motion edge cases, etc.)
+        window.setTimeout(removeFallback, 400);
+      }
+    };
+    // Assign the handler before starting the fetch (image.src) so there is
+    // no window, however small, where the load could resolve unobserved.
+    image.src = src;
 
     const setNewWave = (x: number, y: number, power: number) => {
       const cfg = configRef.current;
@@ -541,12 +588,7 @@ const RippleDistortion = ({
       geometry.attributes.iScale.needsUpdate = true;
       geometry.attributes.iOpacity.needsUpdate = true;
 
-      if (overlay) {
-        renderer.render({ scene: waveMesh, clear: true });
-      } else {
-        renderer.render({ scene: waveMesh, target: displacementTarget, clear: true });
-        renderer.render({ scene: compositeMesh });
-      }
+      renderFrame();
 
       if (waves.some(wave => wave.opacity > 0)) raf = requestAnimationFrame(loop);
     };

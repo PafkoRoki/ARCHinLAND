@@ -22,7 +22,7 @@ export default function Home() {
         <Projects /> 
         <Reviews />
       </main>
-      <Footer />
+      <Footer/>
     </>
   )
 }

@@ -14,6 +14,14 @@
   display: block;
 }
 
+.ripple-distortion canvas {
+  /* Fades in once the loaded texture has actually been rendered (see
+     RippleDistortion.tsx), so the swap from the <img> fallback never shows
+     the pre-load black frame. */
+  transition: opacity 0.25s ease;
+}
+
 .ripple-distortion__fallback {
   object-fit: cover;
+  transition: opacity 0.25s ease;
 }
