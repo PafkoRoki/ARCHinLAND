@@ -9,7 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@react-three/fiber": "^8.18.0",
+    "@react-three/drei": "^10.7.4",
+    "@react-three/fiber": "^9.3.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
@@ -17,6 +18,7 @@
     "framer-motion": "^13.2.0",
     "gsap": "^3.13.0",
     "lenis": "^1.3.13",
+    "maath": "^0.10.8",
     "motion": "^12.23.12",
     "ogl": "^1.0.11",
     "react": "^18.3.1",
@@ -24,7 +26,7 @@
     "react-icons": "^5.7.0",
     "react-router-dom": "^7.18.3",
     "tailwindcss": "^4.3.3",
-    "three": "^0.160.1",
+    "three": "^0.180.0",
     "typescript": "^5.5.3",
     "vite": "^5.4.1"
   },

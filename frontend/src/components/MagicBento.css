@@ -1,4 +1,5 @@
 
+
 :root {
   --hue: 27;
   --sat: 69%;
@@ -31,6 +32,47 @@
 
 
 /* =========================
+   KLIKALNY KAFEL
+========================= */
+
+/*
+  Link zajmuje cały kafelek.
+  Dzięki temu kliknięcie w dowolne miejsce
+  kafelka prowadzi do odpowiedniej sekcji.
+*/
+
+.magic-bento-card-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  color: inherit;
+  text-decoration: none;
+
+  cursor: pointer;
+}
+
+.magic-bento-card-link:hover,
+.magic-bento-card-link:focus,
+.magic-bento-card-link:active {
+  color: inherit;
+  text-decoration: none;
+}
+
+
+/*
+  Dostępność — widoczny focus przy
+  nawigowaniu klawiaturą.
+*/
+
+.magic-bento-card-link:focus-visible {
+  outline: 2px solid #fe5000;
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+
+/* =========================
    KARTY
 ========================= */
 
@@ -44,6 +86,7 @@
   min-height: 200px;
   width: 100%;
   max-width: 100%;
+
   border-radius: 0px;
 
   padding: 1.25em;
@@ -76,7 +119,9 @@
 }
 
 
-.magic-bento-card:hover {
+/* Hover */
+
+.magic-bento-card-link:hover .magic-bento-card {
   transform: translateY(-2px);
 
   box-shadow:
@@ -131,20 +176,24 @@
    TEXT AUTOHIDE
 ========================= */
 
-.magic-bento-card--text-autohide .magic-bento-card__title,
-.magic-bento-card--text-autohide .magic-bento-card__description {
+.magic-bento-card--text-autohide
+  .magic-bento-card__title,
+.magic-bento-card--text-autohide
+  .magic-bento-card__description {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.magic-bento-card--text-autohide .magic-bento-card__title {
+.magic-bento-card--text-autohide
+  .magic-bento-card__title {
   -webkit-line-clamp: var(--clamp-title);
   line-clamp: var(--clamp-title);
 }
 
-.magic-bento-card--text-autohide .magic-bento-card__description {
+.magic-bento-card--text-autohide
+  .magic-bento-card__description {
   -webkit-line-clamp: var(--clamp-desc);
   line-clamp: var(--clamp-desc);
 }
@@ -160,6 +209,11 @@
     width: 90%;
     margin: 0 auto;
     padding: 0.5em;
+  }
+
+  .magic-bento-card-link {
+    width: 100%;
+    height: 100%;
   }
 
   .magic-bento-card {
@@ -189,19 +243,22 @@
     grid-template-columns: repeat(4, 1fr);
   }
 
-  .magic-bento-card:nth-child(3) {
+  /*
+    Trzeci kafelek — większy
+  */
+
+  .magic-bento-card-link:nth-child(3) {
     grid-column: span 2;
     grid-row: span 2;
   }
 
-  .magic-bento-card:nth-child(4) {
+  /*
+    Czwarty kafelek — większy
+  */
+
+  .magic-bento-card-link:nth-child(4) {
     grid-column: 1 / span 2;
     grid-row: 2 / span 2;
-  }
-
-  .magic-bento-card:nth-child(6) {
-    grid-column: 4;
-    grid-row: 3;
   }
 }
 
@@ -218,9 +275,20 @@
   padding: 6px;
 
   background: radial-gradient(
-    var(--glow-radius) circle at var(--glow-x) var(--glow-y),
-    rgba(254, 80, 0, calc(var(--glow-intensity) * 0.9)) 0%,
-    rgba(254, 80, 0, calc(var(--glow-intensity) * 0.45)) 25%,
+    var(--glow-radius) circle
+      at var(--glow-x) var(--glow-y),
+    rgba(
+      254,
+      80,
+      0,
+      calc(var(--glow-intensity) * 0.9)
+    ) 0%,
+    rgba(
+      254,
+      80,
+      0,
+      calc(var(--glow-intensity) * 0.45)
+    ) 25%,
     transparent 58%
   );
 
@@ -239,6 +307,7 @@
   mask-composite: exclude;
 
   pointer-events: none;
+
   opacity: 1;
 
   transition: opacity 0.3s ease;
@@ -247,12 +316,14 @@
 }
 
 
-.magic-bento-card--border-glow:hover::after {
+.magic-bento-card-link:hover
+  .magic-bento-card--border-glow::after {
   opacity: 1;
 }
 
 
-.magic-bento-card--border-glow:hover {
+.magic-bento-card-link:hover
+  .magic-bento-card--border-glow {
   box-shadow:
     0 4px 20px rgba(254, 80, 0, 0.12),
     0 0 30px rgba(254, 80, 0, 0.20);
@@ -272,6 +343,7 @@
 
 /*
   Było tutaj:
+
   background: rgba(132, 0, 255, 0.2);
 
   To powodowało fioletowy/różowy efekt.
@@ -283,7 +355,8 @@
 }
 
 
-.particle-container:hover {
+.magic-bento-card-link:hover
+  .particle-container {
   box-shadow:
     0 4px 20px rgba(254, 80, 0, 0.12),
     0 0 30px rgba(254, 80, 0, 0.20);
@@ -300,9 +373,11 @@
 }
 
 
-/* Jeżeli JS tworzy dodatkowy element
-   spotlight przy kliknięciu, nie pozwalamy
-   mu być widocznym. */
+/*
+  Jeżeli JS tworzy dodatkowy element
+  spotlight przy kliknięciu, nie pozwalamy
+  mu być widocznym.
+*/
 
 .global-spotlight,
 [class*="spotlight"],
@@ -320,5 +395,14 @@
 .bento-section {
   position: relative;
   user-select: none;
+}
+
+
+/* =========================
+   SMOOTH SCROLL
+========================= */
+
+html {
+  scroll-behavior: smooth;
 }
 
