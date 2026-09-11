@@ -67,9 +67,9 @@ export const projects: Project[] = [
     orientation: 'horizontal',
   },
   {
-    id: 'Dom w konstrukcji szkieletowej',
+    id: 'Szwecja',
     number: '06',
-    name: 'DOM W KONSTRUKCJI SZKIELETOWEJ',
+    name: 'SZWECJA',
     location: 'Sweden',
     year: '2026',
     category: 'Dom jednorodzinny',

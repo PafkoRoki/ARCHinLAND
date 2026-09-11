@@ -5,9 +5,9 @@ import "./2_About.css";
 
 const About = () => {
   return (
-    <section className="about" id="about" aria-labelledby="about-heading">
+    <section className="about" id="about" aria-labelledby="about-heading" style={{ paddingTop: '5rem' }}>
     <div className="container">
-
+<div>
 <MagicBento 
   textAutoHide={true}
   enableStars={false}
@@ -21,7 +21,7 @@ const About = () => {
   glowColor="254, 80, 0"
   disableAnimations={false}
 />
-
+</div>
     </div>
     </section>
   );

@@ -8,23 +8,24 @@ import './4_Realizations.css'
 // Realne pliki, które faktycznie są w src/assets — importowane przez Vite,
 // więc trafią do bundla z poprawnym hashem/URL (w przeciwieństwie do
 // wcześniejszych ścieżek "/images/..." wskazujących na pliki, których nie ma).
-
-import balticCliffImg1 from '../assets/Projects/Baltic-cliff1.jpg'
-import balticCliffImg2 from '../assets/Projects/Baltic-cliff2.jpg'
-import balticCliffImg3 from '../assets/Projects/Baltic-cliff3.jpg'
-import balticCliffImg4 from '../assets/Projects/Baltic-cliff4.jpg'
-import balticCliffImg5 from '../assets/Projects/Baltic-cliff5.jpg'
+import osiedlePanoramaImg from '../assets/Projects/osiedle-panorama.jpg'
+import budynekUslugowoImg from '../assets/Projects/budynek-uslugowo-mieszkalny.jpg'
+import balticCliffImg from '../assets/Projects/Baltic-cliff.jpg'
+import balticrivieraImg from '../assets/Projects/Baltic-riviera.jpg'
+import domnawyspieImg from '../assets/Projects/wyspa.jpg'
+import szwedImg from '../assets/Projects/Sjas.jpg'
 // TODO: podmienić na docelowe zdjęcia realizacji, gdy będą dostępne.
 // Na razie używamy render.png jako tymczasowego zastępstwa, żeby galeria
 // nie wyświetlała złamanych obrazków (404 szkodzi UX i SEO).
 import placeholderImg from '../assets/render.webp'
 
 const projectImageMap: Record<string, string> = {
-  'Baltic Cliff': balticCliffImg1,
-  'Baltic Cliff': balticCliffImg2,
-  'Baltic Cliff': balticCliffImg3,
-  'Baltic Cliff': balticCliffImg4,
-  'Baltic Cliff': balticCliffImg5,
+  'Osiedle Panorama': osiedlePanoramaImg,
+  'Budynek usługowo-mieszkalny': budynekUslugowoImg,
+  'Baltic Cliff': balticCliffImg,
+  'Baltic Riviera': balticrivieraImg,
+  'Dom na wyspie': domnawyspieImg,
+  'Szwecja': szwedImg,
 }
 
 const items = projects.map((project) => ({
@@ -58,49 +59,7 @@ export default function Projects() {
           stagger={0.06}
           height={460}
           gap={10}
-          radius={16}
-          orientation="horizontal"
-        />
-        <br/><br/>
-        <AccordionGallery
-          items={items}
-          defaultIndex={1}
-          expandRatio={0.52}
-          trigger="hover"
-          accentColor="#ffffff"
-          overlayColor="#2d2d2d"
-          textColor="#ffffff"
-          grayscale
-          showLabels
-          duration={0.6}
-          ease="power3.out"
-          parallax={0.5}
-          tilt={8}
-          stagger={0.06}
-          height={460}
-          gap={10}
-          radius={16}
-          orientation="horizontal"
-        />
-        <br/><br/>
-        <AccordionGallery
-          items={items}
-          defaultIndex={1}
-          expandRatio={0.52}
-          trigger="hover"
-          accentColor="#ffffff"
-          overlayColor="#2d2d2d"
-          textColor="#ffffff"
-          grayscale
-          showLabels
-          duration={0.6}
-          ease="power3.out"
-          parallax={0.5}
-          tilt={8}
-          stagger={0.06}
-          height={460}
-          gap={10}
-          radius={16}
+          radius={0}
           orientation="horizontal"
         />
       </div>
