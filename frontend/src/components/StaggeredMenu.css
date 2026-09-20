@@ -78,12 +78,6 @@
   border-radius: 4px;
 }
 
-.sm-toggle-glass {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .sm-line:last-of-type {
   margin-top: 6px;
 }

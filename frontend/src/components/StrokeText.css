@@ -38,9 +38,9 @@
   align-items: center;
   gap: 12px;
   padding: clamp(14px, 2vw, 18px) clamp(32px, 5vw, 56px);
-  color: var(--white);
+  color: #fff;
   font-size: clamp(12px, 1.2vw, 14px);
-  font-weight: 600;
+  font-weight: 900;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   text-decoration: none;
@@ -53,7 +53,7 @@
   align-items: center;
   padding: 8px;
   gap: 12px;
-  color: var(--white);
+  color: #3f7d6c;
   font-size: clamp(12px, 1.2vw, 14px);
   font-weight: 600;
   letter-spacing: 0.1em;

@@ -35,7 +35,7 @@ export default function Hero() {
                 letterSpacing={-5}
                 reverse={false}
                 showButton={true}
-                buttonText="790 820 114"
+                buttonText="KONTAKT"
                 buttonHref="#contact"
               />
               <span className="visually-hidden">

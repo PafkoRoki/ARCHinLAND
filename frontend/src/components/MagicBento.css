@@ -68,7 +68,6 @@
 .magic-bento-card-link:focus-visible {
   outline: 2px solid #fe5000;
   outline-offset: 4px;
-  border-radius: 2px;
 }
 
 
@@ -92,7 +91,7 @@
   padding: 1.25em;
 
   /* Jasnoniebieska ramka */
-  border: 1px solid var(--border-color);
+  border: 0px solid var(--border-color);
 
   /* Jasnoniebiesko-biała karta */
   background: linear-gradient(
