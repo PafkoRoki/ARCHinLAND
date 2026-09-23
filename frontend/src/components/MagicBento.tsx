@@ -42,24 +42,24 @@ const cardData: BentoCardProps[] = [
     image: x1,
     color: '#120F17',
     title: '˚ ｡˚ ⁀➷',
-    description: 'ARCH in LAND',
-    label: 'PORTFILO',
+    description: 'PORTFILO',
+    label: '',
     href: '#realizations'
   },
   {
     image: x2,
     color: '#120F17',
     title: '',
-    description: 'ARCH in LAND',
-    label: 'KATALOG',
+    description: 'KATALOG',
+    label: '',
     href: '#projects'
   },
   {
     image: x3,
     color: '#120F17',
     title: 'Sketchfab',
-    description: 'ARCH in LAND',
-    label: 'MODELE 3D',
+    description: 'MODELE 3D',
+    label: '',
     href: '#models'
   },
   {
