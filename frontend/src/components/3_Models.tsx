@@ -1,4 +1,4 @@
-
+import SectionHeader from './SectionHeader'
 import './3_Models.css'
 
 const models = [
@@ -10,11 +10,9 @@ const models = [
 
 export default function Models() {
   return (
-    <section id="models" className="section section-border projects">
+    <section id="models" className="section models" aria-labelledby="models-title">
       <div className="container">
-
- 
-
+        <SectionHeader index="03" label="Modele 3D" id="models-title" title="Modele 3D" />
         <div className="models__grid">
           {models.map((model) => (
             <article className="models__feature" key={model.url}>
@@ -31,8 +29,6 @@ export default function Models() {
             </article>
           ))}
         </div>
-
-
       </div>
     </section>
   )

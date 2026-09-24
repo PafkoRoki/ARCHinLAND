@@ -246,7 +246,7 @@ export function Footer({
   }
 }: FooterProps) {
   return (
-  <footer className="w-full bg-[#2d2d2d] text-white relative z-50" id="contact">
+  <footer className="w-full bg-[#2d2d2d] text-white relative z-50">
       <div className="w-full py-8 min-[1250px]:py-16">
         <div className="text-center mb-8 min-[1250px]:mb-16">
           <h2 className="text-4xl min-[1250px]:text-7xl font-light leading-tight">

@@ -1,22 +1,12 @@
-import { useReveal } from '../hooks/useReveal'
+import SectionHeader from './SectionHeader'
 import './6_Process.css'
 
-
 export default function Process() {
-  const headingRef = useReveal<HTMLHeadingElement>()
-
   return (
-    <section id="process" className="section section-border process">
+    <section id="process" className="section process" aria-labelledby="process-title">
       <div className="container">
-        <div className="process__header">
-          <h2 ref={headingRef} className="process__title display reveal">
-            PROCES
-          </h2>
-        </div>
-
-
+        <SectionHeader index="05" label="Proces" id="process-title" title="Proces" />
       </div>
-
     </section>
   )
 }

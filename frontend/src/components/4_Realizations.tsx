@@ -3,7 +3,7 @@
 
 import { projects } from '../data/realizations'
 import AccordionGallery from './AccordionGallery'
-import RefineFrame from './RefineFrame';
+import SectionHeader from './SectionHeader'
 import './4_Realizations.css'
 
 const items = projects.map((project) => ({
@@ -13,13 +13,11 @@ const items = projects.map((project) => ({
   alt: `${project.name} — ${project.category}, ${project.location}${project.year ? `, ${project.year}` : ''}`,
 }))
 
-export default function Projects() {
+export default function Realizations() {
   return (
-    <section id="realizations" className="section section-border projects">
+    <section id="realizations" className="section realizations" aria-labelledby="realizations-title">
       <div className="container">
-
- 
-      <div>
+        <SectionHeader index="02" label="Realizacje" id="realizations-title" title="Realizacje" />
         <AccordionGallery
           items={items}
           defaultIndex={1}
@@ -41,8 +39,6 @@ export default function Projects() {
           orientation="horizontal"
         />
       </div>
-      </div>
-
     </section>
   )
 }

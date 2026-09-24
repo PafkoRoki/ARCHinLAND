@@ -5,6 +5,7 @@ import "./ProjectCatalog.css";
 
 interface ProjectCatalogProps {
   projects: Project[];
+  hideHeader?: boolean; // na stronie głównej nagłówek daje SectionHeader
 }
 
 type SortOption =
@@ -14,6 +15,7 @@ type SortOption =
 
 export function ProjectCatalog({
   projects,
+  hideHeader = false,
 }: ProjectCatalogProps) {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Wszystkie");
@@ -116,7 +118,7 @@ export function ProjectCatalog({
 
   return (
     <section className="catalog">
-      <header className="catalogHeader">
+      {!hideHeader && <header className="catalogHeader">
         <div>
           <span className="catalogEyebrow">
             PROJEKTY ARCHITEKTONICZNE
@@ -134,7 +136,7 @@ export function ProjectCatalog({
           <strong>{filteredProjects.length}</strong>
           <span>projektów</span>
         </div>
-      </header>
+      </header>}
 
       <div className="catalogToolbar">
         <div className="searchBox">

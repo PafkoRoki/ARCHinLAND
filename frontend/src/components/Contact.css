@@ -1,45 +1,30 @@
-.contact {
-  padding-bottom: clamp(40px, 6vw, 72px);
-}
-
-.contact__title {
-  font-size: clamp(3rem, 8vw, 7rem);
-  margin-top: 20px;
-  margin-bottom: clamp(56px, 8vw, 88px);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+/* "THAT BELONGS." — pełny pomarańcz zamiast białego wypełnienia */
+.contact__accent {
+  -webkit-text-fill-color: var(--orange);
+  -webkit-text-stroke: 0;
 }
 
 .contact__details {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: clamp(24px, 4vw, 40px);
-  padding-top: clamp(28px, 4vw, 40px);
-  border-top: 1px solid var(--line);
 }
 
-.contact__label {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(17, 17, 17, 0.45);
+.contact__block .label {
   margin-bottom: 12px;
 }
 
 .contact__value {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+  font-size: var(--fs-lead);
 }
 
 .contact__value--muted {
   font-family: var(--font-body);
   font-weight: 400;
   font-size: 0.95rem;
-  color: rgba(17, 17, 17, 0.55);
+  color: var(--muted);
   margin-top: 4px;
 }
 

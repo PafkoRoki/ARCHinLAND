@@ -1,18 +1,20 @@
+import { ProjectCatalog } from './ProjectCatalog/ProjectCatalog'
+import { projects } from '../data/projects'
+import SectionHeader from './SectionHeader'
 
-import { ProjectCatalog } from "./ProjectCatalog/ProjectCatalog";
-import { projects } from "../data/projects";
-import './5_Projects.css'
-
-
-export default function Process() {
+export default function Projects() {
   return (
-    <section id="projects" className="section section-border process">
+    <section id="projects" className="section" aria-labelledby="projects-title">
       <div className="container">
-        
-<ProjectCatalog projects={projects} />
-
+        <SectionHeader
+          index="04"
+          label="Projekty"
+          id="projects-title"
+          title="Znajdź swój projekt"
+          lead="Przeglądaj projekty domów według powierzchni, konstrukcji i najważniejszych parametrów."
+        />
+        <ProjectCatalog projects={projects} hideHeader />
       </div>
-
     </section>
   )
 }

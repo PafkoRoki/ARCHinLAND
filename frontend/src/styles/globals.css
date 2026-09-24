@@ -35,6 +35,8 @@ a {
   --graphite: #2d2d2dbb;
   --white: #ffffff;
   --line: rgba(17, 17, 17, 0.12);
+  --muted: rgba(45, 45, 45, 0.6);
+  --faint: rgba(45, 45, 45, 0.45);
 
   --radius: 24px;
   --radius-sm: 12px;
@@ -42,9 +44,18 @@ a {
   --font-display: Arial, sans-serif;
   --font-body: Arial, sans-serif;
 
+  /* skala typografii — używaj tych zmiennych w sekcjach zamiast własnych clamp() */
+  --fs-hero: clamp(3.5rem, 11vw, 9.5rem);
+  --fs-h2: clamp(2.8rem, 6.5vw, 5.6rem);
+  --fs-h3: clamp(1.4rem, 2.6vw, 2.2rem);
+  --fs-lead: clamp(1.05rem, 1.4vw, 1.35rem);
+  --fs-body: clamp(0.95rem, 1.1vw, 1.1rem);
+  --fs-label: 12px;
+
   --container: 1440px;
   --gutter: clamp(20px, 4vw, 64px);
-  --section-pad: clamp(32px, 5vw, 70px);
+  --section-pad: clamp(64px, 10vw, 140px);
+  --head-gap: clamp(40px, 6vw, 80px); /* odstęp nagłówek sekcji → treść */
 
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -150,6 +161,12 @@ button {
   padding: 0 var(--gutter);
 }
 
+/* treść nad modelem 3D w tle (BackgroundModel, z-index 0) */
+.page-content {
+  position: relative;
+  z-index: 1;
+}
+
 .section {
   padding-top: var(--section-pad);
   padding-bottom: var(--section-pad);
@@ -163,15 +180,26 @@ button {
   border-top: none;
 }
 
-.eyebrow {
+/* mały podpis wersalikami: "01 / Realizacje", etykiety pól, meta */
+.eyebrow,
+.label {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
   color: var(--black);
+}
+
+.label {
+  color: var(--faint);
+}
+
+.eyebrow__index {
+  color: var(--orange);
 }
 
 
@@ -190,10 +218,36 @@ button {
 .text-black { color: var(--black); }
 
 .body-lg {
-  font-size: clamp(1.05rem, 1.4vw, 1.35rem);
+  font-size: var(--fs-lead);
   line-height: 1.55;
   font-weight: 400;
-  color: rgba(17, 17, 17, 0.72);
+  color: var(--muted);
+}
+
+.text-muted { color: var(--muted); }
+
+/* biały tytuł z grafitowym obrysem — styl marki (jak ARCHinLAND w Hero) */
+.stroke-title {
+  color: var(--white);
+  -webkit-text-fill-color: var(--white);
+  -webkit-text-stroke: 1px var(--graphite);
+}
+
+/* link tekstowy ze strzałką, np. "PRZECZYTAJ WSZYSTKIE OPINIE ⁀➷" */
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition: color 0.25s ease, gap 0.25s ease;
+}
+
+.link-arrow:hover {
+  gap: 22px;
+  color: var(--orange);
 }
 
 /* -------------------------------------------------- */
@@ -250,18 +304,41 @@ button {
 .reveal-delay-3 { transition-delay: 0.24s; }
 
 /* -------------------------------------------------- */
-/* NAGŁÓWEK                                           */
+/* Nagłówek sekcji (komponent SectionHeader)           */
 /* -------------------------------------------------- */
+.section-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: var(--head-gap);
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
 
-.projects .projects__title {
-  font-size: clamp(2.8rem, 6.5vw, 5.6rem);
+.section-head__main {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+
+.section-head__title {
+  font-size: var(--fs-h2);
   font-weight: 900;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-  color: var(--white);
-  -webkit-text-stroke: 1px #2d2d2dbb;
-  -webkit-text-fill-color: var(--white);
-  background: var(--orange);
-  border-radius: 8px;
-  padding: 8px 16px;
+  line-height: 1;
+}
+
+.section-head__lead {
+  max-width: 48ch;
+}
+
+.section-head__aside {
+  flex-shrink: 0;
+}
+
+@media (max-width: 860px) {
+  .section-head {
+    align-items: start;
+    flex-direction: column;
+  }
 }
