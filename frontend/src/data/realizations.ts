@@ -18,6 +18,7 @@ import balticcliff_3 from '../assets/Projects/baltic-cliff_3.jpg'
 import balticcliff_4 from '../assets/Projects/baltic-cliff_4.jpg'
 import balticcliff_5 from '../assets/Projects/baltic-cliff_5.jpg'
 import balticcliff_6 from '../assets/Projects/baltic-cliff_6.jpg'
+import balticcliff_7 from '../assets/Projects/baltic-cliff_7.jpg'
 import balticrivieraImg from '../assets/Projects/baltic-riviera.jpg'
 import domnawyspieImg from '../assets/Projects/wyspa.jpg'
 import szwedImg from '../assets/Projects/Sjas.jpg'
@@ -58,7 +59,7 @@ export const projects: Project[] = [
     year: '2014',
     category: 'Hotele',
     image: balticcliff_0,
-    gallery: [balticcliff_0, balticcliff_1, balticcliff_2, balticcliff_3, balticcliff_4, balticcliff_5, balticcliff_6],
+    gallery: [balticcliff_0, balticcliff_1, balticcliff_2, balticcliff_3, balticcliff_4, balticcliff_5, balticcliff_6, balticcliff_7],
     size: 'large',
     orientation: 'horizontal',
   },
