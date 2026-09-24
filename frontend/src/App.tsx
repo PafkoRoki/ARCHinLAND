@@ -3,6 +3,7 @@ import AppLoader from './components/AppLoader'
 import { ProjectCatalog } from './components/ProjectCatalog/ProjectCatalog'
 import { ProjectDetail } from './components/ProjectCatalog/ProjectDetail'
 import { projects } from './data/projects'
+import RealizationsDetail from './components/4_RealizationsDetail'
 import Home from './pages/Home'
 
 export default function App() {
@@ -19,6 +20,10 @@ export default function App() {
         <Route
           path="/projekty/:slug"
           element={<ProjectDetail projects={projects} />}
+        />
+        <Route
+          path="/realizacje/:slug"
+          element={<RealizationsDetail />}
         />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

@@ -5,33 +5,10 @@ import { projects } from '../data/realizations'
 import AccordionGallery from './AccordionGallery'
 import './4_Realizations.css'
 
-// Realne pliki, które faktycznie są w src/assets — importowane przez Vite,
-// więc trafią do bundla z poprawnym hashem/URL (w przeciwieństwie do
-// wcześniejszych ścieżek "/images/..." wskazujących na pliki, których nie ma).
-import osiedlePanoramaImg from '../assets/Projects/osiedle-panorama.jpg'
-import budynekUslugowoImg from '../assets/Projects/budynek-uslugowo-mieszkalny.jpg'
-import balticCliffImg from '../assets/Projects/Baltic-cliff.jpg'
-import balticrivieraImg from '../assets/Projects/Baltic-riviera.jpg'
-import domnawyspieImg from '../assets/Projects/wyspa.jpg'
-import szwedImg from '../assets/Projects/Sjas.jpg'
-// TODO: podmienić na docelowe zdjęcia realizacji, gdy będą dostępne.
-// Na razie używamy render.png jako tymczasowego zastępstwa, żeby galeria
-// nie wyświetlała złamanych obrazków (404 szkodzi UX i SEO).
-import placeholderImg from '../assets/render.webp'
-
-const projectImageMap: Record<string, string> = {
-  'Osiedle Panorama': osiedlePanoramaImg,
-  'Budynek usługowo-mieszkalny': budynekUslugowoImg,
-  'Baltic Cliff': balticCliffImg,
-  'Baltic Riviera': balticrivieraImg,
-  'Dom na wyspie': domnawyspieImg,
-  'Szwecja': szwedImg,
-}
-
 const items = projects.map((project) => ({
-  image: projectImageMap[project.id] ?? placeholderImg,
+  image: project.image,
   label: project.name,
-  link: '#',
+  link: `/realizacje/${project.slug}`,
   alt: `${project.name} — ${project.category}, ${project.location}${project.year ? `, ${project.year}` : ''}`,
 }))
 

@@ -1,4 +1,5 @@
-import { useRef, useEffect, useState, useCallback, CSSProperties, KeyboardEvent, MouseEvent } from 'react';
+import { useRef, useEffect, useState, useCallback, CSSProperties, KeyboardEvent, MouseEvent, ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import { gsap } from 'gsap';
 
 import './AccordionGallery.css';
@@ -223,25 +224,9 @@ const AccordionGallery = ({
     >
       {items.map((item, i) => {
         const isActive = i === active;
-        const Tag = (item.link ? 'a' : 'div') as 'a';
-        return (
-          <Tag
-            key={i}
-            ref={(el: HTMLElement | null) => {
-              panelRefs.current[i] = el;
-            }}
-            className={`ag-panel${isActive ? ' ag-panel--active' : ''}`}
-            style={{ borderRadius: `${radius}px` }}
-            href={item.link || undefined}
-            onClick={e => handleClick(i, e)}
-            onMouseEnter={() => handleEnter(i)}
-            onFocus={() => setActive(i)}
-            onKeyDown={e => handleKeyDown(i, e)}
-            role="listitem"
-            tabIndex={0}
-            aria-current={isActive ? 'true' : undefined}
-            aria-label={item.label}
-          >
+
+        const panelContent: ReactNode = (
+          <>
             <span className="ag-panel__frame">
               <span
                 className="ag-panel__media"
@@ -271,6 +256,53 @@ const AccordionGallery = ({
                 </span>
               </span>
             )}
+          </>
+        );
+
+        const sharedProps = {
+          className: `ag-panel${isActive ? ' ag-panel--active' : ''}`,
+          style: { borderRadius: `${radius}px` } as CSSProperties,
+          onMouseEnter: () => handleEnter(i),
+          onFocus: () => setActive(i),
+          onKeyDown: (e: KeyboardEvent) => handleKeyDown(i, e),
+          role: 'listitem' as const,
+          tabIndex: 0,
+          'aria-current': isActive ? ('true' as const) : undefined,
+          'aria-label': item.label
+        };
+
+        // Wewnętrzne ścieżki (np. "/realizacje/slug") idą przez react-router,
+        // żeby nawigacja do RealizationsDetail nie przeładowywała strony.
+        const isInternalLink = !!item.link && item.link.startsWith('/');
+
+        if (isInternalLink) {
+          return (
+            <Link
+              key={i}
+              ref={(el: HTMLAnchorElement | null) => {
+                panelRefs.current[i] = el;
+              }}
+              to={item.link as string}
+              onClick={(e: MouseEvent<HTMLAnchorElement>) => handleClick(i, e)}
+              {...sharedProps}
+            >
+              {panelContent}
+            </Link>
+          );
+        }
+
+        const Tag = (item.link ? 'a' : 'div') as 'a';
+        return (
+          <Tag
+            key={i}
+            ref={(el: HTMLElement | null) => {
+              panelRefs.current[i] = el;
+            }}
+            href={item.link || undefined}
+            onClick={(e: MouseEvent) => handleClick(i, e)}
+            {...sharedProps}
+          >
+            {panelContent}
           </Tag>
         );
       })}
