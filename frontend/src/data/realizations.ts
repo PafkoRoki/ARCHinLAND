@@ -56,7 +56,7 @@ export const projects: Project[] = [
     number: '01',
     name: 'BALTIC CLIFF',
     location: 'Niechorze, Poland',
-    year: '2014',
+    year: '2015',
     category: 'Hotele',
     image: balticcliff_0,
     gallery: [balticcliff_0, balticcliff_1, balticcliff_2, balticcliff_3, balticcliff_4, balticcliff_5, balticcliff_6, balticcliff_7],
