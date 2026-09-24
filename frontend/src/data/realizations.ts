@@ -9,7 +9,6 @@ import osiedlePanorama_3 from '../assets/Projects/osiedle-panorama_3.jpg'
 import osiedlePanorama_4 from '../assets/Projects/osiedle-panorama_4.jpg'
 import osiedlePanorama_5 from '../assets/Projects/osiedle-panorama_5.jpg'
 import osiedlePanorama_6 from '../assets/Projects/osiedle-panorama_6.jpg'
-import osiedlePanorama_7 from '../assets/Projects/osiedle-panorama_7.jpg'
 import budynekUslugowoImg from '../assets/Projects/budynek-uslugowo-mieszkalny.jpg'
 import balticcliff_0 from '../assets/Projects/baltic-cliff_0.jpg'
 import balticcliff_1 from '../assets/Projects/baltic-cliff_1.jpg'
@@ -17,8 +16,6 @@ import balticcliff_2 from '../assets/Projects/baltic-cliff_2.jpg'
 import balticcliff_3 from '../assets/Projects/baltic-cliff_3.jpg'
 import balticcliff_4 from '../assets/Projects/baltic-cliff_4.jpg'
 import balticcliff_5 from '../assets/Projects/baltic-cliff_5.jpg'
-import balticcliff_6 from '../assets/Projects/baltic-cliff_6.jpg'
-import balticcliff_7 from '../assets/Projects/baltic-cliff_7.jpg'
 import balticrivieraImg from '../assets/Projects/baltic-riviera.jpg'
 import domnawyspieImg from '../assets/Projects/wyspa.jpg'
 import szwedImg from '../assets/Projects/Sjas.jpg'
@@ -59,7 +56,7 @@ export const projects: Project[] = [
     year: '2015',
     category: 'Hotele',
     image: balticcliff_0,
-    gallery: [balticcliff_0, balticcliff_1, balticcliff_2, balticcliff_3, balticcliff_4, balticcliff_5, balticcliff_6, balticcliff_7],
+    gallery: [balticcliff_0, balticcliff_1, balticcliff_2, balticcliff_3, balticcliff_4, balticcliff_5],
     size: 'large',
     orientation: 'horizontal',
   },
@@ -85,7 +82,7 @@ export const projects: Project[] = [
     year: '2020',
     category: 'Osiedla mieszkaniowe',
     image: osiedlePanorama_0,
-    gallery: [osiedlePanorama_0, osiedlePanorama_1, osiedlePanorama_2, osiedlePanorama_3, osiedlePanorama_4, osiedlePanorama_5, osiedlePanorama_6, osiedlePanorama_7],
+    gallery: [osiedlePanorama_0, osiedlePanorama_1, osiedlePanorama_2, osiedlePanorama_3, osiedlePanorama_4, osiedlePanorama_5, osiedlePanorama_6],
     size: 'small',
     orientation: 'horizontal',
   },
