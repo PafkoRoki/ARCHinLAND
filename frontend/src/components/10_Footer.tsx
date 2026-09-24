@@ -207,7 +207,7 @@ const AnimatedIconLink = ({
       <Link
         href={href}
         aria-label={ariaLabel}
-        className="text-white hover:text-white/70 transition-colors z-10 relative"
+        className="text-white hover:text-[var(--orange)] transition-colors z-10 relative"
       >
         {icon}
       </Link>
@@ -234,7 +234,7 @@ export function Footer({
   links = [
     { label: "Mail", href: "mailto:ARCHinLAND@wp.pl" },
     { label: "790 820 114", href: "tel:+48790820114" },
-    { label: "˚ ✶ ⋆｡˚ ➷", href: "'#about'" },
+    { label: "Back to top", href: "'#home'" },
     { label: "Modele 3D", href: "#models" },
     { label: "Projekty", href: "#projects" }
   ],
@@ -309,7 +309,7 @@ export function Footer({
                 key={link.label}
                 href={link.href}
                 className={cn(
-                  "py-6 flex items-center justify-center text-sm text-white hover:text-white/70 transition-colors w-full",
+                  "py-6 flex items-center justify-center text-sm text-white hover:text-[var(--orange)] transition-colors w-full",
                   i % 2 === 0 ? "border-r border-white/20" : "",
                   i < 2 ? "border-b border-white/20" : ""
                 )}
@@ -324,7 +324,7 @@ export function Footer({
               key={link.label}
               href={link.href}
               className={cn(
-                "hidden min-[1250px]:flex min-[1250px]:col-span-1 min-[1250px]:row-span-1 border-b border-white/20 py-8 items-center justify-center text-sm text-white hover:text-white/70 transition-colors w-full",
+                "hidden min-[1250px]:flex min-[1250px]:col-span-1 min-[1250px]:row-span-1 border-b border-white/20 py-8 items-center justify-center text-sm text-white hover:text-[var(--orange)] transition-colors w-full",
                 i === 0 ? "border-r border-white/20" : ""
               )}
             >
@@ -341,7 +341,7 @@ export function Footer({
               key={link.label}
               href={link.href}
               className={cn(
-                "hidden min-[1250px]:flex min-[1250px]:col-span-1 min-[1250px]:row-span-1 py-8 items-center justify-center text-sm text-white hover:text-white/70 transition-colors w-full",
+                "hidden min-[1250px]:flex min-[1250px]:col-span-1 min-[1250px]:row-span-1 py-8 items-center justify-center text-sm text-white hover:text-[var(--orange)] transition-colors w-full",
                 i < 2 ? "border-r border-white/20" : ""
               )}
             >

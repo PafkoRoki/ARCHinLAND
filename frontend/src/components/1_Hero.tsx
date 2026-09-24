@@ -20,7 +20,7 @@ export default function Hero() {
           title={
             <h1 className="hero__h1">
               <StrokeText
-                text="ARCH in LAND"
+                text="ARCHinLAND"
                 strokeColor="#2d2d2dbb"
                 fillColor="#ffffff"
                 strokeWidth={50}

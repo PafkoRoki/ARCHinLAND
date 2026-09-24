@@ -55,7 +55,7 @@ export default function GoogleReviews() {
             <div>
 
               <h2 id="reviews-title" className="display reviews__title">
-                Trust Factor<br />
+                .<br />
               </h2>
             </div>
             <div className="reviews__score" aria-label="Ocena 5,0 na 5 w Google">
