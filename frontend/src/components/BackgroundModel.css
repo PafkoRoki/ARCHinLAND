@@ -1,6 +1,6 @@
 .bg-model {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: 1; /* nad napisem Hero (0), pod treścią sekcji (2) — patrz .page-content w globals.css */
   pointer-events: none;
 }

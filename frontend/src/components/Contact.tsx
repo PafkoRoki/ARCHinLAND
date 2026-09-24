@@ -29,8 +29,8 @@ export default function Contact() {
 
           <div className="contact__block">
             <span className="label">Email</span>
-            <a className="contact__value contact__link" href="mailto:andrzejkurka70@wp.pl">
-              andrzejkurka70@wp.pl
+            <a className="contact__value contact__link" href="mailto:ARCHinLAND@wp.pl">
+              ARCHinLAND@wp.pl
             </a>
           </div>
 

@@ -27,7 +27,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2em;
+  padding: 20px var(--gutter);
   background: transparent;
   pointer-events: none;
   z-index: 20;
@@ -55,26 +55,32 @@
 
 .sm-toggle {
   position: relative;
+  margin-left: auto; /* zostaje po prawej także bez logo */
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  background: #fff;
-  border: 1.6px solid #000;
+  background: var(--white);
+  border: 1px solid var(--black);
+  border-radius: 999px;
   cursor: pointer;
-  font-weight: 1000;
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
   line-height: 1;
   overflow: visible;
-  padding: 10px 16px;
+  padding: 12px 20px;
+  transition: border-color 0.3s var(--ease);
 }
 
+/* kolor tekstu ustawia GSAP (inline), więc hover zmienia tylko obramowanie */
 .sm-toggle:hover {
-  color: #ffffff;
+  border-color: var(--orange);
 }
 
 .sm-toggle:focus-visible {
-  outline: 2px solid #ffffffaa;
-  outline-offset: 4px;
-  border-radius: 4px;
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
 }
 
 .sm-line:last-of-type {
@@ -142,12 +148,10 @@
   right: 0;
   width: clamp(260px, 38vw, 420px);
   height: 100%;
-  background: white;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--bg);
   display: flex;
   flex-direction: column;
-  padding: 6em 2em 2em 2em;
+  padding: 7rem var(--gutter) 2rem;
   overflow-y: auto;
   z-index: 10;
   pointer-events: auto;
@@ -191,19 +195,20 @@
 
 .sm-socials {
   margin-top: auto;
-  padding-top: 2rem;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin-top: auto;
-  margin-top: 2rem;
+  gap: 16px;
 }
 
 .sm-socials-title {
   margin: 0;
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--sm-accent, #ff0000);
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--sm-accent, var(--orange));
 }
 
 .sm-socials-list {
@@ -211,10 +216,9 @@
   margin: 0;
   padding: 0;
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
 }
 
 .sm-socials-list .sm-socials-link {
@@ -243,9 +247,9 @@
 }
 
 .sm-socials-link {
-  font-size: 1.2rem;
-  font-weight: 500;
-  color: #111;
+  font-size: var(--fs-body);
+  font-weight: 600;
+  color: var(--black);
   text-decoration: none;
   position: relative;
   padding: 2px 0;
@@ -278,12 +282,13 @@
 
 .sm-panel-item {
   position: relative;
-  color: #2d2d2d;
-  font-weight: 600;
-  font-size: 3.0rem;
+  color: var(--black);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(2.2rem, 4vw, 3rem);
   cursor: pointer;
   line-height: 1;
-  letter-spacing: -2px;
+  letter-spacing: -0.02em;
   text-transform: uppercase;
   transition:
     background 0.25s,
@@ -330,11 +335,11 @@
   content: counter(smItem, decimal-leading-zero);
   position: absolute;
   top: 0.1em;
-  right: 1.8em;
-  font-size: 18px;
-  font-weight: 400;
-  color: #fff;
-  letter-spacing: 0;
+  right: 0;
+  font-size: var(--fs-label);
+  font-weight: 700;
+  color: var(--orange);
+  letter-spacing: 0.15em;
   pointer-events: none;
   user-select: none;
   opacity: var(--sm-num-opacity, 0);
@@ -345,21 +350,5 @@
     width: 100%;
     left: 0;
     right: 0;
-  }
-
-  .staggered-menu-wrapper[data-open] .sm-logo-img {
-    filter: invert(100%);
-  }
-}
-
-@media (max-width: 640px) {
-  .staggered-menu-panel {
-    width: 100%;
-    left: 0;
-    right: 0;
-  }
-
-  .staggered-menu-wrapper[data-open] .sm-logo-img {
-    filter: invert(100%);
   }
 }

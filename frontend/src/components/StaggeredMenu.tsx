@@ -19,6 +19,7 @@ export interface StaggeredMenuProps {
   items?: StaggeredMenuItem[];
   socialItems?: StaggeredMenuSocialItem[];
   displaySocials?: boolean;
+  socialsTitle?: string;
   displayItemNumbering?: boolean;
   className?: string;
   logoUrl?: string;
@@ -38,9 +39,10 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
   items = [],
   socialItems = [],
   displaySocials = true,
+  socialsTitle = 'Socials',
   displayItemNumbering = true,
   className,
-  logoUrl = '/src/assets/logos/reactbits-gh-white.svg',
+  logoUrl = '',
   menuButtonColor = '#fff',
   openMenuButtonColor = '#fff',
   changeMenuColorOnOpen = true,
@@ -432,16 +434,18 @@ const toggleMenu = useCallback(() => {
         })()}
       </div>
       <header className="staggered-menu-header" aria-label="Main navigation header">
-        <div className="sm-logo" aria-label="Logo">
-          <img
-            src={logoUrl || '/src/assets/logos/reactbits-gh-white.svg'}
-            alt="Logo"
-            className="sm-logo-img"
-            draggable={false}
-            width={110}
-            height={24}
-          />
-        </div>
+        {logoUrl && (
+          <div className="sm-logo" aria-label="Logo">
+            <img
+              src={logoUrl}
+              alt="Logo"
+              className="sm-logo-img"
+              draggable={false}
+              width={110}
+              height={24}
+            />
+          </div>
+        )}
         <button
           ref={toggleBtnRef}
           className="sm-toggle"
@@ -494,11 +498,15 @@ const toggleMenu = useCallback(() => {
           </ul>
           {displaySocials && socialItems && socialItems.length > 0 && (
             <div className="sm-socials" aria-label="Social links">
-              <h3 className="sm-socials-title">Socials</h3>
+              <h3 className="sm-socials-title">{socialsTitle}</h3>
               <ul className="sm-socials-list" role="list">
                 {socialItems.map((s, i) => (
                   <li key={s.label + i} className="sm-socials-item">
-                    <a href={s.link} target="_blank" rel="noopener noreferrer" className="sm-socials-link">
+                    <a
+                      href={s.link}
+                      {...(s.link.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                      className="sm-socials-link"
+                    >
                       {s.label}
                     </a>
                   </li>

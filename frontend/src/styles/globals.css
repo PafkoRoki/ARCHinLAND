@@ -161,10 +161,19 @@ button {
   padding: 0 var(--gutter);
 }
 
-/* treść nad modelem 3D w tle (BackgroundModel, z-index 0) */
+/* Warstwy: napis Hero (0) → model 3D .bg-model (1) → treść sekcji (2).
+   .page-content celowo bez z-index, żeby napis Hero mógł zejść pod model. */
 .page-content {
   position: relative;
-  z-index: 1;
+}
+
+.page-content > section {
+  position: relative;
+  z-index: 2;
+}
+
+.page-content > .hero {
+  z-index: auto;
 }
 
 .section {
