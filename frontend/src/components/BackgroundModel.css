@@ -1,6 +1,53 @@
+/* Zmienne --lens-* ustawia BackgroundModel.tsx w każdej klatce */
 .bg-model {
+  --lens-x: 50vw;
+  --lens-y: 42vh;
+  --lens-r: 180px;
+  --lens-fade: 1; /* 1 = soczewka w Hero, 0 = pełny ekran */
+
   position: fixed;
   inset: 0;
   z-index: 1; /* nad napisem Hero (0), pod treścią sekcji (2) — patrz .page-content w globals.css */
   pointer-events: none;
+}
+
+/* jasna poświata wokół soczewki */
+.bg-model__halo {
+  position: absolute;
+  left: var(--lens-x);
+  top: var(--lens-y);
+  width: calc(var(--lens-r) * 2.6);
+  height: calc(var(--lens-r) * 2.6);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.55) 45%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  opacity: var(--lens-fade);
+}
+
+/* okno, w którym widać model */
+.bg-model__lens {
+  position: absolute;
+  inset: 0;
+  clip-path: circle(var(--lens-r) at var(--lens-x) var(--lens-y));
+}
+
+.bg-model[data-full='true'] .bg-model__lens {
+  clip-path: none;
+}
+
+/* tło wnętrza soczewki — znika, gdy koło rośnie do pełnego ekranu */
+.bg-model__lens-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle calc(var(--lens-r) * 1.1) at calc(var(--lens-x) - var(--lens-r) * 0.35) calc(var(--lens-y) - var(--lens-r) * 0.35),
+    #f7f8f8 0%,
+    #d6dcdb 100%
+  );
+  opacity: var(--lens-fade);
 }

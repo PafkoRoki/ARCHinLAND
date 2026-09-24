@@ -1,34 +1,41 @@
-import { MutableRefObject, useEffect, useRef, useState } from 'react'
+import { MutableRefObject, RefObject, useEffect, useRef, useState } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
-import { ColladaLoader } from 'three/examples/jsm/loaders/ColladaLoader.js'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
 import './BackgroundModel.css'
 
-const MODEL_URL = '/models/Eryk.dae'
+// Eryk.glb = Eryk.dae przekonwertowany i skompresowany (meshopt + tekstury WebP 1024 px)
+const MODEL_URL = '/models/Eryk.glb'
 const TARGET = 4.6 // najdłuższy bok modelu w jednostkach sceny
 const MODEL_SCALE = 0.62 // ogólny rozmiar modelu na ekranie
 const BASE_ROTATION = -0.5 // obrót startowy (rad) — widok 3/4
 
-// reakcja na kursor w Hero (radiany / skala)
+// Soczewka w Hero (jak w STILL): model widać tylko w kole, które podąża za kursorem.
+// Przy przewijaniu koło rośnie do pełnego ekranu, a model wraca na środek.
+const LENS_RADIUS = 180 // px, promień koła w Hero (na telefonie mniejszy, patrz lensRadius)
+const LENS_ZOOM = 1.15 // model w soczewce jest lekko przybliżony
+const LENS_REST = { x: 0.5, y: 0.42 } // pozycja koła bez kursora (ułamek ekranu)
+const REVEAL_DISTANCE = 0.8 // ile wysokości ekranu przewijania trwa powiększanie koła
+
+// reakcja na kursor w Hero (radiany)
 const HOVER_TILT_Y = 0.45
 const HOVER_TILT_X = 0.12
-const HOVER_SCALE = 1.06
 
 const { lerp, clamp, smoothstep } = THREE.MathUtils
 
-// box = obrys modelu w układzie grupy Model (liczony raz, do testu najechania)
-type Loaded = { obj: THREE.Object3D; height: number; box: THREE.Box3 }
+type Loaded = { obj: THREE.Object3D; height: number }
 
 function useModel(url: string) {
   const [loaded, setLoaded] = useState<Loaded | null>(null)
 
   useEffect(() => {
     let alive = true
-    new ColladaLoader().load(
+    new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).load(
       url,
-      (c) => {
-        if (!alive || !c) return
-        const o = c.scene
+      (gltf) => {
+        if (!alive) return
+        const o = gltf.scene
         o.traverse((child) => {
           const m = child as THREE.Mesh
           if (m.isMesh) m.castShadow = true
@@ -42,10 +49,7 @@ function useModel(url: string) {
         const wrap = new THREE.Group()
         wrap.add(o)
         wrap.scale.setScalar(s)
-        const height = size.y * s
-        // po wyśrodkowaniu w pionie (group y = -height/2) model zajmuje ±height/2
-        const half = new THREE.Vector3(size.x * s, height, size.z * s).multiplyScalar(0.5)
-        setLoaded({ obj: wrap, height, box: new THREE.Box3(half.clone().negate(), half) })
+        setLoaded({ obj: wrap, height: size.y * s })
       },
       undefined,
       (e) => console.error('Nie udało się wczytać modelu', e),
@@ -58,19 +62,21 @@ function useModel(url: string) {
   return loaded
 }
 
+const lensRadius = (w: number) => Math.min(LENS_RADIUS, w * 0.32)
+
 type Motion = {
   progress: MutableRefObject<number> // 0 → 1 od sekcji About do końca strony
-  hero: MutableRefObject<number> // 1 = Hero na ekranie, 0 = przewinięte
-  pointer: MutableRefObject<THREE.Vector2> // kursor, -1…1
+  reveal: MutableRefObject<number> // 0 = soczewka w Hero, 1 = pełny ekran
+  pointer: MutableRefObject<{ x: number; y: number } | null> // kursor w px, null = brak
+  layer: RefObject<HTMLDivElement> // tu ustawiamy zmienne CSS soczewki
 }
 
-function Model({ progress, hero, pointer }: Motion) {
+function Model({ progress, reveal, pointer, layer }: Motion) {
   const group = useRef<THREE.Group>(null!)
-  const { viewport, camera } = useThree()
+  const { viewport, camera, size } = useThree()
   const loaded = useModel(MODEL_URL)
-  const hoverBox = useRef(new THREE.Box3())
-  const raycaster = useRef(new THREE.Raycaster())
-  const hovered = useRef(0)
+  const lens = useRef({ x: 0, y: 0, ready: false })
+  const tmp = useRef({ ndc: new THREE.Vector3(), dir: new THREE.Vector3(), hit: new THREE.Vector3() })
 
   useEffect(() => {
     camera.lookAt(0, 0, 0)
@@ -79,29 +85,50 @@ function Model({ progress, hero, pointer }: Motion) {
   useFrame((state, dt) => {
     const g = group.current
     const p = progress.current
-    const h = hero.current
+    const r = reveal.current
+    const h = 1 - r
     const k = 1 - Math.pow(0.001, dt) // wygładzanie niezależne od FPS
+    const kLens = 1 - Math.pow(0.0005, dt)
+    const { width: w, height: hgt } = size
 
-    // najechanie na model — tani test na prostopadłościanie otaczającym
-    let over = 0
-    if (loaded && h > 0.01) {
-      hoverBox.current.copy(loaded.box).applyMatrix4(g.matrixWorld)
-      raycaster.current.setFromCamera(pointer.current, camera)
-      over = raycaster.current.ray.intersectsBox(hoverBox.current) ? 1 : 0
+    // środek soczewki: goni kursor, przy przewijaniu wraca na środek ekranu
+    const target = pointer.current ?? { x: w * LENS_REST.x, y: hgt * LENS_REST.y }
+    if (!lens.current.ready) Object.assign(lens.current, target, { ready: true })
+    lens.current.x = lerp(lens.current.x, target.x, kLens)
+    lens.current.y = lerp(lens.current.y, target.y, kLens)
+    const lx = lerp(lens.current.x, w / 2, r)
+    const ly = lerp(lens.current.y, hgt / 2, r)
+    const radius = lerp(lensRadius(w), Math.hypot(w, hgt) / 2 + 40, r)
+
+    const el = layer.current
+    if (el) {
+      el.style.setProperty('--lens-x', `${lx}px`)
+      el.style.setProperty('--lens-y', `${ly}px`)
+      el.style.setProperty('--lens-r', `${radius}px`)
+      el.style.setProperty('--lens-fade', `${h}`)
+      el.dataset.full = r > 0.999 ? 'true' : 'false'
     }
-    hovered.current = lerp(hovered.current, over, 1 - Math.pow(0.02, dt))
 
-    // w Hero model podąża za kursorem; od About obraca się z przewijaniem
-    const tiltY = pointer.current.x * HOVER_TILT_Y * h
-    const tiltX = -pointer.current.y * HOVER_TILT_X * h
-    g.rotation.y = lerp(g.rotation.y, BASE_ROTATION + p * Math.PI * 2 + tiltY, k)
-    g.rotation.x = lerp(g.rotation.x, tiltX, k)
-    g.position.x = lerp(g.position.x, Math.sin(p * Math.PI * 3) * viewport.width * 0.2, k)
+    // punkt sceny (płaszczyzna z=0) pod środkiem soczewki — tam stoi model
+    const { ndc, dir, hit } = tmp.current
+    ndc.set((lx / w) * 2 - 1, -(ly / hgt) * 2 + 1, 0.5).unproject(camera)
+    dir.copy(ndc).sub(camera.position).normalize()
+    hit.copy(camera.position).addScaledVector(dir, -camera.position.z / dir.z)
+
+    // od About model obraca się i kołysze na boki z przewijaniem
+    const scrollX = Math.sin(p * Math.PI * 3) * viewport.width * 0.2
+    g.position.x = lerp(hit.x, scrollX, r)
     // delikatne unoszenie w Hero, jak puszka w STILL
-    g.position.y = Math.sin(state.clock.elapsedTime * 0.8) * 0.05 * h
+    g.position.y = lerp(hit.y, 0, r) + Math.sin(state.clock.elapsedTime * 0.8) * 0.05 * h
+
+    // w Hero model obraca się w stronę kursora
+    const nx = pointer.current ? (pointer.current.x / w) * 2 - 1 : 0
+    const ny = pointer.current ? -(pointer.current.y / hgt) * 2 + 1 : 0
+    g.rotation.y = lerp(g.rotation.y, BASE_ROTATION + p * Math.PI * 2 + nx * HOVER_TILT_Y * h, k)
+    g.rotation.x = lerp(g.rotation.x, -ny * HOVER_TILT_X * h, k)
 
     const fit = clamp(viewport.width / 6, 0.5, 1) * MODEL_SCALE // mniejszy na wąskich ekranach
-    g.scale.setScalar(fit * (1 + (HOVER_SCALE - 1) * hovered.current * h))
+    g.scale.setScalar(fit * lerp(LENS_ZOOM, 1, r))
   })
 
   return (
@@ -121,9 +148,10 @@ function Model({ progress, hero, pointer }: Motion) {
 }
 
 export default function BackgroundModel() {
+  const layer = useRef<HTMLDivElement>(null)
   const progress = useRef(0)
-  const hero = useRef(1)
-  const pointer = useRef(new THREE.Vector2(0, 0))
+  const reveal = useRef(0)
+  const pointer = useRef<{ x: number; y: number } | null>(null)
 
   useEffect(() => {
     const onScroll = () => {
@@ -133,12 +161,15 @@ export default function BackgroundModel() {
       const about = document.getElementById('about')
       const start = about ? about.offsetTop : vh
       progress.current = max > start ? clamp((window.scrollY - start) / (max - start), 0, 1) : 0
-      hero.current = 1 - smoothstep(window.scrollY, 0, vh * 0.8)
+      reveal.current = smoothstep(window.scrollY, 0, vh * REVEAL_DISTANCE)
     }
+    // tylko prawdziwa mysz — na dotyku soczewka stoi w LENS_REST
     const onMove = (e: PointerEvent) => {
-      pointer.current.set((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1)
+      if (e.pointerType === 'mouse') pointer.current = { x: e.clientX, y: e.clientY }
     }
-    const onLeave = () => pointer.current.set(0, 0)
+    const onLeave = () => {
+      pointer.current = null
+    }
 
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -154,31 +185,35 @@ export default function BackgroundModel() {
   }, [])
 
   return (
-    <div className="bg-model" aria-hidden="true">
-      <Canvas
-        shadows
-        camera={{ position: [0, 2.4, 8], fov: 35 }}
-        dpr={[1, 2]}
-        gl={{ alpha: true, antialias: true }}
-      >
-        <ambientLight intensity={0.8} />
-        <directionalLight
-          position={[4, 8, 5]}
-          intensity={1.8}
-          castShadow
-          shadow-mapSize={[2048, 2048]}
-          shadow-camera-left={-5}
-          shadow-camera-right={5}
-          shadow-camera-top={5}
-          shadow-camera-bottom={-5}
-          shadow-camera-near={0.5}
-          shadow-camera-far={25}
-          shadow-bias={-0.0004}
-          shadow-normalBias={0.03}
-        />
-        <directionalLight position={[-4, 2, -3]} intensity={0.4} />
-        <Model progress={progress} hero={hero} pointer={pointer} />
-      </Canvas>
+    <div ref={layer} className="bg-model" aria-hidden="true">
+      <div className="bg-model__halo" />
+      <div className="bg-model__lens">
+        <div className="bg-model__lens-bg" />
+        <Canvas
+          shadows
+          camera={{ position: [0, 2.4, 8], fov: 35 }}
+          dpr={[1, 2]}
+          gl={{ alpha: true, antialias: true }}
+        >
+          <ambientLight intensity={0.8} />
+          <directionalLight
+            position={[4, 8, 5]}
+            intensity={1.8}
+            castShadow
+            shadow-mapSize={[2048, 2048]}
+            shadow-camera-left={-8}
+            shadow-camera-right={8}
+            shadow-camera-top={8}
+            shadow-camera-bottom={-8}
+            shadow-camera-near={0.5}
+            shadow-camera-far={30}
+            shadow-bias={-0.0004}
+            shadow-normalBias={0.03}
+          />
+          <directionalLight position={[-4, 2, -3]} intensity={0.4} />
+          <Model progress={progress} reveal={reveal} pointer={pointer} layer={layer} />
+        </Canvas>
+      </div>
     </div>
   )
 }
