@@ -3,6 +3,7 @@
 
 import { projects } from '../data/realizations'
 import AccordionGallery from './AccordionGallery'
+import RefineFrame from './RefineFrame';
 import './4_Realizations.css'
 
 const items = projects.map((project) => ({
