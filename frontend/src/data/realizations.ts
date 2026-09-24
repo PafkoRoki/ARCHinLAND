@@ -11,13 +11,13 @@ import osiedlePanorama_5 from '../assets/Projects/osiedle-panorama_5.jpg'
 import osiedlePanorama_6 from '../assets/Projects/osiedle-panorama_6.jpg'
 import osiedlePanorama_7 from '../assets/Projects/osiedle-panorama_7.jpg'
 import budynekUslugowoImg from '../assets/Projects/budynek-uslugowo-mieszkalny.jpg'
-import balticCliff_0 from '../assets/Projects/baltic-cliff_0.jpg'
-import balticCliff_1 from '../assets/Projects/baltic-cliff_1.jpg'
-import balticCliff_2 from '../assets/Projects/baltic-cliff_2.jpg'
-import balticCliff_3 from '../assets/Projects/baltic-cliff_3.jpg'
-import balticCliff_4 from '../assets/Projects/baltic-cliff_4.jpg'
-import balticCliff_5 from '../assets/Projects/baltic-cliff_5.jpg'
-import balticCliff_6 from '../assets/Projects/baltic-cliff_6.jpg'
+import balticcliff_0 from '../assets/Projects/baltic-cliff_0.jpg'
+import balticcliff_1 from '../assets/Projects/baltic-cliff_1.jpg'
+import balticcliff_2 from '../assets/Projects/baltic-cliff_2.jpg'
+import balticcliff_3 from '../assets/Projects/baltic-cliff_3.jpg'
+import balticcliff_4 from '../assets/Projects/baltic-cliff_4.jpg'
+import balticcliff_5 from '../assets/Projects/baltic-cliff_5.jpg'
+import balticcliff_6 from '../assets/Projects/baltic-cliff_6.jpg'
 import balticrivieraImg from '../assets/Projects/baltic-riviera.jpg'
 import domnawyspieImg from '../assets/Projects/wyspa.jpg'
 import szwedImg from '../assets/Projects/Sjas.jpg'
@@ -57,8 +57,8 @@ export const projects: Project[] = [
     location: 'Niechorze, Poland',
     year: '2014',
     category: 'Hotele',
-    image: balticCliff_0,
-    gallery: [balticCliff_0, balticCliff_1, balticCliff_2, balticCliff_3, balticCliff_4, balticCliff_5, balticCliff_6],
+    image: balticcliff_0,
+    gallery: [balticcliff_0, balticcliff_1, balticcliff_2, balticcliff_3, balticcliff_4, balticcliff_5, balticcliff_6],
     size: 'large',
     orientation: 'horizontal',
   },
