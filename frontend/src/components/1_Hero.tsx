@@ -9,7 +9,7 @@ export default function Hero() {
         <h1 id="hero-title" className="hero__title">
           <StrokeText
             text="ARCHinLAND"
-            strokeColor="#2d2d2dbb"
+            strokeColor="#2d2d2d"
             fillColor="#ffffff"
             strokeWidth={50}
             drawDuration={1.6}

@@ -4,7 +4,7 @@ import { useReveal } from '../hooks/useReveal'
 type Props = {
   index: string // "01"
   label: string // "Realizacje"
-  title: ReactNode
+  title?: ReactNode // bez tytułu nagłówek to sam podpis "01 / O nas"
   lead?: ReactNode
   id?: string // id tytułu, do aria-labelledby sekcji
   aside?: ReactNode // treść po prawej, np. ocena Google
@@ -20,9 +20,16 @@ export default function SectionHeader({ index, label, title, lead, id, aside }: 
         <span className="eyebrow">
           <span className="eyebrow__index">{index}</span> / {label}
         </span>
-        <h2 id={id} className="section-head__title display stroke-title">
-          {title}
-        </h2>
+        {title ? (
+          <h2 id={id} className="section-head__title display stroke-title">
+            {title}
+          </h2>
+        ) : (
+          // sekcja nadal potrzebuje nazwy dla czytników ekranu (aria-labelledby)
+          <h2 id={id} className="visually-hidden">
+            {label}
+          </h2>
+        )}
         {lead && <p className="section-head__lead body-lg">{lead}</p>}
       </div>
       {aside && <div className="section-head__aside">{aside}</div>}

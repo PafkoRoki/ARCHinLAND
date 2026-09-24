@@ -1,0 +1,22 @@
+/* pole nad modelem 3D (model leży pod treścią, na środku ekranu) */
+.about__stage {
+  position: relative;
+  height: 80vh;
+  min-height: 420px;
+  margin-bottom: var(--head-gap);
+  cursor: grab;
+  touch-action: pan-y; /* palcem w pionie przewijamy, w poziomie obracamy */
+  user-select: none;
+}
+
+.about__stage:active {
+  cursor: grabbing;
+}
+
+.about__hint {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}

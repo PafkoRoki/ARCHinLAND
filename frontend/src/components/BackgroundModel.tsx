@@ -3,6 +3,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
+import { modelControls } from '../lib/modelControls'
 import './BackgroundModel.css'
 
 // Eryk.glb = Eryk.dae przekonwertowany i skompresowany (meshopt + tekstury WebP 1024 px)
@@ -17,6 +18,7 @@ const LENS_RADIUS = 180 // px, promień koła w Hero (na telefonie mniejszy, pat
 const LENS_ZOOM = 1.15 // model w soczewce jest lekko przybliżony
 const LENS_REST = { x: 0.5, y: 0.42 } // pozycja koła bez kursora (ułamek ekranu)
 const REVEAL_DISTANCE = 0.8 // ile wysokości ekranu przewijania trwa powiększanie koła
+const FADE_END = 0.35 // model całkiem znika, gdy góra sekcji Realizacje dojdzie do 35% ekranu
 
 // reakcja na kursor w Hero (radiany)
 const HOVER_TILT_Y = 0.45
@@ -65,7 +67,7 @@ function useModel(url: string) {
 const lensRadius = (w: number) => Math.min(LENS_RADIUS, w * 0.32)
 
 type Motion = {
-  progress: MutableRefObject<number> // 0 → 1 od sekcji About do końca strony
+  progress: MutableRefObject<number> // 0 → 1 od pola z modelem w About do końca strony
   reveal: MutableRefObject<number> // 0 = soczewka w Hero, 1 = pełny ekran
   pointer: MutableRefObject<{ x: number; y: number } | null> // kursor w px, null = brak
   layer: RefObject<HTMLDivElement> // tu ustawiamy zmienne CSS soczewki
@@ -121,10 +123,11 @@ function Model({ progress, reveal, pointer, layer }: Motion) {
     // delikatne unoszenie w Hero, jak puszka w STILL
     g.position.y = lerp(hit.y, 0, r) + Math.sin(state.clock.elapsedTime * 0.8) * 0.05 * h
 
-    // w Hero model obraca się w stronę kursora
+    // w Hero model obraca się w stronę kursora, w About — przeciąganiem myszką
     const nx = pointer.current ? (pointer.current.x / w) * 2 - 1 : 0
     const ny = pointer.current ? -(pointer.current.y / hgt) * 2 + 1 : 0
-    g.rotation.y = lerp(g.rotation.y, BASE_ROTATION + p * Math.PI * 2 + nx * HOVER_TILT_Y * h, k)
+    const turn = BASE_ROTATION + p * Math.PI * 2 + nx * HOVER_TILT_Y * h + modelControls.dragRotation
+    g.rotation.y = lerp(g.rotation.y, turn, k)
     g.rotation.x = lerp(g.rotation.x, -ny * HOVER_TILT_X * h, k)
 
     const fit = clamp(viewport.width / 6, 0.5, 1) * MODEL_SCALE // mniejszy na wąskich ekranach
@@ -152,16 +155,32 @@ export default function BackgroundModel() {
   const progress = useRef(0)
   const reveal = useRef(0)
   const pointer = useRef<{ x: number; y: number } | null>(null)
+  // po zniknięciu modelu (sekcja Realizacje) scena przestaje się renderować
+  const [hidden, setHidden] = useState(false)
 
   useEffect(() => {
     const onScroll = () => {
       const vh = window.innerHeight
-      const max = document.documentElement.scrollHeight - vh
-      // model stoi w miejscu, dopóki nie dojedziemy do sekcji About
-      const about = document.getElementById('about')
-      const start = about ? about.offsetTop : vh
-      progress.current = max > start ? clamp((window.scrollY - start) / (max - start), 0, 1) : 0
-      reveal.current = smoothstep(window.scrollY, 0, vh * REVEAL_DISTANCE)
+      const y = window.scrollY
+      const top = (id: string) => {
+        const el = document.getElementById(id)
+        return el ? el.getBoundingClientRect().top + y : null
+      }
+
+      // model znika, gdy wjeżdża sekcja Realizacje: od jej pojawienia się na dole ekranu
+      // do chwili, gdy jej góra dojdzie do FADE_END ekranu
+      const realTop = top('realizations')
+      const end = realTop !== null ? realTop - vh * FADE_END : document.documentElement.scrollHeight - vh
+      const fade = realTop !== null ? smoothstep(realTop - y, vh * FADE_END, vh) : 1
+      layer.current?.style.setProperty('opacity', `${fade}`)
+      setHidden(fade <= 0)
+
+      // model nie obraca się z przewijaniem, dopóki na ekranie jest pole do obracania w About;
+      // potem pełny obrót do momentu zniknięcia
+      const stage = document.getElementById('about-stage')
+      const start = stage ? stage.getBoundingClientRect().bottom + y - vh / 2 : vh
+      progress.current = end > start ? clamp((y - start) / (end - start), 0, 1) : 0
+      reveal.current = smoothstep(y, 0, vh * REVEAL_DISTANCE)
     }
     // tylko prawdziwa mysz — na dotyku soczewka stoi w LENS_REST
     const onMove = (e: PointerEvent) => {
@@ -191,6 +210,7 @@ export default function BackgroundModel() {
         <div className="bg-model__lens-bg" />
         <Canvas
           shadows
+          frameloop={hidden ? 'never' : 'always'}
           camera={{ position: [0, 2.4, 8], fov: 35 }}
           dpr={[1, 2]}
           gl={{ alpha: true, antialias: true }}
