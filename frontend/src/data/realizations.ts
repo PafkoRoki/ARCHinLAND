@@ -18,7 +18,7 @@ import balticCliff_3 from '../assets/Projects/baltic-cliff_3.jpg'
 import balticCliff_4 from '../assets/Projects/baltic-cliff_4.jpg'
 import balticCliff_5 from '../assets/Projects/baltic-cliff_5.jpg'
 import balticCliff_6 from '../assets/Projects/baltic-cliff_6.jpg'
-import balticrivieraImg from '../assets/Projects/Baltic-riviera.jpg'
+import balticrivieraImg from '../assets/Projects/baltic-riviera.jpg'
 import domnawyspieImg from '../assets/Projects/wyspa.jpg'
 import szwedImg from '../assets/Projects/Sjas.jpg'
 // TODO: podmienić na docelowe zdjęcia realizacji, gdy będą dostępne.
@@ -55,7 +55,7 @@ export const projects: Project[] = [
     number: '01',
     name: 'BALTIC CLIFF',
     location: 'Niechorze, Poland',
-    year: '2015',
+    year: '2014',
     category: 'Hotele',
     image: balticCliff_0,
     gallery: [balticCliff_0, balticCliff_1, balticCliff_2, balticCliff_3, balticCliff_4, balticCliff_5, balticCliff_6],
