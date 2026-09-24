@@ -58,14 +58,13 @@
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  background: transparent;
-  border: none;
+  background: #fff;
+  border: 1.6px solid #000;
   cursor: pointer;
-  color: #e9e9ef;
   font-weight: 1000;
   line-height: 1;
   overflow: visible;
-  padding: 8px 12px;
+  padding: 10px 16px;
 }
 
 .sm-toggle:hover {

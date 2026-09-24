@@ -1,6 +1,5 @@
 import { CSSProperties, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { gsap } from 'gsap';
-import GlassSurface from './GlassSurface'
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import './StrokeText.css';
@@ -11,6 +10,7 @@ if (typeof window !== 'undefined') {
 
 export type StrokeTextTrigger = 'mount' | 'hover' | 'scroll' | 'loop';
 export type StrokeTextFillMode = 'wipe' | 'fade' | 'none';
+export type StrokeTextButtonVariant = 'link' | 'icon-slide';
 
 export interface StrokeTextProps {
   text?: string;
@@ -32,6 +32,7 @@ export interface StrokeTextProps {
   showButton?: boolean;
   buttonText?: string;
   buttonHref?: string;
+  buttonVariant?: StrokeTextButtonVariant;
 }
 
 interface StrokeTextBox {
@@ -62,7 +63,8 @@ const StrokeText = ({
   style = {},
   showButton = false,
   buttonText = 'Kontakt',
-  buttonHref = '#contact'
+  buttonHref = '#contact',
+  buttonVariant = 'icon-slide'
 }: StrokeTextProps) => {
   const rootRef = useRef<HTMLSpanElement | null>(null);
   const strokeTextRef = useRef<SVGTextElement | null>(null);
@@ -290,21 +292,27 @@ const StrokeText = ({
       <div className="stroke-text-wrapper">
         {strokeTextContent}
 
-        <GlassSurface 
-          borderRadius={999}
-          width="auto"
-          height="auto"
-          className="stroke-text-button-glass"
-          opacity={0.8}
-          blur={12}
-        >
+        {buttonVariant === 'icon-slide' ? (
+          <a href={buttonHref} className="cssbuttons-io-button">
+            {buttonText}
+            <div className="icon">
+              <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 0h24v24H0z" fill="none" />
+                <path
+                  d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </a>
+        ) : (
           <a href={buttonHref} className="stroke-text-button-link">
             <span>{buttonText}</span>
             <svg className="stroke-text-button__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
               <path d="m11.293 17.293l1.414 1.414L19.414 12l-6.707-6.707l-1.414 1.414L15.586 11H6v2h9.586z" />
             </svg>
           </a>
-        </GlassSurface>
+        )}
       </div>
     );
   }

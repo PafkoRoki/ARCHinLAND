@@ -26,18 +26,13 @@
   gap: clamp(24px, 4vw, 48px);
 }
 
-.stroke-text-button-glass {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.35s var(--ease);
-}
-
 .stroke-text-button-link {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 12px;
   padding: clamp(14px, 2vw, 18px) clamp(32px, 5vw, 56px);
+  background: #111;
   color: #fff;
   font-size: clamp(12px, 1.2vw, 14px);
   font-weight: 900;
@@ -46,6 +41,10 @@
   text-decoration: none;
   transition: all 0.35s var(--ease);
   cursor: pointer;
+}
+
+.stroke-text-button-link:hover {
+  background: #2a2a2a;
 }
 
 .stroke-text-button {
@@ -69,14 +68,57 @@
   transition: transform 0.35s var(--ease);
 }
 
-.stroke-text-button-link:hover .stroke-text-button__icon {
-  transform: translateX(0px);
+.cssbuttons-io-button {
+  background: #fff;
+  color: #2d2d2d;
+  font-family: inherit;
+  padding: 0.35em;
+  padding-left: 1.2em;
+  font-size: 25px;
+  font-weight: 500;
+  border: 1.6px solid #000;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  box-shadow: inset 0 0 1.6em -0.6em #f0f0f0;
+  overflow: hidden;
+  position: relative;
+  height: 2.8em;
+  padding-right: 3.3em;
+  cursor: pointer;
+  text-decoration: none;
+  width: fit-content;
 }
 
-.stroke-text-button-glass:hover {
-  transform: translateY(0px);
+.cssbuttons-io-button .icon {
+  background: #2d2d2d;
+  margin-left: 1em;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.2em;
+  width: 2.2em;
+  box-shadow: 0.1em 0.1em 0.6em 0.2em #f0f0f0;
+  right: 0.3em;
+  transition: all 0.3s;
 }
 
-.stroke-text-button:hover .stroke-text-button__icon {
-  transform: translateX(14px);
+.cssbuttons-io-button:hover .icon {
+  width: calc(100% - 0.6em);
+  background: var(--orange);
+}
+
+.cssbuttons-io-button .icon svg {
+  width: 1.1em;
+  transition: transform 0.3s;
+  color: #fff;
+}
+
+.cssbuttons-io-button:hover .icon svg {
+  transform: translateX(0.1em);
+}
+
+.cssbuttons-io-button:active .icon {
+  transform: scale(0.95);
 }
