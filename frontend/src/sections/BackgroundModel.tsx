@@ -275,11 +275,18 @@ export default function BackgroundModel() {
     const onScroll = () => {
       const vh = screenHeight() // stała wysokość (bez skoków przy chowaniu paska adresu na telefonie)
       const y = window.scrollY
-      // po odpięciu sceny Hero (O nas) model odjeżdża w górę razem z nią i znika z ekranu
+      // po odpięciu sceny Hero (O nas) model odjeżdża w górę razem z nią i znika z ekranu.
+      // Warstwa przechodzi z fixed na absolute w miejscu odpięcia — przewija ją sama przeglądarka,
+      // równo z tekstem O nas. (Przesuwanie transformem z JS na telefonie spóźnia się
+      // za przewijaniem palcem i model podskakuje.)
       const hero = document.getElementById('top')
-      const pinEnd = hero ? hero.offsetTop + hero.offsetHeight - vh : Infinity
+      const pinEnd = hero ? hero.getBoundingClientRect().top + y + hero.offsetHeight - vh : Infinity
       const offset = Math.max(0, y - pinEnd)
-      layer.current?.style.setProperty('transform', offset > 0 ? `translate3d(0, ${-offset}px, 0)` : '')
+      const el = layer.current
+      if (el) {
+        el.style.position = offset > 0 ? 'absolute' : ''
+        el.style.top = offset > 0 ? `${pinEnd}px` : ''
+      }
       setHidden(offset >= vh)
 
       reveal.current = smoothstep(y, 0, vh * REVEAL_DISTANCE)
