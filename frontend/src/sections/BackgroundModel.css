@@ -15,6 +15,10 @@
   height: 100lvh;
   z-index: 1; /* nad napisem Hero (0), pod treścią sekcji (2) — patrz .page-content w globals.css */
   pointer-events: none;
+  /* poświata soczewki rośnie daleko poza ekran; bez przycięcia (gdy warstwa jest absolute
+     po odpięciu sceny) poszerzała stronę i na telefonie dało się ją przesunąć w bok */
+  overflow: hidden;
+  overflow: clip;
 }
 
 /* jasna poświata wokół soczewki */
