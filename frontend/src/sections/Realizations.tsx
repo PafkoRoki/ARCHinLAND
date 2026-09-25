@@ -4,6 +4,8 @@
 import { projects } from '../data/realizations'
 import AccordionGallery from '../components/AccordionGallery'
 import SectionHeader from '../components/SectionHeader'
+// krój nazw realizacji (jak w logo Baltic Cliff), tylko 800 italic
+import '@fontsource/barlow/800-italic.css'
 import './Realizations.css'
 
 // Kolejne akordeony w sekcji — każdy pokazuje wszystkie zdjęcia (gallery) jednej realizacji
@@ -26,8 +28,31 @@ export default function Realizations() {
         <SectionHeader index="02" label="Realizacje" id="realizations-title" />
         <div className="realizations__galleries">
           {galleries.map((project) => (
+            <figure className="realization" key={project.slug}>
+              {/* podpis galerii jak opis na rysunku: nazwa + dane obiektu + krótki opis */}
+              <figcaption className="realization__caption">
+                <h3 className={`realization__name realization__name--${project.slug}`}>
+                  {project.displayName ?? project.name}
+                </h3>
+                <dl className="realization__meta">
+                  <div>
+                    <dt>Lokalizacja</dt>
+                    <dd>{project.location}</dd>
+                  </div>
+                  {project.year && (
+                    <div>
+                      <dt>Rok</dt>
+                      <dd>{project.year}</dd>
+                    </div>
+                  )}
+                  <div>
+                    <dt>Typ</dt>
+                    <dd>{project.category}</dd>
+                  </div>
+                </dl>
+                {project.description && <p className="realization__desc">{project.description}</p>}
+              </figcaption>
             <AccordionGallery
-              key={project.slug}
               items={itemsFor(project)}
               defaultIndex={0}
               expandRatio={0.52}
@@ -47,6 +72,7 @@ export default function Realizations() {
               radius={0}
               orientation="horizontal"
             />
+            </figure>
           ))}
         </div>
       </div>

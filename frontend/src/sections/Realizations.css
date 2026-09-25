@@ -1,5 +1,66 @@
-/* odstęp między kolejnymi akordeonami realizacji */
+/* odstęp między kolejnymi realizacjami (podpis + akordeon) */
 .realizations__galleries {
   display: grid;
   gap: var(--head-gap);
+}
+
+.realization {
+  margin: 0;
+}
+
+/* podpis galerii: nazwa po lewej, dane obiektu po prawej, opis pod spodem */
+.realization__caption {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 16px 32px;
+  margin-bottom: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+/* nazwy realizacji krojem z logo Baltic Cliff (Barlow 800 italic), w zwykłej pisowni.
+   Pojedynczy obiekt można wyróżnić klasą realization__name--<slug> */
+.realization__name {
+  font-family: 'Barlow', var(--font-display);
+  font-size: var(--fs-h3);
+  font-style: italic;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.realization__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 32px;
+  margin: 0;
+}
+
+.realization__meta dt {
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.realization__meta dd {
+  margin: 4px 0 0;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.realization__desc {
+  grid-column: 1 / -1;
+  max-width: 62ch;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--faint);
+}
+
+@media (max-width: 720px) {
+  .realization__caption {
+    grid-template-columns: 1fr;
+  }
 }

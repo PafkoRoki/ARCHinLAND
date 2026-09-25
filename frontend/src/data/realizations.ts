@@ -26,6 +26,8 @@ export interface Project {
   /** Wszystkie zdjęcia z folderu realizacji. */
   gallery: string[]
   description?: string
+  /** Nazwa w podpisie galerii (sekcja Realizacje) w zwykłej pisowni, np. "Baltic Cliff"; domyślnie name. */
+  displayName?: string
 }
 
 type ProjectInfo = Omit<Project, 'image' | 'gallery'>
@@ -36,27 +38,33 @@ const info: ProjectInfo[] = [
     slug: 'baltic-cliff',
     number: '01',
     name: 'BALTIC CLIFF',
+    displayName: 'Baltic Cliff',
     location: 'Niechorze, Poland',
     year: '2015',
     category: 'Hotele',
+    description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
   },
   {
     id: 'Osiedle Panorama',
     slug: 'osiedle-panorama',
     number: '02',
     name: 'OSIEDLE PANORAMA',
+    displayName: 'Osiedle Panorama',
     location: 'Gryfice, Poland',
     year: '2020',
     category: 'Osiedla mieszkaniowe',
+    description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
   },
   {
     id: 'Szwecja',
     slug: 'szwecja',
     number: '03',
     name: 'SZWECJA',
+    displayName: 'Szwecja',
     location: 'Sweden',
     year: '2026',
     category: 'Dom jednorodzinny',
+    description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
   },
 ]
 
