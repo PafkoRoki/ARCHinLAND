@@ -10,7 +10,7 @@ import '@fontsource/barlow/800-italic.css'
 import './Realizations.css'
 
 // Kolejność galerii w zakładkach (każdy akordeon = wszystkie zdjęcia jednej realizacji)
-const GALLERY_SLUGS = ['baltic-cliff', 'apartamentowce', 'baltic-riviera', 'osiedle-panorama', 'sjas']
+const GALLERY_SLUGS = ['baltic-cliff', 'apartamentowce', 'baltic-riviera', 'osiedle-panorama', 'sjas', 'dom-na-wyspie']
 
 // Zakładki — realizacja trafia do zakładki według pola `group` w data/realizations.ts
 const TABS = [

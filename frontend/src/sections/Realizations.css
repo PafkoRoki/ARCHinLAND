@@ -80,6 +80,8 @@
 /* telefon: galeria ma tylko pierwsze zdjęcie (Realizations.tsx) — pełne proporcje zamiast paska */
 @media (max-width: 520px) {
   .realization .ag-panel {
+    flex: none !important; /* galeria ustawia flex-grow w stylu — bez tego wysokość = 0 */
+    width: 100%;
     aspect-ratio: 4 / 3;
     min-height: 0;
   }

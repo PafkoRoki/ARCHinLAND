@@ -45,7 +45,7 @@ const info: ProjectInfo[] = [
     name: 'BALTIC CLIFF',
     displayName: 'Baltic Cliff',
     location: 'Niechorze, Poland',
-    year: '2015',
+    year: '2010',
     category: 'Hotele',
     description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
   },
@@ -81,7 +81,7 @@ const info: ProjectInfo[] = [
     name: 'APARTAMENTOWCE',
     displayName: 'Apartamentowce',
     location: 'Dziwnów, Poland',
-    year: '2018', // uzupełnij rok (pusty = niewyświetlany)
+    year: '2016', // uzupełnij rok (pusty = niewyświetlany)
     category: 'Apartamentowce',
     description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
   },
@@ -95,6 +95,18 @@ const info: ProjectInfo[] = [
     location: 'Dziwnówek, Poland',
     year: '2019',
     category: 'Apartamentowce',
+    description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
+  },
+  {
+    id: 'Dom na wyspie',
+    slug: 'dom-na-wyspie',
+    group: 'domy',
+    number: '06',
+    name: 'DOM NA WYSPIE',
+    displayName: 'Dom na wyspie',
+    location: 'Poland', // uzupełnij miejscowość
+    year: '', // uzupełnij rok (pusty = niewyświetlany)
+    category: 'Dom jednorodzinny',
     description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
   },
 ]

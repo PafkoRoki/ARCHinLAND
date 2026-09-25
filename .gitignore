@@ -141,3 +141,5 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+# źródła modeli 3D (.dae + tekstury) — lokalnie; na stronę trafia tylko skompresowany public/models/*.glb
+frontend/models-src/
