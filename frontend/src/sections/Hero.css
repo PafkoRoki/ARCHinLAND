@@ -1,7 +1,7 @@
 /* Przypięta scena: wysoka sekcja, w której warstwy stoją w miejscu (sticky) podczas przewijania.
    --hero-pin = ile ekranów przewijania trwa scena po pierwszym ekranie (patrz Hero.tsx). */
 .hero {
-  --hero-pin: 220svh;
+  --hero-pin: 320svh;
   --about: 0;
 
   position: relative;
@@ -178,13 +178,25 @@
     right: var(--gutter);
   }
 
-  /* telefon: podpis pod modelem */
+  /* telefon: podpis pod modelem, bliżej dołu — więcej miejsca wokół domu */
   .hero__tag {
     top: auto;
-    bottom: 22%;
+    bottom: 16%;
     left: 50%;
     justify-items: center;
     text-align: center;
     transform: translate(-50%, calc((1 - var(--tag, 0)) * 16px));
+  }
+}
+
+/* telefon: mniejszy tekst O nas — mniej ciasno nad modelem */
+@media (max-width: 560px) {
+  .hero__lead {
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  .hero__hint {
+    bottom: 16px;
   }
 }

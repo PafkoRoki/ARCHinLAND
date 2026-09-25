@@ -1,3 +1,15 @@
+/* zakładki: Apartamentowce / Hotele · Osiedla · Domy jednorodzinne (wygląd .btn z globals.css) */
+.realizations__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: var(--head-gap);
+}
+
+.realizations__count {
+  opacity: 0.6;
+}
+
 /* odstęp między kolejnymi realizacjami (podpis + akordeon) */
 .realizations__galleries {
   display: grid;
@@ -62,5 +74,17 @@
 @media (max-width: 720px) {
   .realization__caption {
     grid-template-columns: 1fr;
+  }
+}
+
+/* telefon: galeria ma tylko pierwsze zdjęcie (Realizations.tsx) — pełne proporcje zamiast paska */
+@media (max-width: 520px) {
+  .realization .ag-panel {
+    aspect-ratio: 4 / 3;
+    min-height: 0;
+  }
+
+  .realization .ag-panel__media {
+    height: 100% !important;
   }
 }

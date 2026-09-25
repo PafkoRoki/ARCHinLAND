@@ -13,6 +13,9 @@ const photosOf = (slug: string) =>
     .sort()
     .map((file) => photoFiles[file])
 
+/** Zakładka w sekcji Realizacje */
+export type RealizationGroup = 'apartamenty' | 'osiedla' | 'domy'
+
 export interface Project {
   id: string
   slug: string // = nazwa folderu ze zdjęciami w src/assets/realizacje/
@@ -21,6 +24,7 @@ export interface Project {
   location: string
   year: string
   category: string
+  group: RealizationGroup // zakładka: Apartamentowce / Hotele, Osiedla, Domy jednorodzinne
   /** Zdjęcie główne (01.jpg) — pierwsze w akordeonie i w galerii szczegółów. */
   image: string
   /** Wszystkie zdjęcia z folderu realizacji. */
@@ -36,6 +40,7 @@ const info: ProjectInfo[] = [
   {
     id: 'Baltic Cliff',
     slug: 'baltic-cliff',
+    group: 'apartamenty',
     number: '01',
     name: 'BALTIC CLIFF',
     displayName: 'Baltic Cliff',
@@ -47,6 +52,7 @@ const info: ProjectInfo[] = [
   {
     id: 'Osiedle Panorama',
     slug: 'osiedle-panorama',
+    group: 'osiedla',
     number: '02',
     name: 'OSIEDLE PANORAMA',
     displayName: 'Osiedle Panorama',
@@ -58,6 +64,7 @@ const info: ProjectInfo[] = [
   {
     id: 'Sjås',
     slug: 'sjas',
+    group: 'domy',
     number: '03',
     name: 'SJÅS',
     displayName: 'Sjås',
@@ -69,6 +76,7 @@ const info: ProjectInfo[] = [
   {
     id: 'Apartamentowce Dziwnów',
     slug: 'apartamentowce',
+    group: 'apartamenty',
     number: '04',
     name: 'APARTAMENTOWCE',
     displayName: 'Apartamentowce',
@@ -80,6 +88,7 @@ const info: ProjectInfo[] = [
   {
     id: 'Baltic Riviera',
     slug: 'baltic-riviera',
+    group: 'apartamenty',
     number: '05',
     name: 'BALTIC RIVIERA',
     displayName: 'Baltic Riviera',

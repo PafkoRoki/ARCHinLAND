@@ -2,12 +2,13 @@ import { PointerEvent, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import StrokeText from '../components/StrokeText'
 import { modelControls } from '../lib/modelControls'
+import { screenHeight } from '../lib/viewport'
 import './Hero.css'
 
 // Przypięta scena jak w STILL (odległości w wysokościach ekranu, liczone od góry strony):
 //   0 → 0.8   koło z modelem rozszerza się do pełnego ekranu (BackgroundModel, REVEAL_DISTANCE)
 //   0.85 → 1.25  pojawia się tekst O nas, model można obracać myszką
-//   do PIN_LENGTH  scena stoi w miejscu, potem wjeżdżają Realizacje
+//   do 4.2    scena stoi w miejscu (--hero-pin w Hero.css), potem wjeżdżają Realizacje
 // Długość sceny = 1 ekran + PIN_LENGTH — ustawiona w Hero.css (--hero-pin).
 const ABOUT_START = 0.85
 const ABOUT_END = 1.25
@@ -30,7 +31,7 @@ export default function Hero() {
     const onScroll = () => {
       const el = sectionRef.current
       if (!el) return
-      const p = window.scrollY / window.innerHeight
+      const p = window.scrollY / screenHeight() // stała wysokość (telefon: pasek adresu)
       const about = smoothstep(ABOUT_START, ABOUT_END, p)
       el.style.setProperty('--about', about.toFixed(3))
       el.dataset.about = about > 0.6 ? 'on' : 'off'

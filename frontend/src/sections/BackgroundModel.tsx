@@ -5,12 +5,16 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import { modelControls, reportModelProgress, reportModelReady } from '../lib/modelControls'
+import { screenHeight } from '../lib/viewport'
 import './BackgroundModel.css'
 
 // Eryk.glb = Eryk.dae przekonwertowany i skompresowany (meshopt + tekstury WebP 1024 px)
 const MODEL_URL = '/models/Eryk.glb'
 const TARGET = 4.6 // najdłuższy bok modelu w jednostkach sceny
 const MODEL_SCALE = 0.62 // ogólny rozmiar modelu na ekranie
+// telefon (ekran pionowy): model po rozszerzeniu koła niżej (ułamek wysokości ekranu) i nieco mniejszy
+const PORTRAIT_DROP = 0.08
+const PORTRAIT_SCALE = 0.85
 const BASE_ROTATION = -0.5 // obrót startowy (rad) — widok 3/4
 
 // Soczewka w Hero (jak w STILL): model widać tylko w kole, które podąża za kursorem.
@@ -196,7 +200,10 @@ function Model({ reveal, pointer, layer }: Motion) {
     // po rozszerzeniu soczewki model stoi na środku ekranu
     g.position.x = lerp(hit.x, 0, r)
     // delikatne unoszenie w Hero, jak puszka w STILL
-    g.position.y = lerp(hit.y, 0, r) + Math.sin(state.clock.elapsedTime * 0.8) * 0.05 * h
+    // telefon (ekran pionowy): model niżej, pod tekstem O nas — więcej miejsca na tekst
+    const portrait = size.height > size.width
+    const restY = portrait ? -viewport.height * PORTRAIT_DROP : 0
+    g.position.y = lerp(hit.y, restY, r) + Math.sin(state.clock.elapsedTime * 0.8) * 0.05 * h
 
     // przewijanie nie obraca modelu — tylko kursor w Hero i przeciąganie myszką w About
     const nx = pointer.current ? (pointer.current.x / w) * 2 - 1 : 0
@@ -205,7 +212,7 @@ function Model({ reveal, pointer, layer }: Motion) {
     g.rotation.y = lerp(g.rotation.y, turn, k)
     g.rotation.x = lerp(g.rotation.x, -ny * HOVER_TILT_X * h, k)
 
-    const fit = clamp(viewport.width / 6, 0.5, 1) * MODEL_SCALE // mniejszy na wąskich ekranach
+    const fit = clamp(viewport.width / 6, 0.5, 1) * MODEL_SCALE * (portrait ? PORTRAIT_SCALE : 1) // mniejszy na wąskich ekranach
     g.scale.setScalar(fit * lerp(LENS_ZOOM, 1, r))
 
     // światło główne jedzie za modelem — dzięki temu obszar cieni jest mały, a cienie ostre
@@ -266,7 +273,7 @@ export default function BackgroundModel() {
 
   useEffect(() => {
     const onScroll = () => {
-      const vh = window.innerHeight
+      const vh = screenHeight() // stała wysokość (bez skoków przy chowaniu paska adresu na telefonie)
       const y = window.scrollY
       // po odpięciu sceny Hero (O nas) model odjeżdża w górę razem z nią i znika z ekranu
       const hero = document.getElementById('top')
