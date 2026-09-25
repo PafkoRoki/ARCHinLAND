@@ -25,7 +25,7 @@
   min-width: 0;
   min-height: 0;
   overflow: hidden;
-  border: 1px solid #000;
+  border: 1px solid var(--border);
   border-radius: var(--ag-radius);
   cursor: pointer;
   display: block;
@@ -129,7 +129,7 @@
     height: auto !important;
   }
   .ag-panel {
-    min-height: 84px;
+    min-height: 120px;
     transform: none !important;
   }
   .accordion-gallery .ag-panel__media {

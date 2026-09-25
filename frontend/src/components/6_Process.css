@@ -48,12 +48,12 @@
   align-items: baseline;
   gap: clamp(20px, 3vw, 32px);
   padding: clamp(28px, 4vw, 44px) 0;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--border);
   transition: background 0.3s var(--ease);
 }
 
 .process__list li:last-child {
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--border);
 }
 
 .process__step:hover {

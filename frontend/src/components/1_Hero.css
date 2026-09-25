@@ -25,6 +25,7 @@
   margin: 0;
   padding: 0 var(--gutter);
   font: inherit;
+  font-family: var(--font-display); /* napis ARCHinLAND w SVG dziedziczy krój */
   pointer-events: none;
 }
 
@@ -46,11 +47,7 @@
   align-items: center;
   gap: 24px;
   padding-top: 20px;
-  border-top: 1px solid var(--line);
-}
-
-.hero__foot .btn-outline {
-  background: var(--white);
+  border-top: 1px solid var(--border);
 }
 
 .hero__scroll {

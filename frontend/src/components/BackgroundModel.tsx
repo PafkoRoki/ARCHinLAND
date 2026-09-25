@@ -3,7 +3,8 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
-import { modelControls } from '../lib/modelControls'
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
+import { modelControls, reportModelProgress, reportModelReady } from '../lib/modelControls'
 import './BackgroundModel.css'
 
 // Eryk.glb = Eryk.dae przekonwertowany i skompresowany (meshopt + tekstury WebP 1024 px)
@@ -24,9 +25,65 @@ const FADE_END = 0.35 // model całkiem znika, gdy góra sekcji Realizacje dojdz
 const HOVER_TILT_Y = 0.45
 const HOVER_TILT_X = 0.12
 
+// światło główne: przesunięcie względem modelu i zasięg mapy cieni (jednostki sceny)
+const KEY_OFFSET: [number, number, number] = [4, 8, 5]
+const SHADOW_EXTENT = 3.2
+const ENV_INTENSITY = 0.45 // siła odbić i światła z otoczenia (RoomEnvironment)
+
 const { lerp, clamp, smoothstep } = THREE.MathUtils
 
 type Loaded = { obj: THREE.Object3D; height: number }
+
+// Materiały z modelu mają roughness 1 i zero metalu (wyglądają jak papier).
+// Stroimy je po nazwie; env = względna siła odbić otoczenia (RoomEnvironment w <Reflections />).
+type Look = { roughness: number; metalness?: number; env?: number }
+const LOOKS: [RegExp, Look][] = [
+  [/Metal|galvan/i, { roughness: 0.35, metalness: 0.85, env: 1.2 }], // blacha ocynkowana
+  [/Gabbiano/i, { roughness: 0.4, metalness: 0.3, env: 1 }], // ciemne ramy i obróbki
+  [/Plastic/i, { roughness: 0.45, env: 0.9 }],
+  [/Tiles|Floor/i, { roughness: 0.55, env: 0.8 }], // płytki, posadzka
+  [/Humano|Pinus|leaves/i, { roughness: 0.9, env: 0.4 }], // ludzie i zieleń — bez połysku
+]
+const GLASS: Look = { roughness: 0.05, metalness: 0.1, env: 2 }
+const MATTE: Look = { roughness: 0.95, env: 0.25 } // beton, tynk, drewno
+
+function enhanceMaterial(m: THREE.Material) {
+  if (!(m instanceof THREE.MeshStandardMaterial)) return
+  // szkło = przezroczysty materiał, który nie jest liśćmi drzew
+  const isGlass = m.transparent && !/Pinus|leaves/i.test(m.name)
+  const look = isGlass ? GLASS : LOOKS.find(([re]) => re.test(m.name))?.[1] ?? MATTE
+  m.roughness = look.roughness
+  m.metalness = look.metalness ?? 0
+  m.envMapIntensity = (look.env ?? 1) * ENV_INTENSITY
+  m.needsUpdate = true
+}
+
+// Odbicia bez zewnętrznych plików HDR: studyjne otoczenie generowane w przeglądarce.
+// Mapę przypinamy do każdego materiału osobno (material.envMap), bo tylko wtedy działa
+// envMapIntensity z LOOKS — scene.environment świeciłoby jednakowo na wszystko.
+function Reflections({ object }: { object: THREE.Object3D | undefined }) {
+  const { gl } = useThree()
+  useEffect(() => {
+    if (!object) return
+    const pmrem = new THREE.PMREMGenerator(gl)
+    const env = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+    object.traverse((child) => {
+      const mesh = child as THREE.Mesh
+      if (!mesh.isMesh) return
+      for (const m of ([] as THREE.Material[]).concat(mesh.material)) {
+        if (m instanceof THREE.MeshStandardMaterial) {
+          m.envMap = env
+          m.needsUpdate = true
+        }
+      }
+    })
+    return () => {
+      env.dispose()
+      pmrem.dispose()
+    }
+  }, [gl, object])
+  return null
+}
 
 function useModel(url: string) {
   const [loaded, setLoaded] = useState<Loaded | null>(null)
@@ -40,7 +97,11 @@ function useModel(url: string) {
         const o = gltf.scene
         o.traverse((child) => {
           const m = child as THREE.Mesh
-          if (m.isMesh) m.castShadow = true
+          if (!m.isMesh) return
+          // model rzuca cień na podłoże i sam na siebie (pergola na tarasie, okap na ścianie)
+          m.castShadow = true
+          m.receiveShadow = true
+          ;([] as THREE.Material[]).concat(m.material).forEach(enhanceMaterial)
         })
         // środek na X/Z, stoi na y=0, przeskalowany do TARGET
         const box = new THREE.Box3().setFromObject(o)
@@ -53,8 +114,14 @@ function useModel(url: string) {
         wrap.scale.setScalar(s)
         setLoaded({ obj: wrap, height: size.y * s })
       },
-      undefined,
-      (e) => console.error('Nie udało się wczytać modelu', e),
+      // postęp dla AppLoadera (tylko gdy serwer podał rozmiar pliku)
+      (e) => {
+        if (e.lengthComputable && e.total > 0) reportModelProgress(e.loaded / e.total)
+      },
+      (e) => {
+        console.error('Nie udało się wczytać modelu', e)
+        reportModelReady() // nie blokuj ekranu ładowania, gdy model się nie wczyta
+      },
     )
     return () => {
       alive = false
@@ -67,26 +134,33 @@ function useModel(url: string) {
 const lensRadius = (w: number) => Math.min(LENS_RADIUS, w * 0.32)
 
 type Motion = {
-  progress: MutableRefObject<number> // 0 → 1 od pola z modelem w About do końca strony
   reveal: MutableRefObject<number> // 0 = soczewka w Hero, 1 = pełny ekran
   pointer: MutableRefObject<{ x: number; y: number } | null> // kursor w px, null = brak
   layer: RefObject<HTMLDivElement> // tu ustawiamy zmienne CSS soczewki
 }
 
-function Model({ progress, reveal, pointer, layer }: Motion) {
+function Model({ reveal, pointer, layer }: Motion) {
   const group = useRef<THREE.Group>(null!)
   const { viewport, camera, size } = useThree()
   const loaded = useModel(MODEL_URL)
   const lens = useRef({ x: 0, y: 0, ready: false })
   const tmp = useRef({ ndc: new THREE.Vector3(), dir: new THREE.Vector3(), hit: new THREE.Vector3() })
+  const key = useRef<THREE.DirectionalLight>(null!)
 
   useEffect(() => {
     camera.lookAt(0, 0, 0)
   }, [camera])
 
+  // gotowość dla AppLoadera: model wczytany i narysowany w pierwszej klatce
+  const announced = useRef(false)
+
   useFrame((state, dt) => {
+    if (loaded && !announced.current) {
+      announced.current = true
+      requestAnimationFrame(() => reportModelReady()) // po narysowaniu tej klatki
+    }
+
     const g = group.current
-    const p = progress.current
     const r = reveal.current
     const h = 1 - r
     const k = 1 - Math.pow(0.001, dt) // wygładzanie niezależne od FPS
@@ -117,23 +191,54 @@ function Model({ progress, reveal, pointer, layer }: Motion) {
     dir.copy(ndc).sub(camera.position).normalize()
     hit.copy(camera.position).addScaledVector(dir, -camera.position.z / dir.z)
 
-    // od About model obraca się i kołysze na boki z przewijaniem
-    const scrollX = Math.sin(p * Math.PI * 3) * viewport.width * 0.2
-    g.position.x = lerp(hit.x, scrollX, r)
+    // po rozszerzeniu soczewki model stoi na środku ekranu
+    g.position.x = lerp(hit.x, 0, r)
     // delikatne unoszenie w Hero, jak puszka w STILL
     g.position.y = lerp(hit.y, 0, r) + Math.sin(state.clock.elapsedTime * 0.8) * 0.05 * h
 
-    // w Hero model obraca się w stronę kursora, w About — przeciąganiem myszką
+    // przewijanie nie obraca modelu — tylko kursor w Hero i przeciąganie myszką w About
     const nx = pointer.current ? (pointer.current.x / w) * 2 - 1 : 0
     const ny = pointer.current ? -(pointer.current.y / hgt) * 2 + 1 : 0
-    const turn = BASE_ROTATION + p * Math.PI * 2 + nx * HOVER_TILT_Y * h + modelControls.dragRotation
+    const turn = BASE_ROTATION + nx * HOVER_TILT_Y * h + modelControls.dragRotation
     g.rotation.y = lerp(g.rotation.y, turn, k)
     g.rotation.x = lerp(g.rotation.x, -ny * HOVER_TILT_X * h, k)
 
     const fit = clamp(viewport.width / 6, 0.5, 1) * MODEL_SCALE // mniejszy na wąskich ekranach
     g.scale.setScalar(fit * lerp(LENS_ZOOM, 1, r))
+
+    // światło główne jedzie za modelem — dzięki temu obszar cieni jest mały, a cienie ostre
+    const light = key.current
+    light.position.set(g.position.x + KEY_OFFSET[0], g.position.y + KEY_OFFSET[1], KEY_OFFSET[2])
+    light.target.position.copy(g.position)
+    light.target.updateMatrixWorld()
   })
 
+  return (
+    <>
+      {/* ciepłe światło główne (słońce) z miękkim cieniem */}
+      <directionalLight
+        ref={key}
+        intensity={1.9}
+        color="#fff3e2"
+        castShadow
+        shadow-mapSize={[2048, 2048]}
+        shadow-camera-left={-SHADOW_EXTENT}
+        shadow-camera-right={SHADOW_EXTENT}
+        shadow-camera-top={SHADOW_EXTENT}
+        shadow-camera-bottom={-SHADOW_EXTENT}
+        shadow-camera-near={0.5}
+        shadow-camera-far={25}
+        shadow-bias={-0.0005}
+        shadow-normalBias={0.02}
+        shadow-radius={4}
+      />
+      <Reflections object={loaded?.obj} />
+      <ModelGroup group={group} loaded={loaded} />
+    </>
+  )
+}
+
+function ModelGroup({ group, loaded }: { group: RefObject<THREE.Group>; loaded: Loaded | null }) {
   return (
     <group ref={group}>
       {loaded && (
@@ -152,7 +257,7 @@ function Model({ progress, reveal, pointer, layer }: Motion) {
 
 export default function BackgroundModel() {
   const layer = useRef<HTMLDivElement>(null)
-  const progress = useRef(0)
+  const canvasWrap = useRef<HTMLDivElement>(null)
   const reveal = useRef(0)
   const pointer = useRef<{ x: number; y: number } | null>(null)
   // po zniknięciu modelu (sekcja Realizacje) scena przestaje się renderować
@@ -170,16 +275,10 @@ export default function BackgroundModel() {
       // model znika, gdy wjeżdża sekcja Realizacje: od jej pojawienia się na dole ekranu
       // do chwili, gdy jej góra dojdzie do FADE_END ekranu
       const realTop = top('realizations')
-      const end = realTop !== null ? realTop - vh * FADE_END : document.documentElement.scrollHeight - vh
       const fade = realTop !== null ? smoothstep(realTop - y, vh * FADE_END, vh) : 1
-      layer.current?.style.setProperty('opacity', `${fade}`)
+      canvasWrap.current?.style.setProperty('opacity', `${fade}`)
       setHidden(fade <= 0)
 
-      // model nie obraca się z przewijaniem, dopóki na ekranie jest pole do obracania w About;
-      // potem pełny obrót do momentu zniknięcia
-      const stage = document.getElementById('about-stage')
-      const start = stage ? stage.getBoundingClientRect().bottom + y - vh / 2 : vh
-      progress.current = end > start ? clamp((y - start) / (end - start), 0, 1) : 0
       reveal.current = smoothstep(y, 0, vh * REVEAL_DISTANCE)
     }
     // tylko prawdziwa mysz — na dotyku soczewka stoi w LENS_REST
@@ -208,31 +307,21 @@ export default function BackgroundModel() {
       <div className="bg-model__halo" />
       <div className="bg-model__lens">
         <div className="bg-model__lens-bg" />
-        <Canvas
-          shadows
-          frameloop={hidden ? 'never' : 'always'}
-          camera={{ position: [0, 2.4, 8], fov: 35 }}
-          dpr={[1, 2]}
-          gl={{ alpha: true, antialias: true }}
-        >
-          <ambientLight intensity={0.8} />
-          <directionalLight
-            position={[4, 8, 5]}
-            intensity={1.8}
-            castShadow
-            shadow-mapSize={[2048, 2048]}
-            shadow-camera-left={-8}
-            shadow-camera-right={8}
-            shadow-camera-top={8}
-            shadow-camera-bottom={-8}
-            shadow-camera-near={0.5}
-            shadow-camera-far={30}
-            shadow-bias={-0.0004}
-            shadow-normalBias={0.03}
-          />
-          <directionalLight position={[-4, 2, -3]} intensity={0.4} />
-          <Model progress={progress} reveal={reveal} pointer={pointer} layer={layer} />
-        </Canvas>
+        <div ref={canvasWrap} className="bg-model__canvas">
+          <Canvas
+            shadows={{ type: THREE.PCFShadowMap }}
+            frameloop={hidden ? 'never' : 'always'}
+            camera={{ position: [0, 2.4, 8], fov: 35 }}
+            dpr={[1, 2]}
+            gl={{ alpha: true, antialias: true }}
+          >
+            {/* rozproszone światło nieba (góra) i odbite od ziemi (dół) — otoczenie robi resztę */}
+            <hemisphereLight args={['#f4f1ea', '#b9b2a6', 0.15]} />
+            {/* chłodne światło kontrowe od tyłu — rysuje krawędzie bryły */}
+            <directionalLight position={[-5, 4, -6]} intensity={0.9} color="#dfe7f2" />
+            <Model reveal={reveal} pointer={pointer} layer={layer} />
+          </Canvas>
+        </div>
       </div>
     </div>
   )

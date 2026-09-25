@@ -40,14 +40,15 @@
   clip-path: none;
 }
 
-/* tło wnętrza soczewki — znika, gdy koło rośnie do pełnego ekranu */
+/* tło wnętrza soczewki — po rozszerzeniu koła zostaje tłem reszty strony */
 .bg-model__lens-bg {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    circle calc(var(--lens-r) * 1.1) at calc(var(--lens-x) - var(--lens-r) * 0.35) calc(var(--lens-y) - var(--lens-r) * 0.35),
-    #f7f8f8 0%,
-    #d6dcdb 100%
-  );
-  opacity: var(--lens-fade);
+  background: var(--bg-model);
+}
+
+/* sam model — zanika przy sekcji Realizacje (opacity ustawia BackgroundModel.tsx) */
+.bg-model__canvas {
+  position: absolute;
+  inset: 0;
 }

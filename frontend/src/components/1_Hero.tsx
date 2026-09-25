@@ -26,17 +26,7 @@ export default function Hero() {
             ARCHinLAND — biuro architektoniczne Andrzej Kurka, Kamień Pomorski
           </span>
         </h1>
-
-        <div className="hero__foot">
-          <span className="label">Kamień Pomorski</span>
-          <a className="btn-outline" href="#contact">
-            Kontakt <span className="plus" aria-hidden="true">→</span>
-          </a>
-          <a className="hero__scroll" href="#about">
-            Scroll
-            <span className="hero__scroll-line" aria-hidden="true" />
-          </a>
-        </div>
+        
       </div>
     </section>
   )

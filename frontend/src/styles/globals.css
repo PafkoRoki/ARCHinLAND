@@ -28,21 +28,25 @@ a {
 /* Tokens                                              */
 /* -------------------------------------------------- */
 :root {
-  --bg: #ecf0ef;
+  --bg: #f0f0f0;
   --bg-alt: #eeece7;
-  --orange: #FE5000;
+  --bg-model: #ffa60052; /* tło soczewki z modelem w Hero; po rozszerzeniu tło reszty strony */
+  --orange: #FFA500;
   --black: #2d2d2d;
   --graphite: #2d2d2dbb;
   --white: #ffffff;
-  --line: rgba(17, 17, 17, 0.12);
+  --border: #2d2d2d; /* JEDEN kolor wszystkich krawędzi, linii i ramek przycisków */
+  --border-inverse: rgba(236, 240, 239, 0.35); /* linie na ciemnym tle (stopka #2d2d2d): 1px, przygaszone, żeby nie "puchły" */
+  --line: var(--border); /* starsza nazwa, zostawiona dla zgodności */
+  --btn-pad: 12px 20px;
   --muted: rgba(45, 45, 45, 0.6);
   --faint: rgba(45, 45, 45, 0.45);
 
   --radius: 24px;
   --radius-sm: 12px;
 
-  --font-display: Arial, sans-serif;
-  --font-body: Arial, sans-serif;
+  --font-display: 'Inter Tight Variable', 'Inter Tight', Arial, sans-serif; /* napis, nagłówki, menu */
+  --font-body: 'Inter Variable', Inter, Arial, sans-serif; /* tekst, przyciski, podpisy */
 
   /* skala typografii — używaj tych zmiennych w sekcjach zamiast własnych clamp() */
   --fs-hero: clamp(3.5rem, 11vw, 9.5rem);
@@ -113,6 +117,11 @@ h1, h2, h3, h4, p, figure {
   margin: 0;
 }
 
+/* nagłówki w kroju nagłówkowym (Inter Tight), reszta dziedziczy --font-body */
+h1, h2, h3 {
+  font-family: var(--font-display);
+}
+
 ul {
   list-style: none;
   margin: 0;
@@ -135,6 +144,15 @@ button {
   background: none;
   border: none;
   cursor: pointer;
+}
+
+/* styl marki: przyciski i pola kanciaste, zero zaokrągleń, ten sam krój (Arial) co strona */
+button,
+input,
+select,
+textarea {
+  border-radius: 0;
+  font-family: inherit;
 }
 
 :focus-visible {
@@ -176,13 +194,19 @@ button {
   z-index: auto;
 }
 
+/* od Realizacji w dół tło strony (--bg) — pełne tło sekcji zasłania tło soczewki (--bg-model) */
+.page-content > #realizations,
+.page-content > #realizations ~ section {
+  background: var(--bg);
+}
+
 .section {
   padding-top: var(--section-pad);
   padding-bottom: var(--section-pad);
 }
 
 .section-border {
-  border-top: 0px solid var(--line);
+  border-top: 0px solid var(--border);
 }
 
 .section-border:first-child {
@@ -262,25 +286,33 @@ button {
 /* -------------------------------------------------- */
 /* Buttons / controls                                  */
 /* -------------------------------------------------- */
+/* Jeden wygląd wszystkich przycisków: .btn (i starsza nazwa .btn-outline).
+   Te same wartości mają .sm-toggle (MENU), .detailsButton i zakładki w ProjectDetail. */
+.btn,
 .btn-outline {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 18px;
-  border: 1px solid var(--orange);
-  border-radius: 999px;
-  color: var(--orange);
+  gap: 12px;
+  padding: var(--btn-pad);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  background: var(--white);
+  color: var(--black);
   font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  line-height: 1;
   text-transform: uppercase;
-  transition: background 0.3s var(--ease), color 0.3s var(--ease);
+  transition: background 0.25s var(--ease), color 0.25s var(--ease);
   white-space: nowrap;
+  cursor: pointer;
 }
 
-.btn-outline:hover {
-  background: var(--orange);
+.btn:hover,
+.btn-outline:hover,
+.btn.isActive {
+  background: var(--black);
   color: var(--white);
 }
 
@@ -315,39 +347,15 @@ button {
 /* -------------------------------------------------- */
 /* Nagłówek sekcji (komponent SectionHeader)           */
 /* -------------------------------------------------- */
+/* widoczny tylko wtedy, gdy sekcja ma treść `aside` (np. ocena Google w Opiniach) */
 .section-head {
   display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 32px;
+  justify-content: flex-end;
   margin-bottom: var(--head-gap);
-  padding-top: 20px;
-  border-top: 1px solid var(--line);
-}
-
-.section-head__main {
-  display: grid;
-  gap: 20px;
-  min-width: 0;
-}
-
-.section-head__title {
-  font-size: var(--fs-h2);
-  font-weight: 900;
-  line-height: 1;
-}
-
-.section-head__lead {
-  max-width: 48ch;
-}
-
-.section-head__aside {
-  flex-shrink: 0;
 }
 
 @media (max-width: 860px) {
   .section-head {
-    align-items: start;
-    flex-direction: column;
+    justify-content: flex-start;
   }
 }

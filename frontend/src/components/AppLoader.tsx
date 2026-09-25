@@ -1,11 +1,14 @@
 import {
   useCallback,
+  useEffect,
   useId,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react'
 import { gsap } from 'gsap'
+import { modelReady, onModelProgress } from '../lib/modelControls'
 import './AppLoader.css'
 
 const NUM_POINTS = 5
@@ -13,11 +16,28 @@ const DELAY_POINTS_MAX = 0.3
 const DELAY_PER_PATH = 0.25
 const DURATION = 1.9
 
+// Na stronie głównej ekran ładowania czeka na model 3D (BackgroundModel),
+// ale nie dłużej niż MAX_WAIT_MS — np. przy bardzo wolnym łączu.
+const MAX_WAIT_MS = 20000
+const isHome = () => window.location.pathname === '/'
+
+function waitForPage() {
+  if (!isHome()) return Promise.resolve()
+  return Promise.race([
+    modelReady,
+    new Promise<void>((resolve) => setTimeout(resolve, MAX_WAIT_MS)),
+  ])
+}
+
 type AppLoaderAnimationProps = {
+  start: Promise<void> // animacja odsłonięcia rusza, gdy się spełni
+  onStart: () => void
   onComplete: () => void
 }
 
 function AppLoaderAnimation({
+  start,
+  onStart,
   onComplete,
 }: AppLoaderAnimationProps) {
   const overlayRef = useRef<SVGSVGElement | null>(null)
@@ -116,8 +136,11 @@ function AppLoaderAnimation({
 
     render()
 
+    let cancelled = false
+
     const context = gsap.context(() => {
       const timeline = gsap.timeline({
+        paused: true, // rusza dopiero, gdy strona (model 3D) jest gotowa
         onUpdate: render,
         defaults: {
           ease: 'power2.inOut',
@@ -163,14 +186,23 @@ function AppLoaderAnimation({
       }
 
       toggle()
+      // plansza zakrywa cały ekran już w trakcie czekania (przed startem animacji)
+      render()
 
       timeline.eventCallback(
         'onComplete',
         onComplete,
       )
+
+      start.then(() => {
+        if (cancelled) return
+        onStart()
+        timeline.play()
+      })
     }, overlay)
 
     return () => {
+      cancelled = true
       context.revert()
 
       if (appRoot) {
@@ -185,7 +217,7 @@ function AppLoaderAnimation({
         }
       }
     }
-  }, [onComplete])
+  }, [start, onStart, onComplete])
 
   return (
     <svg
@@ -205,11 +237,11 @@ function AppLoaderAnimation({
         >
           <stop
             offset="0%"
-            stopColor="#ff8709"
+            stopColor="#fad184"
           />
           <stop
             offset="100%"
-            stopColor="#ffb347"
+            stopColor="#ffe4b1"
           />
         </linearGradient>
 
@@ -246,6 +278,16 @@ function AppLoaderAnimation({
 
 function AppLoader() {
   const [isVisible, setIsVisible] = useState(true)
+  const [isWaiting, setIsWaiting] = useState(true)
+  const [progress, setProgress] = useState(0)
+  const start = useMemo(waitForPage, [])
+  const showStatus = useMemo(isHome, [])
+
+  useEffect(() => onModelProgress(setProgress), [])
+
+  const handleStart = useCallback(() => {
+    setIsWaiting(false)
+  }, [])
 
   const handleComplete = useCallback(() => {
     setIsVisible(false)
@@ -258,8 +300,16 @@ function AppLoader() {
   return (
     <div className="app-loader">
       <AppLoaderAnimation
+        start={start}
+        onStart={handleStart}
         onComplete={handleComplete}
       />
+      {showStatus && isWaiting && (
+        <p className="app-loader__status" role="status">
+          Ładowanie modelu 3D
+          {progress > 0 ? ` · ${Math.round(progress * 100)}%` : '…'}
+        </p>
+      )}
     </div>
   )
 }

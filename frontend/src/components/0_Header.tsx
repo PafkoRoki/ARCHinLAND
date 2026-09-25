@@ -1,11 +1,10 @@
 import StaggeredMenu from './StaggeredMenu'
 import './0_Header.css'
 
-// kolejność = kolejność sekcji na stronie, numeracja 01–07 zgadza się z SectionHeader
+// kolejność = kolejność sekcji na stronie
 const menuItems = [
   { label: 'O nas', ariaLabel: 'Przejdź do sekcji O nas', link: '#about' },
   { label: 'Realizacje', ariaLabel: 'Przejdź do realizacji', link: '#realizations' },
-  { label: 'Modele 3D', ariaLabel: 'Przejdź do modeli 3D', link: '#models' },
   { label: 'Projekty', ariaLabel: 'Przejdź do katalogu projektów', link: '#projects' },
   { label: 'Proces', ariaLabel: 'Przejdź do sekcji Proces', link: '#process' },
   { label: 'Opinie', ariaLabel: 'Przejdź do opinii klientów', link: '#reviews' },
@@ -28,9 +27,9 @@ export default function Header() {
         socialItems={socialItems}
         socialsTitle="Kontakt"
         displaySocials
-        displayItemNumbering
+        displayItemNumbering={false}
         menuButtonColor="#2d2d2d"
-        openMenuButtonColor="#FE5000"
+        openMenuButtonColor="#2d2d2d"
         changeMenuColorOnOpen
         colors={['var(--bg-alt)', 'var(--orange)']}
         accentColor="var(--orange)"

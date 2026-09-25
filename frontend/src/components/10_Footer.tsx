@@ -39,11 +39,6 @@ interface SocialLink {
 }
 
 interface FooterProps {
-  heading?: {
-    line1?: string;
-    line2?: string;
-    line3?: string;
-  };
   socialLinks?: SocialLink[];
   links?: FooterLink[];
   companyDescription?: string;
@@ -216,9 +211,6 @@ const AnimatedIconLink = ({
 };
 
 export function Footer({
-  heading = {
-    
-  },
   socialLinks = [
     {
       href: "https://instagram.com",
@@ -234,8 +226,7 @@ export function Footer({
   links = [
     { label: "Mail", href: "mailto:ARCHinLAND@wp.pl" },
     { label: "790 820 114", href: "tel:+48790820114" },
-    { label: "Back to top", href: "'#home'" },
-    { label: "Modele 3D", href: "#models" },
+    { label: "Back to top", href: "#top" },
     { label: "Projekty", href: "#projects" }
   ],
   companyDescription = "ARCHITECTURE in LAND DEVELOPMENT",
@@ -247,18 +238,12 @@ export function Footer({
 }: FooterProps) {
   return (
   <footer className="w-full bg-[#2d2d2d] text-white relative z-50">
-      <div className="w-full py-8 min-[1250px]:py-16">
-        <div className="text-center mb-8 min-[1250px]:mb-16">
-          <h2 className="text-4xl min-[1250px]:text-7xl font-light leading-tight">
-            {heading.line1}<br />
-            {heading.line2}<br />
-            {heading.line3}
-          </h2>
-        </div>
+      <div className="w-full pb-8 min-[1250px]:pb-16">
+        {/* szerokość jak w reszcie sekcji: --container i --gutter z globals.css */}
+        <div className="container">
+        <div className="grid grid-cols-1 min-[1250px]:grid-cols-12 min-[1250px]:grid-rows-2 border-t border-b border-[var(--border-inverse)]">
 
-        <div className="grid grid-cols-1 min-[1250px]:grid-cols-12 min-[1250px]:grid-rows-2 border-t border-b border-white/20">
-
-          <div className="flex min-[1250px]:hidden border-b border-white/20">
+          <div className="flex min-[1250px]:hidden border-b border-[var(--border-inverse)]">
             {socialLinks.slice(0, 2).map((link, i) => (
               <AnimatedIconLink
                 key={link.ariaLabel}
@@ -266,8 +251,8 @@ export function Footer({
                 icon={link.icon}
                 ariaLabel={link.ariaLabel}
                 className={cn(
-                  "flex-1 py-6 flex items-center justify-center",
-                  i < socialLinks.length - 1 ? "border-r border-white/20" : ""
+                  "flex-1 aspect-square flex items-center justify-center",
+                  i < socialLinks.length - 1 ? "border-r border-[var(--border-inverse)]" : ""
                 )}
               />
             ))}
@@ -279,11 +264,11 @@ export function Footer({
               href={link.href}
               icon={link.icon}
               ariaLabel={link.ariaLabel}
-              className="hidden min-[1250px]:flex min-[1250px]:col-span-1 min-[1250px]:row-span-1 border-r border-b border-white/20 py-8 items-center justify-center"
+              className="hidden min-[1250px]:flex min-[1250px]:col-span-1 min-[1250px]:row-span-1 border-r border-b border-[var(--border-inverse)] aspect-square items-center justify-center"
             />
           ))}
 
-          <div className="h-40 min-[1250px]:h-40 min-[1250px]:col-span-8 min-[1250px]:row-span-1 border-b border-white/20 min-[1250px]:border-r relative">
+          <div className="h-40 min-[1250px]:h-auto min-[1250px]:col-span-8 min-[1250px]:row-span-1 border-b border-[var(--border-inverse)] min-[1250px]:border-r relative">
             <RippleDistortion
               src="/images/osiedle-panorama.jpg"
               brushSize={170}
@@ -303,15 +288,15 @@ export function Footer({
             />
           </div>
 
-          <div className="grid grid-cols-2 min-[1250px]:hidden border-b border-white/20">
+          <div className="grid grid-cols-2 min-[1250px]:hidden border-b border-[var(--border-inverse)]">
             {links.slice(0, 4).map((link, i) => (
               <AnimatedLink
                 key={link.label}
                 href={link.href}
                 className={cn(
-                  "py-6 flex items-center justify-center text-sm text-white hover:text-[var(--orange)] transition-colors w-full",
-                  i % 2 === 0 ? "border-r border-white/20" : "",
-                  i < 2 ? "border-b border-white/20" : ""
+                  "aspect-square flex items-center justify-center text-sm text-white hover:text-[var(--orange)] transition-colors w-full",
+                  i % 2 === 0 ? "border-r border-[var(--border-inverse)]" : "",
+                  i < 2 ? "border-b border-[var(--border-inverse)]" : ""
                 )}
               >
                 {link.label}
@@ -324,15 +309,15 @@ export function Footer({
               key={link.label}
               href={link.href}
               className={cn(
-                "hidden min-[1250px]:flex min-[1250px]:col-span-1 min-[1250px]:row-span-1 border-b border-white/20 py-8 items-center justify-center text-sm text-white hover:text-[var(--orange)] transition-colors w-full",
-                i === 0 ? "border-r border-white/20" : ""
+                "hidden min-[1250px]:flex min-[1250px]:col-span-1 min-[1250px]:row-span-1 border-b border-[var(--border-inverse)] aspect-square items-center justify-center text-sm text-white hover:text-[var(--orange)] transition-colors w-full",
+                i === 0 ? "border-r border-[var(--border-inverse)]" : ""
               )}
             >
               {link.label}
             </AnimatedLink>
           ))}
 
-          <div className="px-4 py-6 min-[1250px]:py-8 min-[1250px]:col-span-9 min-[1250px]:row-span-1 border-b min-[1250px]:border-b-0 min-[1250px]:border-r border-white/20 text-xs text-white/70 leading-relaxed">
+          <div className="px-4 py-6 min-[1250px]:py-8 min-[1250px]:col-span-10 min-[1250px]:row-span-1 border-b min-[1250px]:border-b-0 min-[1250px]:border-r border-[var(--border-inverse)] text-xs text-white/70 leading-relaxed">
             <p>{companyDescription}</p>
           </div>
 
@@ -341,8 +326,8 @@ export function Footer({
               key={link.label}
               href={link.href}
               className={cn(
-                "hidden min-[1250px]:flex min-[1250px]:col-span-1 min-[1250px]:row-span-1 py-8 items-center justify-center text-sm text-white hover:text-[var(--orange)] transition-colors w-full",
-                i < 2 ? "border-r border-white/20" : ""
+                "hidden min-[1250px]:flex min-[1250px]:col-span-1 min-[1250px]:row-span-1 aspect-square items-center justify-center text-sm text-white hover:text-[var(--orange)] transition-colors w-full",
+                i < links.slice(2, 5).length - 1 ? "border-r border-[var(--border-inverse)]" : ""
               )}
             >
               {link.label}
@@ -353,6 +338,7 @@ export function Footer({
         <div className="py-6 min-[1250px]:py-8 text-center text-xs text-white/50">
           <p>{copyright.companyName} ©{copyright.year} All rights reserved</p>
           {copyright.additionalText && <p className="mt-2">{copyright.additionalText}</p>}
+        </div>
         </div>
       </div>
 

@@ -1,7 +1,6 @@
 import Header from '../components/0_Header'
 import Hero from '../components/1_Hero'
 import About from '../components/2_About'
-import Models from '../components/3_Models'
 import Realizations from '../components/4_Realizations'
 import Projects from '../components/5_Projects'
 import Process from '../components/6_Process'
@@ -27,7 +26,6 @@ export default function Home() {
         <Hero />
         <About />
         <Realizations />
-        <Models />
         <Projects />
         <Process />
         <Reviews />

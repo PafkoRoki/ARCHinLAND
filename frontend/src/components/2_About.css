@@ -13,6 +13,30 @@
   cursor: grabbing;
 }
 
+/* opis biura po lewej, na wysokości modelu (model stoi na środku ekranu) */
+.about__lead {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  max-width: min(34ch, 30%);
+  font-family: var(--font-display);
+  font-size: var(--fs-lead);
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--black);
+  text-wrap: pretty;
+}
+
+/* telefon / tablet: opis nad modelem, w zwykłym układzie */
+@media (max-width: 860px) {
+  .about__lead {
+    position: static;
+    transform: none;
+    max-width: 42ch;
+  }
+}
+
 .about__hint {
   position: absolute;
   left: 50%;

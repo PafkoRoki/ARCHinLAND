@@ -40,6 +40,18 @@ const About = () => {
           onPointerUp={onUp}
           onPointerCancel={onUp}
         >
+        <p className="about__lead">
+          <strong>ARCHIinLAND</strong><br /><br />
+          Biuro prowadzone przez<br />
+          <strong>Andrzeja Kurkę</strong>.<br />
+          Od 30 lat łączymy<br />
+          <strong>projektowanie architektoniczne</strong><br /> 
+          z wiedzą techniczną,<br />
+          tworząc wielobranżowe,<br />
+          nowoczesne realizacje<br />
+          dopasowane do miejsca<br />
+          i wymagań prawa budowlanego.
+        </p>
           <span className="label about__hint">Przeciągnij, aby obrócić model</span>
         </div>
 

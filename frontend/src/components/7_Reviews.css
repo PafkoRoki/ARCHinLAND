@@ -1,24 +1,39 @@
-.reviews__score {
+/* Opinie wyglądają jak stopka: tło #2d2d2d, biały tekst, linie --border-inverse.
+   .page-content > #reviews — mocniejszy selektor niż reguła tła sekcji od Realizacji w globals.css */
+.page-content > #reviews.reviews {
+  background: var(--black);
+  color: var(--white);
+}
+
+/* ocena po lewej, opinie po prawej */
+.reviews__grid {
   display: grid;
-  justify-items: end;
-  gap: 4px;
-  min-width: 170px;
-  padding-bottom: 7px;
-  text-align: right;
+  grid-template-columns: minmax(220px, 1fr) 3fr;
+  border-top: 1px solid var(--border-inverse);
+}
+
+.reviews__score {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 32px 16px;
+  border-right: 1px solid var(--border-inverse);
 }
 
 .reviews__score strong {
-  font-size: clamp(3rem, 5vw, 4.75rem);
-  font-weight: 400;
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 6vw, 5rem);
+  font-weight: 300;
   line-height: 0.9;
   letter-spacing: -0.04em;
 }
 
-.reviews__score span:last-child {
-  max-width: 14ch;
-  color: var(--muted);
+/* jak opisy w stopce: drobne, przygaszone */
+.reviews__caption {
   font-size: 12px;
-  line-height: 1.35;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .reviews__stars {
@@ -28,106 +43,102 @@
   line-height: 1;
 }
 
+/* linie między opiniami: każda komórka rysuje linię z prawej i od dołu (cień 1px),
+   a nadmiar na krawędziach listy jest przycięty — siatka równa przy dowolnej liczbie opinii,
+   puste miejsce w ostatnim wierszu ma tło sekcji */
 .reviews__list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
+}
+
+.review {
+  box-shadow:
+    1px 0 0 var(--border-inverse),
+    0 1px 0 var(--border-inverse);
 }
 
 .reviews__status {
   grid-column: 1 / -1;
-  padding: 32px 0;
-  color: rgba(17, 17, 17, 0.6);
+  margin: 0;
+  padding: 32px 16px;
   font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .review {
   display: flex;
-  min-height: 305px;
   flex-direction: column;
-  padding: 28px clamp(20px, 3vw, 42px) 32px 0;
-  border-right: 1px solid var(--line);
-}
-
-.review:last-child {
-  border-right: 0;
-  padding-right: 0;
+  gap: 20px;
+  padding: 32px 16px;
 }
 
 .review__topline {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 28px;
 }
 
 .review__topline time {
   margin-left: auto;
-  color: rgba(17, 17, 17, 0.5);
-  font-size: 11px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .reviews__google-mark {
   display: grid;
-  width: 25px;
-  height: 25px;
+  width: 24px;
+  height: 24px;
   place-items: center;
-  border: 1px solid var(--line);
+  border: 1px solid var(--border-inverse);
   border-radius: 50%;
-  color: #4285f4;
-  font-family: Arial, sans-serif;
-  font-size: 15px;
+  color: var(--white);
+  font-size: 13px;
   font-weight: 700;
 }
 
 .review blockquote {
-  max-width: 32ch;
-  font-size: clamp(1.05rem, 1.5vw, 1.35rem);
-  line-height: 1.4;
+  margin: 0;
+  max-width: 42ch;
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 .review footer {
-  display: grid;
-  gap: 3px;
   margin-top: auto;
-  padding-top: 32px;
   font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
 }
 
-.review footer span {
-  color: rgba(17, 17, 17, 0.55);
-}
-
+/* pełnoszeroki pasek z linkiem, jak linki w stopce */
 .reviews__link {
-  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px 16px;
+  border-top: 1px solid var(--border-inverse);
+  font-size: 14px;
+  color: var(--white);
+  transition: color 0.3s var(--ease);
 }
 
-@media (max-width: 860px) {
-  .reviews__score {
-    justify-items: start;
-    padding-bottom: 0;
-    text-align: left;
+.reviews__link:hover {
+  color: var(--orange);
+}
+
+@media (max-width: 900px) {
+  .reviews__grid {
+    grid-template-columns: 1fr;
   }
 
-  .reviews__score span:last-child {
-    max-width: none;
+  .reviews__score {
+    border-right: 0;
+    border-bottom: 1px solid var(--border-inverse);
   }
 
   .reviews__list {
     grid-template-columns: 1fr;
-  }
-
-  .review,
-  .review:last-child {
-    min-height: 0;
-    padding: 28px 0;
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .review:last-child {
-    border-bottom: 0;
   }
 }

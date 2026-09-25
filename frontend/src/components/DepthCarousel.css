@@ -72,8 +72,8 @@
   height: 42px;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 999px;
+  border: 1px solid var(--border);
+  border-radius: 0;
   background: rgba(18, 20, 26, 0.55);
   backdrop-filter: blur(8px);
   color: #fff;
@@ -86,7 +86,7 @@
 
 .depth-carousel__arrow:hover {
   background: rgba(28, 31, 40, 0.85);
-  border-color: rgba(255, 255, 255, 0.4);
+  border-color: var(--border);
 }
 
 .depth-carousel__arrow:active {
@@ -110,7 +110,7 @@
   display: flex;
   gap: 8px;
   padding: 8px 12px;
-  border-radius: 999px;
+  border-radius: 0;
   background: rgba(14, 16, 22, 0.4);
   backdrop-filter: blur(6px);
 }
@@ -120,7 +120,7 @@
   height: 7px;
   padding: 0;
   border: none;
-  border-radius: 999px;
+  border-radius: 0;
   background: rgba(255, 255, 255, 0.32);
   cursor: pointer;
   transition:

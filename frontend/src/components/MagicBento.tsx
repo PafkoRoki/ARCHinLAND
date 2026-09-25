@@ -60,15 +60,14 @@ const cardData: BentoCardProps[] = [
     title: 'Sketchfab',
     description: 'MODELE 3D',
     label: '',
-    href: '#models'
+    href: 'https://sketchfab.com/ARCHinLAND'
   },
   {
     image: x4,
     color: '#120F17',
-    title: 'ARCHITECTURE in LAND DEVELOPMENT',
+    title: '',
     description: 'ARCH in LAND',
-    label:
-      'Biuro prowadzone przez Andrzeja Kurkę. Od 30 lat łączymy projektowanie architektoniczne z wiedzą techniczną, tworząc wielobranżowe, nowoczesne realizacje dopasowane do miejsca i wymagań prawa budowlanego.',
+    label:'ARCHITECTURE in LAND DEVELOPMENT',
     href: '#contact'
   }
 ];
@@ -643,6 +642,7 @@ const MagicBento: React.FC<BentoProps> = ({
               <a
                 key={index}
                 href={card.href}
+                {...(card.href?.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                 className="magic-bento-card-link"
                 aria-label={
                   card.title ||
@@ -686,6 +686,7 @@ const MagicBento: React.FC<BentoProps> = ({
             <a
               key={index}
               href={card.href}
+              {...(card.href?.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
               className="magic-bento-card-link"
               aria-label={
                 card.title ||

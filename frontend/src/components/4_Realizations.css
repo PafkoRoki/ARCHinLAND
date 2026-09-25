@@ -1,0 +1,5 @@
+/* odstęp między kolejnymi akordeonami realizacji */
+.realizations__galleries {
+  display: grid;
+  gap: var(--head-gap);
+}

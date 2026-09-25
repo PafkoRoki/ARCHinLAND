@@ -7,11 +7,9 @@ export default function Projects() {
     <section id="projects" className="section" aria-labelledby="projects-title">
       <div className="container">
         <SectionHeader
-          index="04"
+          index="03"
           label="Projekty"
           id="projects-title"
-          title="Znajdź swój projekt"
-          lead="Przeglądaj projekty domów według powierzchni, konstrukcji i najważniejszych parametrów."
         />
         <ProjectCatalog projects={projects} hideHeader />
       </div>

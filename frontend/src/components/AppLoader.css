@@ -6,3 +6,21 @@
   left: 0;
   z-index: 9999;
 }
+
+/* postęp wczytywania modelu 3D, widoczny do startu animacji odsłonięcia */
+.app-loader__status {
+  position: fixed;
+  left: 50%;
+  bottom: clamp(24px, 6vh, 56px);
+  z-index: 10000;
+  margin: 0;
+  transform: translateX(-50%);
+  font-family: var(--font-body);
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--black);
+  font-variant-numeric: tabular-nums;
+}
