@@ -21,7 +21,9 @@ const DURATION = 1.9
 const MAX_WAIT_MS = 20000
 // po wczytaniu pasek postępu dopełnia się do 100% — chwila, żeby to było widać
 const BAR_FINISH_MS = 450
-const isHome = () => window.location.pathname === '/'
+// na model czekamy tylko przy wejściu na górę strony głównej — z adresem sekcji
+// (np. /#realizations) model jest poza ekranem, więc nie ma na co czekać
+const isHome = () => window.location.pathname === '/' && !window.location.hash
 const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
 
 function waitForPage() {

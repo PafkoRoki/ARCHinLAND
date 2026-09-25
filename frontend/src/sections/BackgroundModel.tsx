@@ -112,6 +112,9 @@ function useModel(url: string) {
         wrap.add(o)
         wrap.scale.setScalar(s)
         setLoaded({ obj: wrap, height: size.y * s })
+        // zapas: gdy scena nie rysuje klatek (strona przewinięta poza Hero), useFrame nie zgłosi
+        // gotowości — zgłoś ją po wczytaniu, żeby ekran ładowania nie czekał do limitu
+        setTimeout(reportModelReady, 300)
       },
       // postęp dla AppLoadera (tylko gdy serwer podał rozmiar pliku)
       (e) => {
