@@ -1,5 +1,4 @@
 import { PointerEvent, useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
 import StrokeText from '../components/StrokeText'
 import { modelControls } from '../lib/modelControls'
 import { screenHeight } from '../lib/viewport'
@@ -12,9 +11,6 @@ import './Hero.css'
 // Długość sceny = 1 ekran + PIN_LENGTH — ustawiona w Hero.css (--hero-pin).
 const ABOUT_START = 0.85
 const ABOUT_END = 1.25
-// podpis modelu (ERYK) wjeżdża chwilę po tekście O nas
-const TAG_START = 1.05
-const TAG_END = 1.45
 const DRAG_SPEED = 0.008 // radiany na piksel przeciągnięcia
 
 const smoothstep = (a: number, b: number, x: number) => {
@@ -35,7 +31,6 @@ export default function Hero() {
       const about = smoothstep(ABOUT_START, ABOUT_END, p)
       el.style.setProperty('--about', about.toFixed(3))
       el.dataset.about = about > 0.6 ? 'on' : 'off'
-      el.style.setProperty('--tag', smoothstep(TAG_START, TAG_END, p).toFixed(3))
       // podpowiedź przewijania znika przy pierwszym ruchu
       el.style.setProperty('--intro', (1 - smoothstep(0, 0.2, p)).toFixed(3))
     }
@@ -121,11 +116,6 @@ export default function Hero() {
             dopasowane do <br />
             miejsca i wymagań prawa budowlanego.
           </p>
-          {/* podpis modelu (jak opisy na STILL) */}
-          <Link to="/projekty/eryk" className="hero__tag">
-            <span className="hero__tag-name">Eryk</span>
-            <span className="hero__tag-desc">Dom do 70 m² zabudowy</span>
-          </Link>
           <span className="label hero__hint">Przeciągnij, aby obrócić model</span>
         </div>
       </div>

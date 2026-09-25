@@ -137,33 +137,6 @@
   text-wrap: pretty;
 }
 
-/* podpis modelu: prawa strona, nad dachem.
-   Położenie zależy od kadru modelu (BackgroundModel: MODEL_SCALE, środek ekranu). */
-.hero__tag {
-  position: absolute;
-  top: 26%;
-  left: calc(50% + clamp(120px, 12vw, 190px));
-  display: grid;
-  gap: 4px;
-  color: var(--black);
-  opacity: var(--tag, 0);
-  transform: translateX(calc((1 - var(--tag, 0)) * 16px));
-  transition: color 0.3s var(--ease);
-}
-
-.hero__tag-name {
-  font-family: 'Barlow', var(--font-display);
-  font-size: var(--fs-h3);
-  font-style: italic;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.hero__tag-desc {
-  font-size: var(--fs-label);
-  font-weight: 700;
-}
-
 .hero__hint {
   position: absolute;
   left: 50%;
@@ -176,16 +149,6 @@
 @media (max-width: 860px) {
   .hero__lead {
     right: var(--gutter);
-  }
-
-  /* telefon: podpis pod modelem, bliżej dołu — więcej miejsca wokół domu */
-  .hero__tag {
-    top: auto;
-    bottom: 16%;
-    left: 50%;
-    justify-items: center;
-    text-align: center;
-    transform: translate(-50%, calc((1 - var(--tag, 0)) * 16px));
   }
 }
 

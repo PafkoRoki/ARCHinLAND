@@ -62,6 +62,18 @@ const info: ProjectInfo[] = [
     description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
   },
   {
+    id: 'Osiedle Żółcino',
+    slug: 'zolcino',
+    group: 'osiedla',
+    number: '07',
+    name: 'ŻÓŁCINO',
+    displayName: 'Żółcino',
+    location: 'Żółcino, Poland',
+    year: '', // uzupełnij rok (pusty = niewyświetlany)
+    category: 'Koncepcja urbanistyczna',
+    description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
+  },
+  {
     id: 'Sjås',
     slug: 'sjas',
     group: 'domy',
