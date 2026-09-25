@@ -93,22 +93,42 @@ vec2 coverUV(vec2 uv) {
   return (uv * uResolution - offset) / scaledSize;
 }
 
+// próbki poza zdjęciem odbijamy lustrzanie — przy krawędziach nie ma rozciągniętych pikseli
+vec2 mirrorUV(vec2 uv) {
+  return 1.0 - abs(1.0 - abs(uv));
+}
+
 void main() {
   float amount = texture2D(uDisplacement, vUv).r;
-  vec2 base = coverUV(vUv);
 
-  float theta = amount * uSwirl * TAU;
-  vec2 dir = vec2(sin(theta), cos(theta));
-  vec2 push = dir * amount * uStrength;
+  // Przesunięcie według nachylenia fali (jak załamanie światła na wodzie): zdjęcie wygina się
+  // tylko na zboczach kręgów. Wcześniej cały obszar fali był przesuwany w jednym kierunku,
+  // przez co wyglądał jak przesunięta kopia zdjęcia.
+  vec2 dx = vec2(uTexel.x, 0.0);
+  vec2 dy = vec2(0.0, uTexel.y);
+  vec2 slope = vec2(
+    texture2D(uDisplacement, vUv + dx).r - texture2D(uDisplacement, vUv - dx).r,
+    texture2D(uDisplacement, vUv + dy).r - texture2D(uDisplacement, vUv - dy).r
+  );
+  // uTexel to ułamek pola przesunięć — nachylenie na piksel ekranu, niezależne od quality
+  slope *= 0.5 / (uTexel * uResolution);
+
+  float theta = amount * uSwirl * TAU * 0.15;
+  float c = cos(theta);
+  float s = sin(theta);
+  vec2 pushPx = vec2(c * slope.x - s * slope.y, s * slope.x + c * slope.y) * uStrength * 2500.0;
+  float len = length(pushPx);
+  if (len > 48.0) pushPx *= 48.0 / len;
+  vec2 push = pushPx / uResolution;
 
   vec3 color;
   if (uDispersion > 0.001) {
     float split = uDispersion * 0.25;
-    color.r = texture2D(uTexture, base + push * (1.0 + split)).r;
-    color.g = texture2D(uTexture, base + push).g;
-    color.b = texture2D(uTexture, base + push * (1.0 - split)).b;
+    color.r = texture2D(uTexture, mirrorUV(coverUV(vUv + push * (1.0 + split)))).r;
+    color.g = texture2D(uTexture, mirrorUV(coverUV(vUv + push))).g;
+    color.b = texture2D(uTexture, mirrorUV(coverUV(vUv + push * (1.0 - split)))).b;
   } else {
-    color = texture2D(uTexture, base + push).rgb;
+    color = texture2D(uTexture, mirrorUV(coverUV(vUv + push))).rgb;
   }
 
   if (uGrayscale > 0.001) {
