@@ -4,7 +4,7 @@ import './Header.css'
 // kolejność = kolejność sekcji na stronie
 const menuItems = [
   { label: 'O nas', ariaLabel: 'Przejdź do sekcji O nas', link: '#about' },
-  { label: 'Realizacje', ariaLabel: 'Przejdź do realizacji', link: '#realizations' },
+  { label: 'Portfolio', ariaLabel: 'Przejdź do realizacji', link: '#realizations' },
   { label: 'Projekty', ariaLabel: 'Przejdź do katalogu projektów', link: '#projects' },
   { label: 'Proces', ariaLabel: 'Przejdź do sekcji Proces', link: '#process' },
   { label: 'Opinie', ariaLabel: 'Przejdź do opinii klientów', link: '#reviews' },
