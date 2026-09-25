@@ -1,5 +1,4 @@
 import IgorImage1 from '../assets/projekty/Igor1.jpg'
-import BorysImage1 from '../assets/projekty/Borys1.jpg'
 import DorotaImage1 from '../assets/projekty/Dorota1.jpg'
 import nastjaImage1 from '../assets/projekty/Nastja1.jpg'
 import ErykImage1 from '../assets/projekty/Eryk1.jpg'
@@ -107,32 +106,6 @@ export const projects: Project[] = [
     },
   },
 
-  {
-    id: "b-001",
-    name: "BORYS",
-    slug: "borys",
-    category: "do 70m²",
-    image: BorysImage1,
-    usableArea: 90.26,
-    buildingArea: 69.91,
-    residentialArea: 90.26,
-    totalArea: 93.77,
-    floors: 2,
-    rooms: 3,
-    roofType: "▲",
-    roofAngle: 40,
-    garage: 0,
-    plotWidth: 20,
-    plotLength: 28,
-    standard: "WT 2021",
-    sketchfabUrl: "https://sketchfab.com/models/9e883bdfbe40405c83b9cdb525972faf/embed?autostart=0&annotations_visible=0&preload=0&transparent=0&ui_theme=dark",
-    gallery: {
-      visualizations: [BorysImage1],
-      floorPlans: [],
-      elevations: [],
-    },
-  },
-  
   {
     id: "n-001",
     name: "NASTJA z garażem",

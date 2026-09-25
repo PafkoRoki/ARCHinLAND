@@ -61,9 +61,31 @@ const info: ProjectInfo[] = [
     number: '03',
     name: 'SJÅS',
     displayName: 'Sjås',
-    location: 'Elmehult, Tingsryd, Szwecja', // działka Elmehult 16, gm. Tingsryd, region Kronoberg
+    location: 'Kronoberg, Szwecja', // działka Elmehult 16, gm. Tingsryd, region Kronoberg
     year: '2026',
     category: 'Dom jednorodzinny',
+    description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
+  },
+  {
+    id: 'Apartamentowce Dziwnów',
+    slug: 'apartamentowce',
+    number: '04',
+    name: 'APARTAMENTOWCE',
+    displayName: 'Apartamentowce',
+    location: 'Dziwnów, Poland',
+    year: '2018', // uzupełnij rok (pusty = niewyświetlany)
+    category: 'Apartamentowce',
+    description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
+  },
+  {
+    id: 'Baltic Riviera',
+    slug: 'baltic-riviera',
+    number: '05',
+    name: 'BALTIC RIVIERA',
+    displayName: 'Baltic Riviera',
+    location: 'Dziwnówek, Poland',
+    year: '2019',
+    category: 'Apartamentowce',
     description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
   },
 ]
