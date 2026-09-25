@@ -56,12 +56,12 @@ const info: ProjectInfo[] = [
     description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
   },
   {
-    id: 'Szwecja',
-    slug: 'szwecja',
+    id: 'Sjås',
+    slug: 'sjas',
     number: '03',
-    name: 'SZWECJA',
-    displayName: 'Szwecja',
-    location: 'Sweden',
+    name: 'SJÅS',
+    displayName: 'Sjås',
+    location: 'Elmehult, Tingsryd, Szwecja', // działka Elmehult 16, gm. Tingsryd, region Kronoberg
     year: '2026',
     category: 'Dom jednorodzinny',
     description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)

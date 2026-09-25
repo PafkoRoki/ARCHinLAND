@@ -9,7 +9,7 @@ import '@fontsource/barlow/800-italic.css'
 import './Realizations.css'
 
 // Kolejne akordeony w sekcji — każdy pokazuje wszystkie zdjęcia (gallery) jednej realizacji
-const GALLERY_SLUGS = ['baltic-cliff', 'osiedle-panorama', 'szwecja']
+const GALLERY_SLUGS = ['baltic-cliff', 'osiedle-panorama', 'sjas']
 
 const galleries = GALLERY_SLUGS.map((slug) => projects.find((p) => p.slug === slug)).filter(Boolean)
 
