@@ -17,13 +17,6 @@
   text-shadow: none;
 }
 
-
-a {
-  color: inherit; /* dziedziczy kolor tekstu z elementu nadrzędnego */
-  text-decoration: none; /* usuwa podkreślenie */
-}
-
-
 /* -------------------------------------------------- */
 /* Tokens                                              */
 /* -------------------------------------------------- */
@@ -33,17 +26,14 @@ a {
   --bg-model: #ffa60052; /* tło soczewki z modelem w Hero; po rozszerzeniu tło reszty strony */
   --orange: #FFA500;
   --black: #2d2d2d;
-  --graphite: #2d2d2dbb;
   --white: #ffffff;
   --border: #2d2d2d; /* JEDEN kolor wszystkich krawędzi, linii i ramek przycisków */
   --border-inverse: rgba(236, 240, 239, 0.35); /* linie na ciemnym tle (stopka #2d2d2d): 1px, przygaszone, żeby nie "puchły" */
   --line: var(--border); /* starsza nazwa, zostawiona dla zgodności */
   --btn-pad: 12px 20px;
-  --muted: rgba(45, 45, 45, 0.6);
   --faint: rgba(45, 45, 45, 0.45);
 
   --radius: 24px;
-  --radius-sm: 12px;
 
   --font-display: 'Inter Tight Variable', 'Inter Tight', Arial, sans-serif; /* napis, nagłówki, menu */
   --font-body: 'Inter Variable', Inter, Arial, sans-serif; /* tekst, przyciski, podpisy */
@@ -146,7 +136,7 @@ button {
   cursor: pointer;
 }
 
-/* styl marki: przyciski i pola kanciaste, zero zaokrągleń, ten sam krój (Arial) co strona */
+/* styl marki: przyciski i pola kanciaste, zero zaokrągleń, ten sam krój co strona */
 button,
 input,
 select,
@@ -205,16 +195,7 @@ textarea {
   padding-bottom: var(--section-pad);
 }
 
-.section-border {
-  border-top: 0px solid var(--border);
-}
-
-.section-border:first-child {
-  border-top: none;
-}
-
-/* mały podpis wersalikami: "01 / Realizacje", etykiety pól, meta */
-.eyebrow,
+/* mały podpis wersalikami: etykiety pól, meta */
 .label {
   display: inline-flex;
   align-items: center;
@@ -231,11 +212,6 @@ textarea {
   color: var(--faint);
 }
 
-.eyebrow__index {
-  color: var(--orange);
-}
-
-
 /* -------------------------------------------------- */
 /* Typography                                          */
 /* -------------------------------------------------- */
@@ -247,49 +223,12 @@ textarea {
   text-transform: uppercase;
 }
 
-.text-orange { color: var(--orange); }
-.text-black { color: var(--black); }
-
-.body-lg {
-  font-size: var(--fs-lead);
-  line-height: 1.55;
-  font-weight: 400;
-  color: var(--muted);
-}
-
-.text-muted { color: var(--muted); }
-
-/* biały tytuł z grafitowym obrysem — styl marki (jak ARCHinLAND w Hero) */
-.stroke-title {
-  color: var(--white);
-  -webkit-text-fill-color: var(--white);
-  -webkit-text-stroke: 1px var(--graphite);
-}
-
-/* link tekstowy ze strzałką, np. "PRZECZYTAJ WSZYSTKIE OPINIE ⁀➷" */
-.link-arrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 16px;
-  font-size: var(--fs-label);
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  transition: color 0.25s ease, gap 0.25s ease;
-}
-
-.link-arrow:hover {
-  gap: 22px;
-  color: var(--orange);
-}
-
 /* -------------------------------------------------- */
 /* Buttons / controls                                  */
 /* -------------------------------------------------- */
-/* Jeden wygląd wszystkich przycisków: .btn (i starsza nazwa .btn-outline).
+/* Jeden wygląd wszystkich przycisków: .btn.
    Te same wartości mają .sm-toggle (MENU), .detailsButton i zakładki w ProjectDetail. */
-.btn,
-.btn-outline {
+.btn {
   display: inline-flex;
   align-items: center;
   gap: 12px;
@@ -310,20 +249,9 @@ textarea {
 }
 
 .btn:hover,
-.btn-outline:hover,
 .btn.isActive {
   background: var(--black);
   color: var(--white);
-}
-
-.btn-outline .plus {
-  font-size: 15px;
-  font-weight: 500;
-  transition: transform 0.35s var(--ease);
-}
-
-.btn-outline[aria-expanded='true'] .plus {
-  transform: rotate(45deg);
 }
 
 /* -------------------------------------------------- */
@@ -339,10 +267,6 @@ textarea {
   opacity: 1;
   transform: translateY(0);
 }
-
-.reveal-delay-1 { transition-delay: 0.08s; }
-.reveal-delay-2 { transition-delay: 0.16s; }
-.reveal-delay-3 { transition-delay: 0.24s; }
 
 /* -------------------------------------------------- */
 /* Nagłówek sekcji (komponent SectionHeader)           */

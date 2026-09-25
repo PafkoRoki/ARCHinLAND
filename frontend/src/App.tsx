@@ -1,9 +1,9 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import AppLoader from './components/AppLoader'
-import { ProjectCatalog } from './components/ProjectCatalog/ProjectCatalog'
-import { ProjectDetail } from './components/ProjectCatalog/ProjectDetail'
+import AppLoader from './layout/AppLoader'
+import { ProjectCatalog } from './components/ProjectCatalog'
+import { ProjectDetail } from './pages/ProjectDetail'
 import { projects } from './data/projects'
-import RealizationsDetail from './components/4_RealizationsDetail'
+import RealizationDetail from './pages/RealizationDetail'
 import Home from './pages/Home'
 
 export default function App() {
@@ -23,7 +23,7 @@ export default function App() {
         />
         <Route
           path="/realizacje/:slug"
-          element={<RealizationsDetail />}
+          element={<RealizationDetail />}
         />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

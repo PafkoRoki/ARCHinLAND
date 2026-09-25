@@ -1,45 +1,54 @@
-# ARCH in LAND
+# ARCHinLAND
 
-Website for ARCH in LAND, an architecture & land development studio. Built with React, Vite and TypeScript.
+Strona pracowni ARCHinLAND (Architecture in Land Development). React 18 + TypeScript, Vite, Tailwind 4,
+react-three-fiber (model 3D), GSAP. Hosting: Cloudflare Pages.
 
-## Getting started
+## Uruchomienie
 
 ```bash
 npm install
-npm run dev
+npm run dev       # serwer deweloperski (http://localhost:5173)
+npm run build     # sprawdzenie typów + build do dist/
+npm run preview   # podgląd builda
 ```
 
-Then open the printed local URL (usually `http://localhost:5173`).
+Deploy odbywa się automatycznie po wypchnięciu zmian w `frontend/` na gałąź `main`
+(`.github/workflows/deploy-frontend.yml`, instalacja przez `bun install --frozen-lockfile`).
+Po dodaniu lub usunięciu paczki zaktualizuj **oba** pliki blokad: `bun.lock` i `package-lock.json`.
 
-To build for production:
-
-```bash
-npm run build
-npm run preview
-```
-
-## Structure
+## Struktura
 
 ```
 src/
-  components/     Header, MenuOverlay, Hero, ImageGrid, About,
-                   Projects, ProjectCard, Process, Manifesto,
-                   Contact, Footer (each with its own .css file)
-  data/
-    projects.ts   Fictional project data — swap in real projects/images here
-  hooks/
-    useReveal.ts  Scroll-reveal IntersectionObserver hook
-  pages/
-    Home.tsx      Assembles the homepage from the sections above
-  styles/
-    globals.css   Design tokens (colors, radius, type, spacing) + resets
+  main.tsx            punkt wejścia (kroje Inter / Inter Tight, globals.css)
+  App.tsx             routing: /, /projekty, /projekty/:slug, /realizacje/:slug
+  pages/              podstrony z własnym adresem
+    Home.tsx            strona główna — kolejność sekcji
+    ProjectDetail.tsx   /projekty/:slug
+    RealizationDetail.tsx  /realizacje/:slug
+  layout/             elementy wspólne: Header (menu), Footer, AppLoader (ekran ładowania)
+  sections/           sekcje strony głównej: Hero, About, Realizations, Projects, Process,
+                      Reviews, Contact + BackgroundModel (scena 3D z soczewką)
+  components/         klocki wielokrotnego użytku: SectionHeader, ProjectCatalog (/ i /projekty),
+                      StaggeredMenu, StrokeText, MagicBento, AccordionGallery, RippleDistortion
+  data/               projects.ts (katalog projektów), realizations.ts (realizacje)
+  hooks/              useReveal — animacja pojawiania się przy przewijaniu
+  lib/                modelControls — wspólny stan modelu 3D (obrót, postęp, gotowość)
+  styles/globals.css  tokeny (kolory, kroje, odstępy, --container/--gutter) i reset
+  assets/
+    realizacje/<slug>/  zdjęcia realizacji 01.jpg, 02.jpg… — wczytywane automatycznie
+    projekty/           zdjęcia katalogu projektów
+    o-nas/              zdjęcia kafelków w sekcji O nas
+public/
+  models/Eryk.glb     model 3D (skompresowany: meshopt + tekstury WebP)
+  images/             zdjęcie w stopce
+functions/api/reviews.ts   funkcja Cloudflare — opinie Google (działa tylko po deployu)
 ```
 
-## Notes
+## Wskazówki
 
-- All imagery currently points to Unsplash placeholder photography — replace the
-  URLs in `src/data/projects.ts` and the individual section components with real
-  project photography when available.
-- Colors, spacing and typography are controlled via CSS custom properties in
-  `src/styles/globals.css` (`--bg`, `--orange`, `--black`, `--radius`, etc.).
-- Motion respects `prefers-reduced-motion`.
+- Wygląd całej strony ustawiają zmienne w `src/styles/globals.css` (`--bg`, `--orange`, `--black`,
+  `--border`, `--font-display`, `--font-body`, `--container`, `--gutter`…).
+- Nowa realizacja: dopisz ją w `src/data/realizations.ts` i dodaj folder `src/assets/realizacje/<slug>/`
+  ze zdjęciami (warto zmniejszyć je do ~2000 px szerokości).
+- Animacje respektują ustawienie `prefers-reduced-motion`.

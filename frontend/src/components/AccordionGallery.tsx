@@ -272,7 +272,7 @@ const AccordionGallery = ({
         };
 
         // Wewnętrzne ścieżki (np. "/realizacje/slug") idą przez react-router,
-        // żeby nawigacja do RealizationsDetail nie przeładowywała strony.
+        // żeby nawigacja do RealizationDetail nie przeładowywała strony.
         const isInternalLink = !!item.link && item.link.startsWith('/');
 
         if (isInternalLink) {

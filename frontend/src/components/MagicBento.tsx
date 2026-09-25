@@ -1,9 +1,9 @@
 
 import React, { useRef, useEffect, useCallback, useState } from 'react';
-import x1 from '../assets/Projects/1.jpg';
-import x2 from '../assets/Projects/2.jpg';
-import x3 from '../assets/Projects/3.jpg';
-import x4 from '../assets/Projects/4.jpg';
+import x1 from '../assets/o-nas/1.jpg';
+import x2 from '../assets/o-nas/2.jpg';
+import x3 from '../assets/o-nas/3.jpg';
+import x4 from '../assets/o-nas/4.jpg';
 import { gsap } from 'gsap';
 import './MagicBento.css';
 
