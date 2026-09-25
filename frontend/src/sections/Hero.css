@@ -50,6 +50,54 @@
   cursor: grabbing;
 }
 
+/* podpowiedź przewijania: na dole, nad modelem; znika przy pierwszym ruchu (--intro) */
+.hero__layer--intro {
+  z-index: 2;
+  pointer-events: none;
+  opacity: var(--intro, 1);
+}
+
+.hero__scroll-hint {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(24px, 5vh, 48px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  transform: translateX(-50%);
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--black);
+}
+
+/* pionowa linia 1px, po której w dół biegnie odcinek — "przewiń w dół" */
+.hero__scroll-line {
+  position: relative;
+  width: 1px;
+  height: 56px;
+  overflow: hidden;
+  background: rgba(45, 45, 45, 0.2);
+}
+
+.hero__scroll-line::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 40%;
+  background: var(--black);
+  animation: hero-scroll-line 1.8s var(--ease) infinite;
+}
+
+@keyframes hero-scroll-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(260%); }
+}
+
 .hero__title {
   display: grid;
   height: 100%;
@@ -89,6 +137,55 @@
   text-wrap: pretty;
 }
 
+/* podpis modelu: prawa strona, nad dachem; strzałka 1px w dół-lewo do domu.
+   Położenie zależy od kadru modelu (BackgroundModel: MODEL_SCALE, środek ekranu). */
+.hero__tag {
+  --tag-arrow-w: 140px;
+  --tag-arrow-h: 100px;
+
+  position: absolute;
+  top: 26%;
+  left: calc(50% + clamp(120px, 12vw, 190px));
+  display: grid;
+  gap: 4px;
+  color: var(--black);
+  opacity: var(--tag, 0);
+  transform: translateX(calc((1 - var(--tag, 0)) * 16px));
+  transition: color 0.3s var(--ease);
+}
+
+.hero__tag:hover {
+  color: var(--orange);
+}
+
+.hero__tag-arrow {
+  position: absolute;
+  top: 100%;
+  right: 100%;
+  width: var(--tag-arrow-w);
+  height: var(--tag-arrow-h);
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.hero__tag-name {
+  font-family: 'Barlow', var(--font-display);
+  font-size: var(--fs-h3);
+  font-style: italic;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.hero__tag-desc {
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
 .hero__hint {
   position: absolute;
   left: 50%;
@@ -101,5 +198,29 @@
 @media (max-width: 860px) {
   .hero__lead {
     right: var(--gutter);
+  }
+
+  /* telefon: podpis pod modelem, strzałka pionowo w górę do domu */
+  .hero__tag {
+    top: auto;
+    bottom: 22%;
+    left: 50%;
+    justify-items: center;
+    text-align: center;
+    transform: translate(-50%, calc((1 - var(--tag, 0)) * 16px));
+  }
+
+  .hero__tag-arrow {
+    top: auto;
+    bottom: 100%;
+    right: auto;
+    left: 50%;
+    width: 1px;
+    height: 48px;
+    border-left: 1px solid currentColor;
+  }
+
+  .hero__tag-arrow path {
+    display: none;
   }
 }

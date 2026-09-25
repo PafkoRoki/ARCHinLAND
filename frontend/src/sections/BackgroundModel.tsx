@@ -19,7 +19,6 @@ const LENS_RADIUS = 180 // px, promień koła w Hero (na telefonie mniejszy, pat
 const LENS_ZOOM = 1.15 // model w soczewce jest lekko przybliżony
 const LENS_REST = { x: 0.5, y: 0.42 } // pozycja koła bez kursora (ułamek ekranu)
 const REVEAL_DISTANCE = 0.8 // ile wysokości ekranu przewijania trwa powiększanie koła
-const FADE_END = 0.35 // model całkiem znika, gdy góra sekcji Realizacje dojdzie do 35% ekranu
 
 // reakcja na kursor w Hero (radiany)
 const HOVER_TILT_Y = 0.45
@@ -257,7 +256,6 @@ function ModelGroup({ group, loaded }: { group: RefObject<THREE.Group>; loaded: 
 
 export default function BackgroundModel() {
   const layer = useRef<HTMLDivElement>(null)
-  const canvasWrap = useRef<HTMLDivElement>(null)
   const reveal = useRef(0)
   const pointer = useRef<{ x: number; y: number } | null>(null)
   // po zniknięciu modelu (sekcja Realizacje) scena przestaje się renderować
@@ -267,17 +265,12 @@ export default function BackgroundModel() {
     const onScroll = () => {
       const vh = window.innerHeight
       const y = window.scrollY
-      const top = (id: string) => {
-        const el = document.getElementById(id)
-        return el ? el.getBoundingClientRect().top + y : null
-      }
-
-      // model znika, gdy wjeżdża sekcja Realizacje: od jej pojawienia się na dole ekranu
-      // do chwili, gdy jej góra dojdzie do FADE_END ekranu
-      const realTop = top('realizations')
-      const fade = realTop !== null ? smoothstep(realTop - y, vh * FADE_END, vh) : 1
-      canvasWrap.current?.style.setProperty('opacity', `${fade}`)
-      setHidden(fade <= 0)
+      // po odpięciu sceny Hero (O nas) model odjeżdża w górę razem z nią i znika z ekranu
+      const hero = document.getElementById('top')
+      const pinEnd = hero ? hero.offsetTop + hero.offsetHeight - vh : Infinity
+      const offset = Math.max(0, y - pinEnd)
+      layer.current?.style.setProperty('transform', offset > 0 ? `translate3d(0, ${-offset}px, 0)` : '')
+      setHidden(offset >= vh)
 
       reveal.current = smoothstep(y, 0, vh * REVEAL_DISTANCE)
     }
@@ -307,7 +300,7 @@ export default function BackgroundModel() {
       <div className="bg-model__halo" />
       <div className="bg-model__lens">
         <div className="bg-model__lens-bg" />
-        <div ref={canvasWrap} className="bg-model__canvas">
+        <div className="bg-model__canvas">
           <Canvas
             shadows={{ type: THREE.PCFShadowMap }}
             frameloop={hidden ? 'never' : 'always'}

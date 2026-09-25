@@ -27,22 +27,21 @@ src/
     ProjectDetail.tsx   /projekty/:slug
     RealizationDetail.tsx  /realizacje/:slug
   layout/             elementy wspólne: Header (menu), Footer, AppLoader (ekran ładowania)
-  sections/           sekcje strony głównej: Hero, About, Realizations, Projects, Process,
-                      Reviews, Contact + BackgroundModel (scena 3D z soczewką)
+  sections/           sekcje strony głównej: Hero (przypięta scena z tekstem O nas), Realizations,
+                      Projects, Process, Reviews, Contact + BackgroundModel (scena 3D z soczewką)
   components/         klocki wielokrotnego użytku: SectionHeader, ProjectCatalog (/ i /projekty),
-                      StaggeredMenu, StrokeText, MagicBento, AccordionGallery, RippleDistortion
-  data/               projects.ts (katalog projektów), realizations.ts (realizacje)
+                      StaggeredMenu, StrokeText, AccordionGallery, RippleDistortion
+  data/               projects.ts (katalog projektów), realizations.ts (realizacje),
+                      reviews.ts (opinie — wpisywane ręcznie)
   hooks/              useReveal — animacja pojawiania się przy przewijaniu
   lib/                modelControls — wspólny stan modelu 3D (obrót, postęp, gotowość)
   styles/globals.css  tokeny (kolory, kroje, odstępy, --container/--gutter) i reset
   assets/
     realizacje/<slug>/  zdjęcia realizacji 01.jpg, 02.jpg… — wczytywane automatycznie
     projekty/           zdjęcia katalogu projektów
-    o-nas/              zdjęcia kafelków w sekcji O nas
 public/
   models/Eryk.glb     model 3D (skompresowany: meshopt + tekstury WebP)
   images/             zdjęcie w stopce
-functions/api/reviews.ts   funkcja Cloudflare — opinie Google (działa tylko po deployu)
 ```
 
 ## Wskazówki

@@ -12,6 +12,15 @@
   border-top: 1px solid var(--border-inverse);
 }
 
+/* tylko ocena albo tylko opinie — jedna kolumna na całą szerokość */
+.reviews__grid--single {
+  grid-template-columns: 1fr;
+}
+
+.reviews__grid--single .reviews__score {
+  border-right: 0;
+}
+
 .reviews__score {
   display: flex;
   flex-direction: column;
@@ -43,34 +52,41 @@
   line-height: 1;
 }
 
-/* linie między opiniami: każda komórka rysuje linię z prawej i od dołu (cień 1px),
-   a nadmiar na krawędziach listy jest przycięty — siatka równa przy dowolnej liczbie opinii,
-   puste miejsce w ostatnim wierszu ma tło sekcji */
-.reviews__list {
+/* karuzela: poziomy pas kart z przyciąganiem do krawędzi karty */
+.reviews__carousel {
+  min-width: 0;
+  overflow: hidden; /* ucina linię ostatniej widocznej karty przy prawej krawędzi sekcji */
+}
+
+.reviews__track {
+  --per-view: 3; /* ile kart widać naraz */
+  margin-right: -1px; /* pas o 1px szerszy — prawa linia karty wypada poza widok */
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  overflow: hidden;
+  grid-auto-flow: column;
+  grid-auto-columns: calc(100% / var(--per-view));
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
 }
 
-.review {
-  box-shadow:
-    1px 0 0 var(--border-inverse),
-    0 1px 0 var(--border-inverse);
+.reviews__track::-webkit-scrollbar {
+  display: none;
 }
 
-.reviews__status {
-  grid-column: 1 / -1;
-  margin: 0;
-  padding: 32px 16px;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.7);
+.reviews__track:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: -2px;
 }
 
+/* linia z prawej każdej karty (cień 1px, nie zmienia szerokości kart) */
 .review {
   display: flex;
   flex-direction: column;
   gap: 20px;
   padding: 32px 16px;
+  scroll-snap-align: start;
+  box-shadow: inset -1px 0 0 var(--border-inverse);
 }
 
 .review__topline {
@@ -97,11 +113,40 @@
   font-weight: 700;
 }
 
-.review blockquote {
+/* długie opinie skrócone do --clamp linii (ustawia Reviews.tsx) */
+.review__quote {
   margin: 0;
   max-width: 42ch;
   font-size: 15px;
+  font-style: italic;
   line-height: 1.5;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--clamp);
+  line-clamp: var(--clamp);
+  overflow: hidden;
+}
+
+.review__quote.is-expanded {
+  display: block;
+  -webkit-line-clamp: unset;
+  line-clamp: none;
+}
+
+.review__more {
+  align-self: flex-start;
+  padding: 0;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--white);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color 0.3s var(--ease);
+}
+
+.review__more:hover {
+  color: var(--orange);
 }
 
 .review footer {
@@ -112,13 +157,28 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
-/* pełnoszeroki pasek z linkiem, jak linki w stopce */
+/* dolny pasek: licznik · link · strzałki (kwadratowe komórki jak w stopce) */
+.reviews__bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: stretch;
+  border-top: 1px solid var(--border-inverse);
+}
+
+.reviews__count {
+  align-self: center;
+  padding: 0 16px;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.5);
+  font-variant-numeric: tabular-nums;
+}
+
 .reviews__link {
   display: flex;
-  justify-content: center;
+  align-items: center;
   gap: 10px;
   padding: 24px 16px;
-  border-top: 1px solid var(--border-inverse);
   font-size: 14px;
   color: var(--white);
   transition: color 0.3s var(--ease);
@@ -126,6 +186,30 @@
 
 .reviews__link:hover {
   color: var(--orange);
+}
+
+.reviews__arrows {
+  display: flex;
+  justify-self: end;
+}
+
+.reviews__arrow {
+  width: 72px;
+  aspect-ratio: 1;
+  border-left: 1px solid var(--border-inverse);
+  font-size: 18px;
+  color: var(--white);
+  transition: color 0.3s var(--ease), background 0.3s var(--ease);
+}
+
+.reviews__arrow:hover:not(:disabled) {
+  color: var(--orange);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.reviews__arrow:disabled {
+  color: rgba(255, 255, 255, 0.25);
+  cursor: default;
 }
 
 @media (max-width: 900px) {
@@ -138,7 +222,28 @@
     border-bottom: 1px solid var(--border-inverse);
   }
 
-  .reviews__list {
-    grid-template-columns: 1fr;
+  .reviews__track {
+    --per-view: 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .reviews__track {
+    --per-view: 1.15; /* widać krawędź następnej karty — sygnał, że można przesunąć */
+  }
+
+  .reviews__bar {
+    grid-template-columns: 1fr auto;
+  }
+
+  .reviews__link {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-content: center;
+    border-top: 1px solid var(--border-inverse);
+  }
+
+  .reviews__arrow {
+    width: 56px;
   }
 }

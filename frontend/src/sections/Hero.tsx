@@ -1,4 +1,5 @@
 import { PointerEvent, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import StrokeText from '../components/StrokeText'
 import { modelControls } from '../lib/modelControls'
 import './Hero.css'
@@ -10,6 +11,9 @@ import './Hero.css'
 // Długość sceny = 1 ekran + PIN_LENGTH — ustawiona w Hero.css (--hero-pin).
 const ABOUT_START = 0.85
 const ABOUT_END = 1.25
+// podpis modelu (ERYK + strzałka) wjeżdża chwilę po tekście O nas
+const TAG_START = 1.05
+const TAG_END = 1.45
 const DRAG_SPEED = 0.008 // radiany na piksel przeciągnięcia
 
 const smoothstep = (a: number, b: number, x: number) => {
@@ -30,6 +34,9 @@ export default function Hero() {
       const about = smoothstep(ABOUT_START, ABOUT_END, p)
       el.style.setProperty('--about', about.toFixed(3))
       el.dataset.about = about > 0.6 ? 'on' : 'off'
+      el.style.setProperty('--tag', smoothstep(TAG_START, TAG_END, p).toFixed(3))
+      // podpowiedź przewijania znika przy pierwszym ruchu
+      el.style.setProperty('--intro', (1 - smoothstep(0, 0.2, p)).toFixed(3))
     }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -83,6 +90,14 @@ export default function Hero() {
         </h1>
       </div>
 
+      {/* podpowiedź przewijania (nad modelem, widoczna tylko na starcie) */}
+      <div className="hero__layer hero__layer--intro" aria-hidden="true">
+        <span className="hero__scroll-hint">
+          <span className="hero__scroll-line" />
+          Przewiń
+        </span>
+      </div>
+
       {/* tekst O nas NAD modelem; pojawia się po rozszerzeniu koła */}
       <div
         className="hero__layer hero__layer--about"
@@ -94,6 +109,8 @@ export default function Hero() {
         <div className="container hero__about">
           <h2 className="visually-hidden">O nas</h2>
           <p className="hero__lead">
+            <br />
+            ARCHICETURE in LAND DEVELOPMENT<br />
             <strong>ARCHIinLAND</strong><br /><br />
             Biuro prowadzone przez <strong>Andrzeja Kurkę</strong>.<br />
             Od 30 lat łączymy <strong>projektowanie architektoniczne</strong><br />
@@ -103,6 +120,14 @@ export default function Hero() {
             dopasowane do <br />
             miejsca i wymagań prawa budowlanego.
           </p>
+          {/* podpis modelu z linią wskazującą dom (jak opisy na STILL) */}
+          <Link to="/projekty/eryk" className="hero__tag">
+            <svg className="hero__tag-arrow" viewBox="0 0 140 100" aria-hidden="true">
+              <path d="M139.5 0.5 L6 94" />
+            </svg>
+            <span className="hero__tag-name">Eryk</span>
+            <span className="hero__tag-desc">Dom do 70 m² zabudowy</span>
+          </Link>
           <span className="label hero__hint">Przeciągnij, aby obrócić model</span>
         </div>
       </div>

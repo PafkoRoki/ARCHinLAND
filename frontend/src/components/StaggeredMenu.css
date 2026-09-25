@@ -150,6 +150,7 @@
   width: clamp(260px, 38vw, 420px);
   height: 100%;
   background: var(--bg);
+  border-left: 1px solid var(--border); /* krawędź panelu jak wszędzie: 1px, --border */
   display: flex;
   flex-direction: column;
   padding: 7rem 32px 2rem;
@@ -351,5 +352,6 @@
     width: 100%;
     left: 0;
     right: 0;
+    border-left: 0; /* panel na całą szerokość — brak lewej krawędzi */
   }
 }

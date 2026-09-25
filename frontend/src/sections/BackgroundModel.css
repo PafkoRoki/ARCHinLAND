@@ -47,7 +47,7 @@
   background: var(--bg-model);
 }
 
-/* sam model — zanika przy sekcji Realizacje (opacity ustawia BackgroundModel.tsx) */
+/* warstwa z modelem 3D (canvas) */
 .bg-model__canvas {
   position: absolute;
   inset: 0;
