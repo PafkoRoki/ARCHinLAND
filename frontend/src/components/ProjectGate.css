@@ -1,0 +1,103 @@
+/* Ekran hasła przed katalogiem projektów — nagłówek w stylu .catalogHeader (ProjectCatalog.css) */
+.projectGate {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 72px var(--gutter);
+  color: var(--black);
+}
+
+.projectGate__box {
+  display: grid;
+  width: min(440px, 100%);
+}
+
+.projectGate__eyebrow {
+  margin-bottom: 14px;
+  color: #777;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.projectGate__title {
+  font-size: clamp(34px, 5vw, 56px);
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+}
+
+.projectGate__box > p {
+  margin: 16px 0 32px;
+  color: #737373;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.projectGate__label {
+  margin-bottom: 8px;
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.projectGate__input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 0;
+  background: var(--white);
+  color: var(--black);
+  font: inherit;
+  font-size: 16px; /* 16px: iPhone nie przybliża strony przy wpisywaniu */
+}
+
+.projectGate__input:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 2px;
+}
+
+.projectGate__input[aria-invalid='true'] {
+  border-color: #c0392b;
+}
+
+.projectGate__box > .projectGate__error {
+  margin: 8px 0 0;
+  color: #c0392b;
+  font-size: 14px;
+}
+
+.projectGate__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.projectGate__actions .btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.projectGate__actions .btn:disabled:hover {
+  background: var(--white);
+  color: var(--black);
+}
+
+.projectGate__back {
+  color: var(--black);
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* w sekcji Projekty na stronie głównej: bez pełnej wysokości ekranu, formularz po lewej */
+.projectGate--inline {
+  display: block;
+  min-height: 0;
+  padding: 0;
+}

@@ -98,6 +98,66 @@
   100% { transform: translateY(260%); }
 }
 
+/* wskaźnik przewijania w O nas: pionowa linia przy prawej krawędzi wypełnia się w dół (--pin),
+   a strzałka pod nią pulsuje — widać, że strona się przewija, choć model stoi.
+   Pojawia się z tekstem O nas i znika przy odpięciu sceny (--pin-show, Hero.tsx). */
+.hero__layer--progress {
+  z-index: 2;
+  pointer-events: none;
+  opacity: var(--pin-show, 0);
+}
+
+.hero__progress {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--gutter) / 2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  transform: translateY(-50%);
+  color: var(--black);
+}
+
+.hero__progress-label {
+  writing-mode: vertical-rl;
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.hero__progress-track {
+  position: relative;
+  width: 1px;
+  height: clamp(96px, 18vh, 160px);
+  background: rgba(45, 45, 45, 0.2);
+}
+
+.hero__progress-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--black);
+  transform: scaleY(var(--pin, 0));
+  transform-origin: top;
+}
+
+/* strzałka w dół (dwie krawędzie obróconego kwadratu) */
+.hero__progress-arrow {
+  width: 8px;
+  height: 8px;
+  border-right: 1px solid var(--black);
+  border-bottom: 1px solid var(--black);
+  transform: rotate(45deg);
+  animation: hero-progress-arrow 1.4s var(--ease) infinite;
+}
+
+@keyframes hero-progress-arrow {
+  0% { transform: translateY(-4px) rotate(45deg); opacity: 0; }
+  40% { opacity: 1; }
+  100% { transform: translateY(6px) rotate(45deg); opacity: 0; }
+}
+
 .hero__title {
   display: grid;
   height: 100%;
@@ -143,6 +203,7 @@
   bottom: clamp(24px, 5vh, 48px);
   transform: translateX(-50%);
   white-space: nowrap;
+  opacity: var(--outro, 1); /* gaśnie razem z uciętym modelem */
 }
 
 /* telefon / tablet: tekst na całą szerokość */

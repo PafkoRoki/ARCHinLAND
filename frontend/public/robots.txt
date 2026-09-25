@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+# katalog projektów jest za hasłem
+Disallow: /projekty
 
 Sitemap: https://archinland.pl/sitemap.xml

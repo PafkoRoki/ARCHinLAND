@@ -23,6 +23,9 @@ const LENS_RADIUS = 180 // px, promień koła w Hero (na telefonie mniejszy, pat
 const LENS_ZOOM = 1.15 // model w soczewce jest lekko przybliżony
 const LENS_REST = { x: 0.5, y: 0.42 } // pozycja koła bez kursora (ułamek ekranu)
 const REVEAL_DISTANCE = 0.8 // ile wysokości ekranu przewijania trwa powiększanie koła
+// Koniec sceny O nas: pozioma płaszczyzna tnie model od dachu do podstawy (jak rzut na planie),
+// aż model zniknie tuż przed odpięciem sceny. Tyle wysokości ekranu przewijania trwa cięcie.
+const CUT_DISTANCE = 0.9
 
 // reakcja na kursor w Hero (radiany)
 const HOVER_TILT_Y = 0.45
@@ -141,14 +144,34 @@ const lensRadius = (w: number) => Math.min(LENS_RADIUS, w * 0.32)
 
 type Motion = {
   reveal: MutableRefObject<number> // 0 = soczewka w Hero, 1 = pełny ekran
+  cut: MutableRefObject<number> // 0 = cały model, 1 = model ucięty do podstawy (zniknął)
   pointer: MutableRefObject<{ x: number; y: number } | null> // kursor w px, null = brak
   layer: RefObject<HTMLDivElement> // tu ustawiamy zmienne CSS soczewki
 }
 
-function Model({ reveal, pointer, layer }: Motion) {
+function Model({ reveal, cut, pointer, layer }: Motion) {
   const group = useRef<THREE.Group>(null!)
-  const { viewport, camera, size } = useThree()
+  const { viewport, camera, size, gl } = useThree()
   const loaded = useModel(MODEL_URL)
+  // płaszczyzna cięcia w układzie świata: widać tylko to, co leży poniżej jej wysokości (constant)
+  const cutPlane = useRef(new THREE.Plane(new THREE.Vector3(0, -1, 0), 1e6))
+  const ground = useRef<THREE.ShadowMaterial>(null!)
+
+  useEffect(() => {
+    gl.localClippingEnabled = true
+    if (!loaded) return
+    // wszystkie obiekty z materiałem — także linie w modelu, nie tylko siatki
+    loaded.obj.traverse((child) => {
+      const material = (child as THREE.Mesh).material
+      if (!material) return
+      for (const m of ([] as THREE.Material[]).concat(material)) {
+        m.clippingPlanes = [cutPlane.current]
+        m.clipShadows = true // cień maleje razem z uciętym modelem
+        m.needsUpdate = true
+      }
+    })
+  }, [gl, loaded])
+
   const lens = useRef({ x: 0, y: 0, ready: false })
   const tmp = useRef({ ndc: new THREE.Vector3(), dir: new THREE.Vector3(), hit: new THREE.Vector3() })
   const key = useRef<THREE.DirectionalLight>(null!)
@@ -220,6 +243,17 @@ function Model({ reveal, pointer, layer }: Motion) {
     light.position.set(g.position.x + KEY_OFFSET[0], g.position.y + KEY_OFFSET[1], KEY_OFFSET[2])
     light.target.position.copy(g.position)
     light.target.updateMatrixWorld()
+
+    // cięcie od góry: wysokość płaszczyzny zjeżdża od dachu do podstawy modelu
+    if (loaded) {
+      const c = cut.current
+      const half = (loaded.height / 2) * g.scale.y
+      const top = g.position.y + half
+      const bottom = g.position.y - half
+      cutPlane.current.constant = c > 0 ? lerp(top + 0.01, bottom - 0.01, c) : 1e6
+      // cień na ziemi gaśnie na sam koniec, gdy z domu zostaje tylko podstawa
+      ground.current.opacity = GROUND_SHADOW * (1 - smoothstep(c, 0.85, 1))
+    }
   })
 
   return (
@@ -242,12 +276,20 @@ function Model({ reveal, pointer, layer }: Motion) {
         shadow-radius={4}
       />
       <Reflections object={loaded?.obj} />
-      <ModelGroup group={group} loaded={loaded} />
+      <ModelGroup group={group} loaded={loaded} ground={ground} />
     </>
   )
 }
 
-function ModelGroup({ group, loaded }: { group: RefObject<THREE.Group>; loaded: Loaded | null }) {
+const GROUND_SHADOW = 0.22 // krycie cienia pod modelem
+
+type ModelGroupProps = {
+  group: RefObject<THREE.Group>
+  loaded: Loaded | null
+  ground: RefObject<THREE.ShadowMaterial>
+}
+
+function ModelGroup({ group, loaded, ground }: ModelGroupProps) {
   return (
     <group ref={group}>
       {loaded && (
@@ -256,7 +298,7 @@ function ModelGroup({ group, loaded }: { group: RefObject<THREE.Group>; loaded: 
           <primitive object={loaded.obj} />
           <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.002, 0]} receiveShadow>
             <circleGeometry args={[TARGET * 0.9, 64]} />
-            <shadowMaterial transparent opacity={0.22} />
+            <shadowMaterial ref={ground} transparent opacity={GROUND_SHADOW} />
           </mesh>
         </group>
       )}
@@ -267,6 +309,7 @@ function ModelGroup({ group, loaded }: { group: RefObject<THREE.Group>; loaded: 
 export default function BackgroundModel() {
   const layer = useRef<HTMLDivElement>(null)
   const reveal = useRef(0)
+  const cut = useRef(0)
   const pointer = useRef<{ x: number; y: number } | null>(null)
   // po zniknięciu modelu (sekcja Realizacje) scena przestaje się renderować
   const [hidden, setHidden] = useState(false)
@@ -290,6 +333,7 @@ export default function BackgroundModel() {
       setHidden(offset >= vh)
 
       reveal.current = smoothstep(y, 0, vh * REVEAL_DISTANCE)
+      cut.current = smoothstep(y, pinEnd - vh * CUT_DISTANCE, pinEnd)
     }
     // tylko prawdziwa mysz — na dotyku soczewka stoi w LENS_REST
     const onMove = (e: PointerEvent) => {
@@ -329,7 +373,7 @@ export default function BackgroundModel() {
             <hemisphereLight args={['#f4f1ea', '#b9b2a6', 0.15]} />
             {/* chłodne światło kontrowe od tyłu — rysuje krawędzie bryły */}
             <directionalLight position={[-5, 4, -6]} intensity={0.9} color="#dfe7f2" />
-            <Model reveal={reveal} pointer={pointer} layer={layer} />
+            <Model reveal={reveal} cut={cut} pointer={pointer} layer={layer} />
           </Canvas>
         </div>
       </div>

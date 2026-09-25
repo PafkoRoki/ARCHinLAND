@@ -27,12 +27,22 @@ export default function Hero() {
     const onScroll = () => {
       const el = sectionRef.current
       if (!el) return
-      const p = window.scrollY / screenHeight() // stała wysokość (telefon: pasek adresu)
+      const vh = screenHeight() // stała wysokość (telefon: pasek adresu)
+      const p = window.scrollY / vh
       const about = smoothstep(ABOUT_START, ABOUT_END, p)
       el.style.setProperty('--about', about.toFixed(3))
       el.dataset.about = about > 0.6 ? 'on' : 'off'
       // podpowiedź przewijania znika przy pierwszym ruchu
       el.style.setProperty('--intro', (1 - smoothstep(0, 0.2, p)).toFixed(3))
+
+      // wskaźnik przewijania w O nas: model stoi, ale linia się wypełnia — strona nadal jedzie.
+      // 0 = początek tekstu O nas, 1 = odpięcie sceny (wjeżdżają Realizacje)
+      const pinEnd = (el.offsetHeight - vh) / vh // w wysokościach ekranu
+      const progress = Math.min(1, Math.max(0, (p - ABOUT_START) / Math.max(0.01, pinEnd - ABOUT_START)))
+      el.style.setProperty('--pin', progress.toFixed(4))
+      const outro = 1 - smoothstep(0.9, 1, progress) // koniec sceny: model ucięty do zera
+      el.style.setProperty('--pin-show', (about * outro).toFixed(3))
+      el.style.setProperty('--outro', outro.toFixed(3))
     }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -91,6 +101,17 @@ export default function Hero() {
         <span className="hero__scroll-hint">
           <span className="hero__scroll-line" />
           Przewiń
+        </span>
+      </div>
+
+      {/* wskaźnik przewijania w O nas (prawa krawędź): pokazuje, że strona jedzie, choć model stoi */}
+      <div className="hero__layer hero__layer--progress" aria-hidden="true">
+        <span className="hero__progress">
+          <span className="hero__progress-label">Przewiń</span>
+          <span className="hero__progress-track">
+            <span className="hero__progress-fill" />
+          </span>
+          <span className="hero__progress-arrow" />
         </span>
       </div>
 
