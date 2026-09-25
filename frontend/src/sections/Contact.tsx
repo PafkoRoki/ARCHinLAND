@@ -13,7 +13,6 @@ export default function Contact() {
         <div className="contact__block">
           <span className="contact__label">Studio</span>
           <p className="contact__value">ARCHinLAND</p>
-          <p className="contact__value contact__value--muted">ARCHITECTURE in LAND DEVELOPMENT</p>
         </div>
 
         <div className="contact__block">

@@ -154,10 +154,6 @@
   transition: color 0.3s var(--ease);
 }
 
-.hero__tag:hover {
-  color: var(--orange);
-}
-
 .hero__tag-arrow {
   position: absolute;
   top: 100%;
