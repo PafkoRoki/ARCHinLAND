@@ -23,7 +23,7 @@
 :root {
   --bg: #f0f0f0;
   --bg-alt: #eeece7;
-  --bg-model: #f0f0f0; /* tło soczewki z modelem w Hero; po rozszerzeniu tło reszty strony */
+  --bg-model: #fff; /* tło soczewki z modelem w Hero; po rozszerzeniu tło reszty strony */
   --orange: #FFA500;
   --black: #2d2d2d;
   --white: #ffffff;
