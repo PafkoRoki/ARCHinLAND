@@ -7,20 +7,81 @@
   z-index: 9999;
 }
 
-/* postęp wczytywania modelu 3D, widoczny do startu animacji odsłonięcia */
-.app-loader__status {
+
+/* pasek postępu wczytywania modelu 3D — na planszy, u dołu ekranu, do startu odsłonięcia */
+.app-loader__progress {
   position: fixed;
   left: 50%;
-  bottom: clamp(24px, 6vh, 56px);
+  bottom: clamp(32px, 8vh, 72px);
   z-index: 10000;
-  margin: 0;
+  display: grid;
+  gap: 12px;
+  width: min(420px, calc(100vw - 2 * var(--gutter)));
   transform: translateX(-50%);
-  font-family: var(--font-body);
+  color: var(--black);
+  animation: app-loader-in 0.6s var(--ease) both;
+}
+
+.app-loader__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.app-loader__brand {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.app-loader__percent {
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* cienka linia toru 1px, wypełnienie 2px — płynnie dogania rzeczywisty postęp */
+.app-loader__track {
+  position: relative;
+  height: 2px;
+  overflow: hidden;
+  background: linear-gradient(var(--black), var(--black)) center / 100% 1px no-repeat;
+  opacity: 0.9;
+}
+
+.app-loader__fill {
+  position: absolute;
+  inset: 0;
+  background: var(--black);
+  transform-origin: left center;
+  transition: transform 0.45s var(--ease);
+}
+
+/* nieznany rozmiar pliku: po torze przesuwa się odcinek */
+.app-loader__progress.is-indeterminate .app-loader__fill {
+  width: 30%;
+  transform: none !important;
+  transition: none;
+  animation: app-loader-slide 1.4s var(--ease) infinite;
+}
+
+.app-loader__label {
   font-size: var(--fs-label);
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  white-space: nowrap;
-  color: var(--black);
-  font-variant-numeric: tabular-nums;
+  opacity: 0.6;
+}
+
+@keyframes app-loader-slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(340%); }
+}
+
+@keyframes app-loader-in {
+  from { opacity: 0; transform: translate(-50%, 12px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
 }

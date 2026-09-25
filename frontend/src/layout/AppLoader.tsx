@@ -19,14 +19,14 @@ const DURATION = 1.9
 // Na stronie głównej ekran ładowania czeka na model 3D (BackgroundModel),
 // ale nie dłużej niż MAX_WAIT_MS — np. przy bardzo wolnym łączu.
 const MAX_WAIT_MS = 20000
+// po wczytaniu pasek postępu dopełnia się do 100% — chwila, żeby to było widać
+const BAR_FINISH_MS = 450
 const isHome = () => window.location.pathname === '/'
+const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
 
 function waitForPage() {
   if (!isHome()) return Promise.resolve()
-  return Promise.race([
-    modelReady,
-    new Promise<void>((resolve) => setTimeout(resolve, MAX_WAIT_MS)),
-  ])
+  return Promise.race([modelReady, wait(MAX_WAIT_MS)]).then(() => wait(BAR_FINISH_MS))
 }
 
 type AppLoaderAnimationProps = {
@@ -284,6 +284,12 @@ function AppLoader() {
   const showStatus = useMemo(isHome, [])
 
   useEffect(() => onModelProgress(setProgress), [])
+  // gotowe (albo limit czasu) → pasek dopełnia się do 100% przed odsłonięciem
+  useEffect(() => {
+    Promise.race([modelReady, wait(MAX_WAIT_MS)]).then(() => setProgress(1))
+  }, [])
+
+  const percent = Math.round(progress * 100)
 
   const handleStart = useCallback(() => {
     setIsWaiting(false)
@@ -305,10 +311,24 @@ function AppLoader() {
         onComplete={handleComplete}
       />
       {showStatus && isWaiting && (
-        <p className="app-loader__status" role="status">
-          Ładowanie modelu 3D
-          {progress > 0 ? ` · ${Math.round(progress * 100)}%` : '…'}
-        </p>
+        // pasek postępu wczytywania modelu 3D; bez znanego rozmiaru pliku — przesuwający się odcinek
+        <div
+          className={`app-loader__progress${progress > 0 ? '' : ' is-indeterminate'}`}
+          role="progressbar"
+          aria-label="Ładowanie modelu 3D"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={progress > 0 ? percent : undefined}
+        >
+          <div className="app-loader__row">
+            <span className="app-loader__brand">ARCHinLAND</span>
+            <span className="app-loader__percent">{progress > 0 ? `${percent}%` : ''}</span>
+          </div>
+          <div className="app-loader__track">
+            <div className="app-loader__fill" style={{ transform: `scaleX(${progress})` }} />
+          </div>
+          <span className="app-loader__label">Ładowanie modelu 3D</span>
+        </div>
       )}
     </div>
   )
