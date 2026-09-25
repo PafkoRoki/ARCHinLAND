@@ -11,7 +11,7 @@ import './Hero.css'
 // Długość sceny = 1 ekran + PIN_LENGTH — ustawiona w Hero.css (--hero-pin).
 const ABOUT_START = 0.85
 const ABOUT_END = 1.25
-// podpis modelu (ERYK + strzałka) wjeżdża chwilę po tekście O nas
+// podpis modelu (ERYK) wjeżdża chwilę po tekście O nas
 const TAG_START = 1.05
 const TAG_END = 1.45
 const DRAG_SPEED = 0.008 // radiany na piksel przeciągnięcia
@@ -120,11 +120,8 @@ export default function Hero() {
             dopasowane do <br />
             miejsca i wymagań prawa budowlanego.
           </p>
-          {/* podpis modelu z linią wskazującą dom (jak opisy na STILL) */}
+          {/* podpis modelu (jak opisy na STILL) */}
           <Link to="/projekty/eryk" className="hero__tag">
-            <svg className="hero__tag-arrow" viewBox="0 0 140 100" aria-hidden="true">
-              <path d="M139.5 0.5 L6 94" />
-            </svg>
             <span className="hero__tag-name">Eryk</span>
             <span className="hero__tag-desc">Dom do 70 m² zabudowy</span>
           </Link>

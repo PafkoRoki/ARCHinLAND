@@ -2,8 +2,8 @@
 
 import { FaInstagram } from "react-icons/fa";
 import { SiSketchfab } from "react-icons/si";
-import { FiArrowUp, FiHome, FiMail, FiPhone } from "react-icons/fi";
-import React from "react";
+import { FiArrowUp } from "react-icons/fi";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import RippleDistortion from "../components/RippleDistortion";
 
@@ -20,16 +20,24 @@ const Link = ({
   </a>
 );
 
+interface ShinyTextProps {
+  text?: string;
+  isShining?: boolean;
+  speed?: number;
+  className?: string;
+  children?: React.ReactNode;
+}
+
 interface FooterLink {
-  label: string; // napis widoczny po najechaniu
+  label: string;
   href: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode; // gdy podana, komórka pokazuje ikonę zamiast napisu
 }
 
 interface SocialLink {
   href: string;
   icon: React.ReactNode;
-  ariaLabel: string; // także napis widoczny po najechaniu
+  ariaLabel: string;
 }
 
 interface FooterProps {
@@ -43,22 +51,148 @@ interface FooterProps {
   };
 }
 
-// Komórka stopki: ikona, a po najechaniu (lub fokusie) napis w jej miejscu
+const ShinyText = ({
+  text,
+  children,
+  isShining = false,
+  speed = 1,
+  className = ''
+}: ShinyTextProps) => {
+  const content = children || text;
+
+  return (
+    <div
+      className={cn("text-inherit bg-clip-text inline-block transition-opacity", className)}
+      style={{
+        backgroundImage: 'linear-gradient(120deg, rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0) 60%)',
+        backgroundSize: '200% 100%',
+        WebkitBackgroundClip: 'text',
+        backgroundPosition: isShining ? '-100%' : '110%',
+        transition: isShining ? `background-position ${speed}s linear` : 'none',
+      }}
+    >
+      {content}
+    </div>
+  );
+};
+
+const DecryptText = ({
+  text,
+  className,
+  isDecrypting = false,
+  duration = 0.1
+}: {
+  text: string;
+  className?: string;
+  isDecrypting?: boolean;
+  duration?: number;
+}) => {
+  const [displayText, setDisplayText] = useState(text);
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:,.<>?/";
+
+  useEffect(() => {
+    if (!isDecrypting) {
+      setDisplayText(text);
+      return;
+    }
+
+    let interval: NodeJS.Timeout | undefined;
+    let iteration = 0;
+
+    if (interval) {
+      clearInterval(interval);
+    }
+
+    interval = setInterval(() => {
+      setDisplayText(prev =>
+        prev.split("").map((char, index) => {
+          if (char === " ") return " ";
+
+          if (index < iteration) return text[index];
+
+          return characters[Math.floor(Math.random() * characters.length)];
+        }).join("")
+      );
+
+      iteration += 1 / 3;
+
+      if (iteration >= text.length) {
+        if (interval) {
+          clearInterval(interval);
+        }
+        setDisplayText(text);
+      }
+    }, duration * 1000 / text.length);
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [isDecrypting, text, duration]);
+
+  return <span className={className}>{displayText}</span>;
+};
+
+const AnimatedLink = ({
+  href,
+  children,
+  className,
+  ariaLabel
+}: {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+  ariaLabel?: string; // nazwa dla czytników ekranu, gdy w komórce jest ikona
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const textContent = typeof children === 'string' ? children : '';
+
+  return (
+    <motion.div
+      className="relative overflow-hidden"
+      whileHover="hover"
+      initial="initial"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <motion.div
+        className="absolute inset-0 bg-white/10 z-0"
+        variants={{
+          initial: { x: "-100%" },
+          hover: { x: 0 }
+        }}
+        transition={{ duration: 0.3 }}
+      />
+      <Link
+        href={href}
+        aria-label={ariaLabel}
+        className={cn("z-10 relative h-full", className)}
+      >
+        {typeof children === 'string' ? (
+          <ShinyText isShining={isHovered} speed={1}>
+            <DecryptText text={textContent} isDecrypting={isHovered} />
+          </ShinyText>
+        ) : children}
+      </Link>
+    </motion.div>
+  );
+};
+
 const AnimatedIconLink = ({
   href,
   icon,
-  label,
+  ariaLabel,
   className
 }: {
   href: string;
   icon: React.ReactNode;
-  label: string;
+  ariaLabel: string;
   className?: string;
 }) => {
-  const external = href.startsWith("http");
   return (
     <motion.div
-      className={cn("group relative overflow-hidden", className)}
+      className={cn("relative overflow-hidden", className)}
       whileHover="hover"
       initial="initial"
     >
@@ -72,19 +206,10 @@ const AnimatedIconLink = ({
       />
       <Link
         href={href}
-        aria-label={label}
-        {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-        className="absolute inset-0 z-10 flex items-center justify-center text-white outline-offset-[-2px]"
+        aria-label={ariaLabel}
+        className="text-white hover:text-[var(--orange)] transition-colors z-10 relative"
       >
-        <span className="transition duration-300 ease-out group-hover:-translate-y-3 group-hover:opacity-0 group-focus-within:-translate-y-3 group-focus-within:opacity-0">
-          {icon}
-        </span>
-        <span
-          aria-hidden="true"
-          className="absolute inset-x-2 text-center text-sm text-[var(--orange)] translate-y-3 opacity-0 transition duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100"
-        >
-          {label}
-        </span>
+        {icon}
       </Link>
     </motion.div>
   );
@@ -104,10 +229,10 @@ export function Footer({
     }
   ],
   links = [
-    { label: "E-mail", href: "mailto:ARCHinLAND@wp.pl", icon: <FiMail size={28} /> },
-    { label: "790 820 114", href: "tel:+48790820114", icon: <FiPhone size={28} /> },
+    { label: "Mail", href: "mailto:ARCHinLAND@wp.pl" },
+    { label: "790 820 114", href: "tel:+48790820114" },
     { label: "Do góry", href: "#top", icon: <FiArrowUp size={28} /> },
-    { label: "Projekty", href: "#projects", icon: <FiHome size={28} /> }
+    { label: "Projekty", href: "#projects" }
   ],
   companyDescription = "ARCHITECTURE in LAND DEVELOPMENT",
   copyright = {
@@ -129,7 +254,7 @@ export function Footer({
                 key={link.ariaLabel}
                 href={link.href}
                 icon={link.icon}
-                label={link.ariaLabel}
+                ariaLabel={link.ariaLabel}
                 className={cn(
                   "flex-1 aspect-square flex items-center justify-center",
                   i < socialLinks.length - 1 ? "border-r border-[var(--border-inverse)]" : ""
@@ -143,7 +268,7 @@ export function Footer({
               key={link.ariaLabel}
               href={link.href}
               icon={link.icon}
-              label={link.ariaLabel}
+              ariaLabel={link.ariaLabel}
               className="hidden min-[1250px]:flex min-[1250px]:col-span-1 min-[1250px]:row-span-1 border-r border-b border-[var(--border-inverse)] aspect-square items-center justify-center"
             />
           ))}
@@ -170,31 +295,33 @@ export function Footer({
 
           <div className="grid grid-cols-2 min-[1250px]:hidden border-b border-[var(--border-inverse)]">
             {links.slice(0, 4).map((link, i) => (
-              <AnimatedIconLink
+              <AnimatedLink
                 key={link.label}
                 href={link.href}
-                icon={link.icon}
-                label={link.label}
+                ariaLabel={link.icon ? link.label : undefined}
                 className={cn(
-                  "aspect-square flex items-center justify-center",
+                  "aspect-square flex items-center justify-center text-sm text-white hover:text-[var(--orange)] transition-colors w-full",
                   i % 2 === 0 ? "border-r border-[var(--border-inverse)]" : "",
                   i < 2 ? "border-b border-[var(--border-inverse)]" : ""
                 )}
-              />
+              >
+                {link.icon ?? link.label}
+              </AnimatedLink>
             ))}
           </div>
 
           {links.slice(0, 2).map((link, i) => (
-            <AnimatedIconLink
+            <AnimatedLink
               key={link.label}
               href={link.href}
-              icon={link.icon}
-              label={link.label}
+              ariaLabel={link.icon ? link.label : undefined}
               className={cn(
-                "hidden min-[1250px]:flex min-[1250px]:col-span-1 min-[1250px]:row-span-1 border-b border-[var(--border-inverse)] aspect-square items-center justify-center",
+                "hidden min-[1250px]:flex min-[1250px]:col-span-1 min-[1250px]:row-span-1 border-b border-[var(--border-inverse)] aspect-square items-center justify-center text-sm text-white hover:text-[var(--orange)] transition-colors w-full",
                 i === 0 ? "border-r border-[var(--border-inverse)]" : ""
               )}
-            />
+            >
+              {link.icon ?? link.label}
+            </AnimatedLink>
           ))}
 
           <div className="px-4 py-6 min-[1250px]:py-8 min-[1250px]:col-span-10 min-[1250px]:row-span-1 border-b min-[1250px]:border-b-0 min-[1250px]:border-r border-[var(--border-inverse)] text-xs text-white/70 leading-relaxed">
@@ -202,16 +329,17 @@ export function Footer({
           </div>
 
           {links.slice(2, 5).map((link, i) => (
-            <AnimatedIconLink
+            <AnimatedLink
               key={link.label}
               href={link.href}
-              icon={link.icon}
-              label={link.label}
+              ariaLabel={link.icon ? link.label : undefined}
               className={cn(
-                "hidden min-[1250px]:flex min-[1250px]:col-span-1 min-[1250px]:row-span-1 aspect-square items-center justify-center",
+                "hidden min-[1250px]:flex min-[1250px]:col-span-1 min-[1250px]:row-span-1 aspect-square items-center justify-center text-sm text-white hover:text-[var(--orange)] transition-colors w-full",
                 i < links.slice(2, 5).length - 1 ? "border-r border-[var(--border-inverse)]" : ""
               )}
-            />
+            >
+              {link.icon ?? link.label}
+            </AnimatedLink>
           ))}
         </div>
 
