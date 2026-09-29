@@ -58,6 +58,9 @@ const LOOKS: [RegExp, Look][] = [
 const GLASS: Look = { roughness: 0.05, metalness: 0.1, env: 2 }
 const MATTE: Look = { roughness: 0.95, env: 0.25 } // beton, tynk, drewno
 
+const SECTION = /section_cut/i
+const SECTION_FILL = new THREE.MeshBasicMaterial({ color: 0x000000, name: '_0_Black_section_cut' })
+
 function enhanceMaterial(m: THREE.Material) {
   if (!(m instanceof THREE.MeshStandardMaterial)) return
   // szkło = przezroczysty materiał, który nie jest liśćmi drzew
@@ -109,6 +112,15 @@ function useModel(url: string) {
         o.traverse((child) => {
           const m = child as THREE.Mesh
           if (!m.isMesh) return
+          // przekrój: wewnętrzne strony ścian są w SketchUpie czarne (_0_Black_section_cut).
+          // Z zewnątrz ich nie widać, a po przecięciu płaszczyzną cięcia wyglądają jak czarne
+          // wypełnienie ścian na rzucie. Czysta czerń bez światła i odbić; bez cienia, bo dublują ściany.
+          if (SECTION.test(([] as THREE.Material[]).concat(m.material)[0]?.name ?? '')) {
+            m.material = SECTION_FILL
+            m.castShadow = false
+            m.receiveShadow = false
+            return
+          }
           const materials = ([] as THREE.Material[]).concat(m.material)
           // model rzuca cień na podłoże i sam na siebie (pergola na tarasie, okap na ścianie);
           // teren tylko przyjmuje cień — jego własny i tak leżałby pod modelem, a kosztuje

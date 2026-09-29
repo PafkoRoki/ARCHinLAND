@@ -9,8 +9,8 @@ import SectionHeader from '../components/SectionHeader'
 import '@fontsource/barlow/800-italic.css'
 import './Realizations.css'
 
-// Kolejność galerii w zakładkach (każdy akordeon = wszystkie zdjęcia jednej realizacji)
-const GALLERY_SLUGS = ['baltic-cliff', 'apartamentowce', 'baltic-riviera', 'osiedle-panorama', 'zolcino', 'sjas', 'dom-na-wyspie']
+// Każdy akordeon = wszystkie zdjęcia jednej realizacji. Wszystkie realizacje z data/realizations.ts,
+// ułożone tam chronologicznie (od najstarszej); realizacja bez zdjęć jest pomijana.
 
 // Zakładki — realizacja trafia do zakładki według pola `group` w data/realizations.ts
 const TABS = [
@@ -22,7 +22,7 @@ const TABS = [
 // telefon: w akordeonie tylko pierwsze zdjęcie (reszta na podstronie realizacji)
 const MOBILE_QUERY = '(max-width: 520px)'
 
-const galleries = GALLERY_SLUGS.map((slug) => projects.find((p) => p.slug === slug)).filter(Boolean)
+const galleries = projects.filter((p) => p.gallery.length > 0)
 
 const itemsFor = (project) =>
   project.gallery.map((image, i) => ({

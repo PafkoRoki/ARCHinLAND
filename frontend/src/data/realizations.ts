@@ -62,6 +62,18 @@ const info: ProjectInfo[] = [
     description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
   },
   {
+    id: 'Inwestycja Klifowa',
+    slug: 'inwestycja-klifowa',
+    group: 'apartamenty',
+    number: '08',
+    name: 'INWESTYCJA KLIFOWA',
+    displayName: 'Inwestycja Klifowa',
+    location: 'Rewal, Poland',
+    year: '2011',
+    category: 'Apartamentowce',
+    description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
+  },
+  {
     id: 'Osiedle Żółcino',
     slug: 'zolcino',
     group: 'osiedla',
@@ -121,9 +133,25 @@ const info: ProjectInfo[] = [
     category: 'Dom jednorodzinny',
     description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
   },
+  {
+    id: 'Bliźniak Gryfice',
+    slug: 'blizniak-gryfice',
+    group: 'domy',
+    number: '09',
+    name: 'BLIŹNIAK GRYFICE',
+    displayName: 'Bliźniak Gryfice',
+    location: 'Gryfice, Poland',
+    year: '2024',
+    category: 'Dom w zabudowie bliźniaczej',
+    description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
+  },
 ]
 
-export const projects: Project[] = info.map((p) => {
+// Kolejność na stronie: chronologicznie, od najstarszej. Bez roku — na końcu, w kolejności z listy wyżej.
+const yearOf = (p: ProjectInfo) => Number(p.year) || Number.MAX_SAFE_INTEGER
+const byYear = (a: ProjectInfo, b: ProjectInfo) => yearOf(a) - yearOf(b)
+
+export const projects: Project[] = [...info].sort(byYear).map((p) => {
   const gallery = photosOf(p.slug)
   return { ...p, image: gallery[0], gallery }
 })
