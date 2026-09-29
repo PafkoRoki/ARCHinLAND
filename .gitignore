@@ -143,3 +143,6 @@ vite.config.ts.timestamp-*
 .vite/
 # źródła modeli 3D (.dae + tekstury) — lokalnie; na stronę trafia tylko skompresowany public/models/*.glb
 frontend/models-src/
+# eksport ze SketchUpa wrzucany do public/models (źródło dla Eryk.glb) — nie do repo ani na stronę
+frontend/public/models/*.dae
+frontend/public/models/*/
