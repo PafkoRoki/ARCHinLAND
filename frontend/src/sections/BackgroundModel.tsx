@@ -36,6 +36,11 @@ const KEY_OFFSET: [number, number, number] = [4, 8, 5]
 const SHADOW_EXTENT = 3.2
 const ENV_INTENSITY = 0.45 // siła odbić i światła z otoczenia (RoomEnvironment)
 
+// gęstość pikseli sceny: model w tle nie potrzebuje pełnej rozdzielczości Retina,
+// a na telefonach (ekran dotykowy) każdy piksel kosztuje baterię
+const MAX_DPR =
+  typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches ? 1 : 1.5
+
 const { lerp, clamp, smoothstep } = THREE.MathUtils
 
 type Loaded = { obj: THREE.Object3D; height: number }
@@ -104,10 +109,12 @@ function useModel(url: string) {
         o.traverse((child) => {
           const m = child as THREE.Mesh
           if (!m.isMesh) return
-          // model rzuca cień na podłoże i sam na siebie (pergola na tarasie, okap na ścianie)
-          m.castShadow = true
+          const materials = ([] as THREE.Material[]).concat(m.material)
+          // model rzuca cień na podłoże i sam na siebie (pergola na tarasie, okap na ścianie);
+          // teren tylko przyjmuje cień — jego własny i tak leżałby pod modelem, a kosztuje
+          m.castShadow = !materials.some((x) => /ziemia/i.test(x.name))
           m.receiveShadow = true
-          ;([] as THREE.Material[]).concat(m.material).forEach(enhanceMaterial)
+          materials.forEach(enhanceMaterial)
         })
         // środek na X/Z, stoi na y=0, przeskalowany do TARGET
         const box = new THREE.Box3().setFromObject(o)
@@ -212,6 +219,19 @@ function Model({ reveal, cut, pointer, layer }: Motion) {
       el.style.setProperty('--lens-r', `${radius}px`)
       el.style.setProperty('--lens-fade', `${h}`)
       el.dataset.full = r > 0.999 ? 'true' : 'false'
+    }
+
+    // poza kołem CSS i tak ucina obraz (clip-path) — rysuj tylko prostokąt wokół soczewki
+    if (r <= 0.999) {
+      const pad = 2
+      const x0 = clamp(lx - radius - pad, 0, w)
+      const y0 = clamp(hgt - ly - radius - pad, 0, hgt) // WebGL liczy y od dołu
+      const x1 = clamp(lx + radius + pad, 0, w)
+      const y1 = clamp(hgt - ly + radius + pad, 0, hgt)
+      gl.setScissor(x0, y0, x1 - x0, y1 - y0)
+      gl.setScissorTest(true)
+    } else {
+      gl.setScissorTest(false)
     }
 
     // punkt sceny (płaszczyzna z=0) pod środkiem soczewki — tam stoi model
@@ -366,7 +386,7 @@ export default function BackgroundModel() {
             shadows={{ type: THREE.PCFShadowMap }}
             frameloop={hidden ? 'never' : 'always'}
             camera={{ position: [0, 2.4, 8], fov: 35 }}
-            dpr={[1, 2]}
+            dpr={[1, MAX_DPR]}
             gl={{ alpha: true, antialias: true }}
           >
             {/* rozproszone światło nieba (góra) i odbite od ziemi (dół) — otoczenie robi resztę */}
