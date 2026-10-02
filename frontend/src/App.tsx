@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import AppLoader from './layout/AppLoader'
+import Footer from './layout/Footer'
 import ProjectGate from './components/ProjectGate'
 import RealizationDetail from './pages/RealizationDetail'
 import Home from './pages/Home'
@@ -42,6 +43,15 @@ export default function App() {
         />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+
+      <SubpageFooter />
     </BrowserRouter>
   )
+}
+
+// stopka na podstronach (katalog, projekt, realizacja); Home renderuje własną
+function SubpageFooter() {
+  const { pathname } = useLocation()
+  if (pathname === '/') return null
+  return <Footer key={pathname} /> // key: nowe losowe zdjęcie przy każdej podstronie
 }

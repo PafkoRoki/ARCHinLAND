@@ -66,6 +66,17 @@
 
 /* Gallery */
 
+.projectDetail__top {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.projectDetail__gallery {
+  min-width: 0;
+}
+
 .projectDetail__mainImage {
   aspect-ratio: 16 / 9;
   overflow: hidden;
@@ -91,12 +102,14 @@
 
 .projectDetail__tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
   margin-top: 12px;
 }
 
 /* wygląd jak .btn w globals.css; aktywna zakładka = stan hover */
-.projectDetail__tabs button {
+.projectDetail__tabs button,
+.projectDetail__mirror {
   padding: var(--btn-pad);
   border: 1px solid var(--border);
   background: var(--white);
@@ -111,8 +124,27 @@
   transition: background 0.25s var(--ease), color 0.25s var(--ease);
 }
 
+/* Lustrzane odbicie — przycisk dosunięty do prawej, w rzędzie zakładek / przy nagłówku "Rzuty" */
+.projectDetail__tabs .projectDetail__mirror {
+  margin-left: auto;
+}
+
+.projectDetail__mirror span {
+  display: inline-block;
+  margin-right: 4px;
+}
+
+.projectDetail.isMirrored .projectDetail__mainImage img,
+.projectDetail.isMirrored .projectDetail__thumbs img,
+.projectDetail.isMirrored .projectDetail__zoom img,
+.projectDetail.isMirrored .projectDetail__lightbox img {
+  transform: scaleX(-1);
+}
+
 .projectDetail__tabs button:hover,
-.projectDetail__tabs button.isActive {
+.projectDetail__tabs button.isActive,
+.projectDetail__mirror:hover,
+.projectDetail__mirror.isActive {
   background: var(--black);
   color: var(--white);
 }
@@ -153,46 +185,216 @@
   gap: 40px;
 }
 
-.projectDetail__statsGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border: 1px solid var(--border);
-}
+/* Boks z danymi obok galerii */
 
-.projectDetail__statsGrid > div {
+.projectDetail__summary {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  padding: 16px;
-  border-right: 1px solid var(--border);
+  border: 1px solid var(--border);
+  background: var(--white);
+}
+
+.projectDetail__summaryBlock {
+  padding: 18px 20px;
   border-bottom: 1px solid var(--border);
 }
 
-.projectDetail__statsGrid > div:nth-child(4n) {
-  border-right: 0;
-}
-
-.projectDetail__statsGrid > div:nth-last-child(-n + 4) {
+.projectDetail__summaryBlock:last-child {
   border-bottom: 0;
 }
 
-.projectDetail__statsGrid span {
-  color: #888;
+.projectDetail__summaryBlock h3,
+.projectDetail__floorRooms h3 {
+  margin: 0 0 10px;
+  font-family: var(--font-body);
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.projectDetail__summaryBlock p {
+  margin: 0;
+  color: #444;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.projectDetail__summary .projectDetail__specList > div {
+  padding: 6px 0;
+}
+
+.projectDetail__summaryCost {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 20px;
+  background: var(--black);
+  color: var(--white);
+}
+
+.projectDetail__summaryCost span {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.projectDetail__summaryCost strong {
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+/* Lista "etykieta ....... wartość" */
+
+.projectDetail__specList {
+  margin: 0;
+}
+
+.projectDetail__specList > div {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 9px 0;
+  font-size: 13px;
+}
+
+.projectDetail__specList dt {
+  display: flex;
+  flex: 1;
+  align-items: baseline;
+  gap: 8px;
+  color: #666;
+}
+
+/* kropkowany "prowadnik" między etykietą a wartością */
+.projectDetail__specList dt::after {
+  content: "";
+  flex: 1;
+  min-width: 16px;
+  border-bottom: 1px dotted rgba(45, 45, 45, 0.35);
+  transform: translateY(-3px);
+}
+
+.projectDetail__specList dd {
+  margin: 0;
+  font-weight: 700;
+  text-align: right;
+}
+
+
+/* ---------- Sekcje (układ jak archi-projekt.com.pl) ---------- */
+
+.projectDetail__title {
+  margin: 0 0 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: clamp(22px, 2.4vw, 28px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.projectDetail__section h3,
+.projectDetail__section h4 {
+  margin: 0 0 12px;
+  font-family: var(--font-body);
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* obrazek otwierany w lightboxie */
+.projectDetail__zoom {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 1px solid var(--border);
+  background: var(--white);
+  cursor: zoom-in;
+  overflow: hidden;
+}
+
+.projectDetail__zoom img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: opacity 0.25s var(--ease);
+}
+
+.projectDetail__zoom:hover img {
+  opacity: 0.85;
+}
+
+/* Rzuty */
+
+.projectDetail__floors {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.projectDetail__floor {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(260px, 2fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.projectDetail__floorHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.projectDetail__floorHead h3 {
+  margin: 0;
+}
+
+.projectDetail__floorHead .projectDetail__mirror {
+  padding: 8px 12px;
   font-size: 10px;
 }
 
-.projectDetail__statsGrid strong {
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 700;
+.projectDetail__floorRooms ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--border);
 }
 
-.projectDetail__description h2,
-.projectDetail__model3d h2 {
-  margin: 0 0 14px;
-  font-size: 20px;
-  font-weight: 500;
-  letter-spacing: -0.02em;
+.projectDetail__floorRooms li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(45, 45, 45, 0.15);
+  font-size: 13px;
+}
+
+.projectDetail__floorRooms li span {
+  color: #444;
+}
+
+.projectDetail__floorRooms li strong {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.projectDetail__plansGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* Opis + tabele */
+
+.projectDetail__descriptionGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr);
+  gap: 48px;
+  align-items: start;
 }
 
 .projectDetail__description p {
@@ -201,7 +403,223 @@
   color: #444;
   font-size: 14px;
   line-height: 1.7;
+  white-space: pre-line;
 }
+
+.projectDetail__tables h3:not(:first-child) {
+  margin-top: 32px;
+}
+
+.projectDetail__tables .projectDetail__specList {
+  border-top: 1px solid var(--border);
+}
+
+/* Działka i elewacje */
+
+.projectDetail__facades {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px;
+  align-items: start;
+}
+
+.projectDetail__elevationsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.projectDetail__elevation img {
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.projectDetail__noImage--box {
+  aspect-ratio: 4 / 3;
+  border: 1px solid var(--border);
+  background: #eaeaea;
+}
+
+/* schemat działki, gdy nie ma plotImage */
+.projectDetail__plotScheme {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 40px 32px 20px;
+  border: 1px solid var(--border);
+  background: var(--white);
+}
+
+.projectDetail__plotRect {
+  position: relative;
+  width: min(60%, 260px);
+  border: 1px dashed var(--border);
+  background: repeating-linear-gradient(
+    45deg,
+    transparent 0 8px,
+    rgba(45, 45, 45, 0.04) 8px 9px
+  );
+}
+
+.projectDetail__plotW,
+.projectDetail__plotL {
+  position: absolute;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.projectDetail__plotW {
+  bottom: 100%;
+  left: 50%;
+  transform: translate(-50%, -6px);
+}
+
+.projectDetail__plotL {
+  top: 50%;
+  left: 100%;
+  transform: translate(8px, -50%) rotate(90deg);
+  transform-origin: left center;
+}
+
+.projectDetail__plotHouse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  width: 40%;
+  aspect-ratio: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%);
+  background: var(--black);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.projectDetail__plotHouse small {
+  font-size: 9px;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.projectDetail__plotScheme p {
+  margin: 0;
+  color: #666;
+  font-size: 12px;
+}
+
+/* Podobne projekty */
+
+.projectDetail__similar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.similarCard {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--black);
+  text-decoration: none;
+}
+
+.similarCard__image {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+
+.similarCard__image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease);
+}
+
+.similarCard:hover .similarCard__image img {
+  transform: scale(1.04);
+}
+
+.similarCard__image span {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 5px 8px;
+  background: var(--white);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.similarCard__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+}
+
+.similarCard__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.similarCard__head h3 {
+  margin: 0 !important;
+  font-family: var(--font-display) !important;
+  font-size: 16px !important;
+  letter-spacing: -0.01em !important;
+  text-transform: none !important;
+}
+
+.similarCard__head span {
+  color: #777;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.similarCard:hover .similarCard__head span {
+  color: var(--black);
+  text-decoration: underline;
+}
+
+.similarCard__area {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.similarCard__attrs {
+  display: flex;
+  gap: 14px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(45, 45, 45, 0.15);
+  color: #555;
+  font-size: 12px;
+}
+
+.similarCard__attrs span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.similarCard__attrs svg {
+  font-size: 16px;
+}
+
+/* Model 3D */
 
 .projectDetail__model3dFrame {
   aspect-ratio: 16 / 9;
@@ -225,21 +643,65 @@
   color: #777;
 }
 
+/* Lightbox */
+
+.projectDetail__lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background: rgba(20, 20, 20, 0.88);
+  cursor: zoom-out;
+}
+
+.projectDetail__lightbox img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  background: var(--white);
+}
+
+.projectDetail__lightbox button {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  border: 0;
+  background: none;
+  color: var(--white);
+  font-size: 36px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* ---------- Responsywność ---------- */
+
+@media (max-width: 1000px) {
+  .projectDetail__similar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .projectDetail__top,
+  .projectDetail__floor,
+  .projectDetail__descriptionGrid,
+  .projectDetail__facades {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 @media (max-width: 700px) {
   .projectDetail__header {
     flex-direction: column;
     align-items: flex-start;
   }
+}
 
-  .projectDetail__statsGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .projectDetail__statsGrid > div:nth-child(2n) {
-    border-right: 0;
-  }
-
-  .projectDetail__statsGrid > div:nth-last-child(-n + 2) {
-    border-bottom: 0;
+@media (max-width: 480px) {
+  .projectDetail__similar {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

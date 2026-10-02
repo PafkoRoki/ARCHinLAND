@@ -42,6 +42,50 @@ export interface Project {
 
   description?: string;
 
+  // ----- Karta projektu (układ jak archi-projekt.com.pl) — wszystko opcjonalne,
+  // brakujące pola/sekcje po prostu się nie wyświetlą.
+
+  // Krótka lista pomieszczeń, np. "3 pokoje, łazienka, kuchnia z jadalnią, garderoba"
+  roomsSummary?: string;
+
+  // Zestawienie pomieszczeń per kondygnacja (sekcja "Rzuty").
+  // plan = obrazek rzutu (np. ErykImage2), extraArea = pow. całkowita w nawiasie.
+  floorRooms?: {
+    name: string; // "Parter", "Poddasze", "Piętro"...
+    plan?: string;
+    rooms: { name: string; area: number; extraArea?: number }[];
+  }[];
+
+  // Sekcja "Technologia i konstrukcja" (kąt dachu bierze się z roofAngle)
+  technology?: {
+    walls?: string;          // Ściany
+    ceiling?: string;        // Strop
+    roofCovering?: string;   // Pokrycie dachu
+    roofInsulation?: string; // Ocieplenie poddasza / dachu
+    wallInsulation?: string; // Ocieplenie ścian
+    plaster?: string;        // Tynk
+    foundation?: string;     // Fundamenty
+    heating?: string;        // Ogrzewanie
+  };
+
+  // Sekcja "Powierzchnie i wymiary" (m², m³, m)
+  garageArea?: number;
+  boilerRoomArea?: number;
+  atticArea?: number;
+  terraceArea?: number;
+  netArea?: number;
+  roofArea?: number;
+  heatedVolume?: number;
+  buildingHeight?: number;
+  eavesHeight?: number;
+
+  // Sekcja "Działka i elewacje": plan zagospodarowania działki (elewacje biorą się z gallery.elevations).
+  // Bez obrazka pokazuje się schemat z minimalnymi wymiarami działki.
+  plotImage?: string;
+
+  // Szacunkowy koszt stanu surowego [zł]
+  rawStateCost?: number;
+
   gallery: {
     visualizations: string[];
     floorPlans: string[];
@@ -95,6 +139,8 @@ export const projects: Project[] = [
     roofType: "▲",
     roofAngle: 45,
     garage: 1,
+    garageArea: 24.08,
+    boilerRoomArea: 5.74,
     plotWidth: 22,
     plotLength: 30,
     standard: "WT 2021",

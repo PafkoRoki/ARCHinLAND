@@ -6,16 +6,34 @@ import { FiArrowUp } from "react-icons/fi";
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import RippleDistortion from "../components/RippleDistortion";
+import { projects as realizations } from "../data/realizations";
+
+// zdjęcie w stopce: losowe zdjęcie główne (01.jpg) jednej z realizacji
+const footerImages = realizations.map((r) => r.image).filter(Boolean);
+const randomFooterImage = () =>
+  footerImages[Math.floor(Math.random() * footerImages.length)] ?? "/images/osiedle-panorama.jpg";
 
 const cn = (...classes: Array<string | undefined | false>) =>
   classes.filter(Boolean).join(" ");
 
+// "#top" przewija skryptem — na podstronach (projekt, realizacja) nie ma sekcji #top
 const Link = ({
   href,
   children,
+  onClick,
   ...props
 }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
-  <a href={href} {...props}>
+  <a
+    href={href}
+    onClick={(event) => {
+      onClick?.(event);
+      if (href === "#top" && !document.getElementById("top")) {
+        event.preventDefault();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }}
+    {...props}
+  >
     {children}
   </a>
 );
@@ -232,7 +250,7 @@ export function Footer({
     { label: "Mail", href: "mailto:ARCHinLAND@wp.pl" },
     { label: "790 820 114", href: "tel:+48790820114" },
     { label: "Do góry", href: "#top", icon: <FiArrowUp size={28} /> },
-    { label: "Projekty", href: "#projects" }
+    { label: "Projekty", href: "/#projects" }
   ],
   companyDescription = "ARCHITECTURE in LAND DEVELOPMENT",
   copyright = {
@@ -241,6 +259,8 @@ export function Footer({
     additionalText: "ARCHITECTURE in LAND DEVELOPMENT"
   }
 }: FooterProps) {
+  const [image] = useState(randomFooterImage);
+
   return (
   <footer className="w-full bg-[#2d2d2d] text-white relative z-50">
       <div className="w-full pb-8 min-[1250px]:pb-16">
@@ -275,7 +295,7 @@ export function Footer({
 
           <div className="h-40 min-[1250px]:h-auto min-[1250px]:col-span-8 min-[1250px]:row-span-1 border-b border-[var(--border-inverse)] min-[1250px]:border-r relative">
             <RippleDistortion
-              src="/images/osiedle-panorama.jpg"
+              src={image}
               brushSize={170}
               strength={0.16}
               swirl={0.9}
