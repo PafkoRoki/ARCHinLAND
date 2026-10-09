@@ -23,5 +23,6 @@
 
 .ripple-distortion__fallback {
   object-fit: cover;
+  object-position: center top; /* zdjęcia budynków: przycinamy tylko od dołu, góra kompozycji zostaje */
   transition: opacity 0.25s ease;
 }

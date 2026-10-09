@@ -89,7 +89,8 @@ vec2 coverUV(vec2 uv) {
   vec2 safe = max(uTextureSize, vec2(1.0));
   vec2 s = uResolution / safe;
   vec2 scaledSize = safe * max(s.x, s.y);
-  vec2 offset = (uResolution - scaledSize) * 0.5;
+  // poziomo na środku, pionowo od góry — nadmiar zdjęcia ucinany tylko od dołu
+  vec2 offset = vec2((uResolution.x - scaledSize.x) * 0.5, uResolution.y - scaledSize.y);
   return (uv * uResolution - offset) / scaledSize;
 }
 

@@ -81,6 +81,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center top; /* zdjęcia budynków: przycinamy tylko od dołu, góra kompozycji zostaje */
   transition: filter 0.5s ease;
 }
 
@@ -113,6 +114,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center top; /* zdjęcia budynków: przycinamy tylko od dołu, góra kompozycji zostaje */
   filter: grayscale(1);
   transition: filter 0.2s ease;
 }
