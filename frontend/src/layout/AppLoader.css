@@ -28,11 +28,11 @@
   justify-content: space-between;
 }
 
+/* odręczny ARCHinLAND — ten sam krój co napis w Hero (Permanent Marker ma jedną grubość) */
 .app-loader__brand {
-  font-family: var(--font-display);
+  font-family: var(--font-hand);
   font-size: var(--fs-h3);
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-weight: 400;
   line-height: 1;
 }
 

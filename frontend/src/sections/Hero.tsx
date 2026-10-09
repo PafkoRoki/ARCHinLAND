@@ -1,6 +1,7 @@
 import { PointerEvent, useEffect, useRef, useState } from 'react'
 import CountUp from '../components/CountUp'
 import StrokeText from '../components/StrokeText'
+import { projects } from '../data/realizations'
 import { modelControls } from '../lib/modelControls'
 import { screenHeight } from '../lib/viewport'
 import './Hero.css'
@@ -17,6 +18,9 @@ const ABOUT_END = 1.25
 const LEAD_OUT_START = 1.9
 const LEAD_OUT_END = 2.6
 const DRAG_SPEED = 0.008 // radiany na piksel przeciągnięcia
+// zdjęcie w tle tekstu O nas: realizacja (slug) i numer pliku w jej folderze (1 = 01.jpg;
+// galeria jest posortowana po nazwach plików)
+const ABOUT_PHOTO = projects.find((p) => p.slug === 'baltic-cliff')?.gallery[1 - 1]
 
 const smoothstep = (a: number, b: number, x: number) => {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)))
@@ -142,12 +146,12 @@ export default function Hero() {
       {/* tekst O nas na cały ekran, NAD modelem; po przeczytaniu odjeżdża w górę */}
       <div className="hero__layer hero__layer--about">
         <div className="hero__panel">
+          {ABOUT_PHOTO && <img className="hero__panel-photo" src={ABOUT_PHOTO} alt="" decoding="async" />}
           <div className="container hero__about">
             <h2 className="visually-hidden">O nas</h2>
 
             <div className="hero__about-head">
               <span className="hero__tagline">ARCHITECTURE in LAND DEVELOPMENT</span>
-              <span className="hero__hand">ARCHinLAND</span>
             </div>
 
             <div className="hero__stats">
