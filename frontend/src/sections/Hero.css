@@ -1,8 +1,10 @@
 /* Przypięta scena: wysoka sekcja, w której warstwy stoją w miejscu (sticky) podczas przewijania.
    --hero-pin = ile ekranów przewijania trwa scena po pierwszym ekranie (patrz Hero.tsx). */
 .hero {
-  --hero-pin: 320svh;
+  --hero-pin: 360svh;
   --about: 0;
+  --lead-out: 0;
+  --model: 0;
 
   position: relative;
   display: grid;
@@ -26,7 +28,8 @@
   min-height: 560px;
 }
 
-/* warstwy względem modelu 3D (.bg-model, z-index 1): napis pod, tekst nad */
+/* warstwy względem modelu 3D (.bg-model, z-index 1):
+   napis pod (0), obracanie (2), tekst O nas (3), wskaźnik przewijania (4) */
 .hero__layer--title {
   z-index: 0;
   pointer-events: none;
@@ -34,7 +37,8 @@
   opacity: calc(1 - var(--about) * 0.6);
 }
 
-.hero__layer--about {
+/* obracanie modelu — włączone dopiero, gdy tekst O nas odjedzie */
+.hero__layer--drag {
   z-index: 2;
   pointer-events: none;
   cursor: grab;
@@ -42,12 +46,18 @@
   user-select: none;
 }
 
-.hero[data-about='on'] .hero__layer--about {
+.hero[data-model='on'] .hero__layer--drag {
   pointer-events: auto;
 }
 
-.hero__layer--about:active {
+.hero__layer--drag:active {
   cursor: grabbing;
+}
+
+.hero__layer--about {
+  z-index: 3;
+  pointer-events: none;
+  overflow: hidden; /* panel wyjeżdża w górę poza ekran */
 }
 
 /* podpowiedź przewijania: na dole, nad modelem; znika przy pierwszym ruchu (--intro) */
@@ -60,16 +70,14 @@
 .hero__scroll-hint {
   position: absolute;
   left: 50%;
-  bottom: clamp(24px, 5vh, 48px);
+  bottom: 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
   transform: translateX(-50%);
-  font-size: var(--fs-label);
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 500;
   color: var(--black);
 }
 
@@ -102,7 +110,7 @@
    a strzałka pod nią pulsuje — widać, że strona się przewija, choć model stoi.
    Pojawia się z tekstem O nas i znika przy odpięciu sceny (--pin-show, Hero.tsx). */
 .hero__layer--progress {
-  z-index: 2;
+  z-index: 4;
   pointer-events: none;
   opacity: var(--pin-show, 0);
 }
@@ -121,16 +129,14 @@
 
 .hero__progress-label {
   writing-mode: vertical-rl;
-  font-size: var(--fs-label);
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .hero__progress-track {
   position: relative;
   width: 1px;
-  height: clamp(96px, 18vh, 160px);
+  height: 140px;
   background: rgba(45, 45, 45, 0.2);
 }
 
@@ -177,58 +183,199 @@
   height: auto;
 }
 
-/* tekst O nas: lewy górny róg, nad napisem ARCHinLAND; wjeżdża razem z --about */
-.hero .hero__about {
+/* panel O nas: cały ekran, półprzezroczyste tło z rozmyciem — model widać, tekst czytelny.
+   Pojawia się z --about, potem odjeżdża w górę jak kartka (--lead-out) i odsłania model. */
+.hero__panel {
   position: relative;
+  display: flex;
+  align-items: center;
   height: 100%;
-  opacity: var(--about);
-  transform: translateY(calc((1 - var(--about)) * 24px));
 }
 
-.hero__lead {
+/* rozmyte tło stoi w miejscu: rozjaśnia się z --about i tak samo płynnie gaśnie z --lead-out */
+.hero__panel::before {
+  content: '';
   position: absolute;
-  top: clamp(80px, 11vh, 110px);
-  left: var(--gutter);
-  font-family: var(--font-display);
-  font-size: var(--fs-body);
-  font-weight: 500;
-  line-height: 1.4;
+  inset: 0;
+  background: rgba(240, 240, 240, 0.84);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  opacity: calc(var(--about) * (1 - var(--lead-out)));
+}
+
+/* tekst wjeżdża z dołu (--about), a po przeczytaniu odjeżdża w górę jak przewijana kartka */
+.hero .hero__about {
+  position: relative;
+  display: grid;
+  gap: clamp(24px, 3.5vw, 48px);
+  width: 100%;
+  /* równy odstęp góra/dół → blok dokładnie na środku ekranu, a nagłówek strony go nie zasłania */
+  padding-block: 64px;
   color: var(--black);
+  opacity: var(--about);
+  transform: translateY(calc((1 - var(--about)) * 24px - var(--lead-out) * 100svh));
+  will-change: transform;
+}
+
+/* hasło, a pod nim odręczny ARCHinLAND */
+.hero__about-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+/* hasło ARCHITECTURE in LAND DEVELOPMENT między dwiema liniami 1px.
+   Bez text-transform — wielkość liter jest częścią nazwy (małe "in"). */
+.hero__tagline {
+  display: inline-block;
+  padding: 0.7em 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-display);
+  font-size: clamp(15px, 1.25vw, 18px);
+  font-weight: 600;
+}
+
+/* odręczny podpis ARCHinLAND — jak dopisek markerem na rysunku */
+.hero__hand {
+  font-family: var(--font-hand);
+  font-size: clamp(2rem, 4.5vw, 3.75rem);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+/* dwie duże liczby (liczniki) */
+.hero__stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(16px, 4vw, 64px);
+}
+
+.hero__stat {
+  display: grid;
+  gap: 8px;
+}
+
+.hero__stat-num {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 7.5vw, 7rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums; /* stała szerokość cyfr — liczba nie skacze */
+}
+
+.hero__stat-label {
+  font-size: var(--fs-lead);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* dwie kolumny list pod linią */
+.hero__about-cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(16px, 4vw, 64px);
+}
+
+.hero__about-col {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+/* nagłówek kolumny jak oznaczenie na rysunku: odręczny numer, obok nazwa zwykłym tekstem */
+.hero__col-title {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: clamp(1.05rem, 1.3vw, 1.25rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.hero__col-num {
+  font-family: var(--font-hand);
+  font-size: 1.35em;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--orange);
+}
+
+.hero__list {
+  display: grid;
+  gap: 6px;
+  font-size: var(--fs-lead);
+  font-weight: 500;
+  line-height: 1.35;
   text-wrap: pretty;
 }
 
-/* odręczny podpis ARCHinLAND w tekście O nas — jak dopisek markerem na rysunku */
-.hero__hand {
-  display: inline-block;
-  margin-top: 0.15em;
-  font-family: var(--font-hand);
-  font-size: 1.9em;
-  font-weight: 400;
-  line-height: 1.1;
-  letter-spacing: 0.02em;
+.hero__list li {
+  position: relative;
+  padding-left: 1.2em;
 }
 
+.hero__list li::before {
+  content: '+';
+  position: absolute;
+  left: 0;
+  font-weight: 700;
+}
+
+/* podpowiedź obracania: pojawia się, gdy model jest odsłonięty (--model) */
 .hero__hint {
   position: absolute;
   left: 50%;
-  bottom: clamp(24px, 5vh, 48px);
+  bottom: 40px;
   transform: translateX(-50%);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--black);
   white-space: nowrap;
-  opacity: var(--outro, 1); /* gaśnie razem z uciętym modelem */
+  opacity: calc(var(--model) * var(--outro, 1)); /* gaśnie razem z uciętym modelem */
 }
 
-/* telefon / tablet: tekst na całą szerokość */
+/* telefon / tablet: listy jedna pod drugą */
 @media (max-width: 860px) {
-  .hero__lead {
-    right: var(--gutter);
+  .hero__about-cols {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 }
 
-/* telefon: mniejszy tekst O nas — mniej ciasno nad modelem */
+/* telefon: mniejsze odstępy, żeby wszystko zmieściło się na jednym ekranie */
 @media (max-width: 560px) {
-  .hero__lead {
-    font-size: 14px;
-    line-height: 1.45;
+  .hero .hero__about {
+    gap: 22px;
+  }
+
+  /* liczby jedna pod drugą ("180 000 m²" nie mieści się w połowie ekranu), podpis pod liczbą */
+  .hero__stats {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .hero__stat {
+    gap: 4px;
+  }
+
+  .hero__stat-num {
+    font-size: clamp(2rem, 10vw, 2.75rem);
+  }
+
+  .hero__stat-label,
+  .hero__list {
+    font-size: 15px;
+  }
+
+  .hero__about-col {
+    gap: 10px;
+    padding-top: 12px;
   }
 
   .hero__hint {
