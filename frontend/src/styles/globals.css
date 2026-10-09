@@ -37,6 +37,7 @@
 
   --font-display: 'Inter Tight Variable', 'Inter Tight', Arial, sans-serif; /* napis, nagłówki, menu */
   --font-body: 'Inter Variable', Inter, Arial, sans-serif; /* tekst, przyciski, podpisy */
+  --font-hand: 'Permanent Marker', 'Segoe Print', cursive; /* odręczny akcent — oszczędnie */
 
   /* skala typografii — używaj tych zmiennych w sekcjach zamiast własnych clamp() */
   --fs-hero: clamp(3.5rem, 11vw, 9.5rem);

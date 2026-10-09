@@ -128,7 +128,7 @@ export default function Hero() {
           <p className="hero__lead">
             <br />
             ARCHICETURE in LAND DEVELOPMENT<br />
-            <strong>ARCHIinLAND</strong><br /><br />
+            <span className="hero__hand">ARCHinLAND</span><br /><br />
             Biuro prowadzone przez <strong>Andrzeja Kurkę</strong>.<br />
             Od 30 lat łączymy <strong>projektowanie architektoniczne</strong><br />
             z wiedzą techniczną,

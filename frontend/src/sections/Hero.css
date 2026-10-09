@@ -197,6 +197,17 @@
   text-wrap: pretty;
 }
 
+/* odręczny podpis ARCHinLAND w tekście O nas — jak dopisek markerem na rysunku */
+.hero__hand {
+  display: inline-block;
+  margin-top: 0.15em;
+  font-family: var(--font-hand);
+  font-size: 1.9em;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+}
+
 .hero__hint {
   position: absolute;
   left: 50%;
