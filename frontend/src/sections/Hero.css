@@ -332,15 +332,6 @@
   font-weight: 700;
 }
 
-/* liczby i pogrubione teksty O nas: biały obrys odcina litery od zdjęcia w tle.
-   paint-order: obrys pod wypełnieniem — widać tylko zewnętrzną połowę, litery nie chudną. */
-.hero__stat-num,
-.hero__col-title,
-.hero__list li::before {
-  -webkit-text-stroke: 2px var(--white); /* połowa schowana pod literą → widoczny obrys 1px */
-  paint-order: stroke fill;
-}
-
 /* podpowiedź obracania: pojawia się, gdy model jest odsłonięty (--model) */
 .hero__hint {
   position: absolute;

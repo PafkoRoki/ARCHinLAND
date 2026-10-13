@@ -145,6 +145,18 @@ const info: ProjectInfo[] = [
     category: 'Dom w zabudowie bliźniaczej',
     description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
   },
+  {
+    id: 'Wioska Rybacka',
+    slug: 'wioska-rybacka-przytor',
+    group: 'osiedla',
+    number: '10',
+    name: 'WIOSKA RYBACKA',
+    displayName: 'Wioska Rybacka',
+    location: 'Świnoujście-Przytór, Poland',
+    year: '', // uzupełnij rok (pusty = niewyświetlany)
+    category: 'Koncepcja urbanistyczna',
+    description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
+  },
 ]
 
 // Kolejność na stronie: chronologicznie, od najstarszej. Bez roku — na końcu, w kolejności z listy wyżej.

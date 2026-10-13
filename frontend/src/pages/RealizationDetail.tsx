@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { projects } from '../data/realizations'
 import './RealizationDetail.css'
@@ -8,11 +8,8 @@ export default function RealizationDetail() {
   const index = projects.findIndex((p) => p.slug === slug)
   const project = index !== -1 ? projects[index] : undefined
 
-  const [activeImage, setActiveImage] = useState(0)
-
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
-    setActiveImage(0)
   }, [slug])
 
   if (!project) {
@@ -51,29 +48,17 @@ export default function RealizationDetail() {
         </div>
       </header>
 
+      {/* zdjęcia jedno pod drugim, w oryginalnych proporcjach — bez kadrowania i miniatur */}
       <div className="realizationDetail__gallery">
-        <div className="realizationDetail__mainImage">
+        {images.map((src, i) => (
           <img
-            src={images[activeImage]}
-            alt={`${project.name} — ${project.category}, ${project.location}`}
+            key={src + i}
+            src={src}
+            alt={`${project.name} — zdjęcie ${i + 1} z ${images.length}, ${project.location}`}
+            loading={i === 0 ? 'eager' : 'lazy'}
+            decoding="async"
           />
-        </div>
-
-        {images.length > 1 && (
-          <div className="realizationDetail__thumbs">
-            {images.map((src, i) => (
-              <button
-                key={src + i}
-                type="button"
-                className={i === activeImage ? 'isActive' : ''}
-                onClick={() => setActiveImage(i)}
-                aria-label={`Zdjęcie ${i + 1} z ${images.length}`}
-              >
-                <img src={src} alt="" />
-              </button>
-            ))}
-          </div>
-        )}
+        ))}
       </div>
 
       {project.description && (
