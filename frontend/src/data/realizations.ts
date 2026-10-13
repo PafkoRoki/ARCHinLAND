@@ -1,7 +1,8 @@
 // Zdjęcia realizacji leżą w src/assets/realizacje/<slug>/01.jpg, 02.jpg, …
 // Vite wczytuje je automatycznie (import.meta.glob) — żeby dodać zdjęcie, wystarczy wrzucić
 // kolejny plik do folderu realizacji. Kolejność = kolejność nazw plików; 01.jpg to zdjęcie główne.
-// Zdjęcia warto zmniejszyć do ~2000 px szerokości przed dodaniem (duże pliki spowalniają stronę).
+// Zdjęcia warto zmniejszyć do ~2000 px szerokości przed dodaniem (duże pliki spowalniają stronę);
+// oryginały trzymamy w ARCHinLAND/zdjecia-oryginaly/<slug>/ (poza repozytorium).
 const photoFiles = import.meta.glob<string>('../assets/realizacje/*/*.{jpg,jpeg,png,webp}', {
   eager: true,
   import: 'default',
@@ -17,153 +18,144 @@ const photosOf = (slug: string) =>
 export type RealizationGroup = 'apartamenty' | 'osiedla' | 'domy'
 
 export interface Project {
-  id: string
-  slug: string // = nazwa folderu ze zdjęciami w src/assets/realizacje/
+  slug: string // = nazwa folderu ze zdjęciami w src/assets/realizacje/ i adres /realizacje/<slug>
+  /** Numer porządkowy "01", "02", … — nadawany automatycznie według kolejności na stronie. */
   number: string
-  name: string
-  location: string
-  year: string
+  name: string // wersalikami: nagłówek podstrony, podpisy zdjęć
+  /** Nazwa w zwykłej pisowni (podpis galerii, SEO), np. "Baltic Cliff"; domyślnie name. */
+  displayName?: string
+  location: string // "Miejscowość, Kraj"
+  year: string // pusty = niewyświetlany, realizacja trafia na koniec listy
   category: string
   group: RealizationGroup // zakładka: Apartamentowce / Hotele, Osiedla, Domy jednorodzinne
-  /** Zdjęcie główne (01.jpg) — pierwsze w akordeonie i w galerii szczegółów. */
+  description?: string // krótki opis pod nazwą (pusty = niewyświetlany)
+  /** Zdjęcie główne (01.jpg) — pierwsze w akordeonie i na podstronie. */
   image: string
   /** Wszystkie zdjęcia z folderu realizacji. */
   gallery: string[]
-  description?: string
-  /** Nazwa w podpisie galerii (sekcja Realizacje) w zwykłej pisowni, np. "Baltic Cliff"; domyślnie name. */
-  displayName?: string
 }
 
-type ProjectInfo = Omit<Project, 'image' | 'gallery'>
+type ProjectInfo = Omit<Project, 'number' | 'image' | 'gallery'>
 
+// Lista ułożona tak jak na stronie: chronologicznie, od najstarszej; bez roku — na końcu.
 const info: ProjectInfo[] = [
   {
-    id: 'Baltic Cliff',
     slug: 'baltic-cliff',
-    group: 'apartamenty',
-    number: '01',
     name: 'BALTIC CLIFF',
     displayName: 'Baltic Cliff',
-    location: 'Niechorze, Poland',
+    location: 'Niechorze, Polska',
     year: '2010',
     category: 'Hotele',
-    description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
-  },
-  {
-    id: 'Osiedle Panorama',
-    slug: 'osiedle-panorama',
-    group: 'osiedla',
-    number: '02',
-    name: 'OSIEDLE PANORAMA',
-    displayName: 'Osiedle Panorama',
-    location: 'Gryfice, Poland',
-    year: '2020',
-    category: 'Osiedla mieszkaniowe',
-    description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
-  },
-  {
-    id: 'Inwestycja Klifowa',
-    slug: 'inwestycja-klifowa',
     group: 'apartamenty',
-    number: '08',
+    description: '',
+  },
+  {
+    slug: 'inwestycja-klifowa',
     name: 'INWESTYCJA KLIFOWA',
     displayName: 'Inwestycja Klifowa',
-    location: 'Rewal, Poland',
+    location: 'Rewal, Polska',
     year: '2011',
     category: 'Apartamentowce',
-    description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
+    group: 'apartamenty',
+    description: '',
   },
   {
-    id: 'Osiedle Żółcino',
-    slug: 'zolcino',
+    slug: 'apartamentowce',
+    name: 'APARTAMENTOWCE',
+    displayName: 'Apartamentowce',
+    location: 'Dziwnów, Polska',
+    year: '2016',
+    category: 'Apartamentowce',
+    group: 'apartamenty',
+    description: '',
+  },
+  {
+    slug: 'baltic-riviera',
+    name: 'BALTIC RIVIERA',
+    displayName: 'Baltic Riviera',
+    location: 'Dziwnówek, Polska',
+    year: '2019',
+    category: 'Apartamentowce',
+    group: 'apartamenty',
+    description: '',
+  },
+  {
+    slug: 'osiedle-panorama',
+    name: 'OSIEDLE PANORAMA',
+    displayName: 'Osiedle Panorama',
+    location: 'Gryfice, Polska',
+    year: '2020',
+    category: 'Osiedla mieszkaniowe',
     group: 'osiedla',
-    number: '07',
-    name: 'ŻÓŁCINO',
-    displayName: 'Żółcino',
-    location: 'Żółcino, Poland',
-    year: '', // uzupełnij rok (pusty = niewyświetlany)
-    category: 'Koncepcja urbanistyczna',
-    description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
+    description: '',
   },
   {
-    id: 'Sjås',
-    slug: 'sjas',
+    slug: 'blizniak-gryfice',
+    name: 'BLIŹNIAK GRYFICE',
+    displayName: 'Bliźniak Gryfice',
+    location: 'Gryfice, Polska',
+    year: '2024',
+    category: 'Dom w zabudowie bliźniaczej',
     group: 'domy',
-    number: '03',
+    description: '',
+  },
+  {
+    slug: 'sjas',
     name: 'SJÅS',
     displayName: 'Sjås',
     location: 'Kronoberg, Szwecja', // działka Elmehult 16, gm. Tingsryd, region Kronoberg
     year: '2026',
     category: 'Dom jednorodzinny',
-    description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
-  },
-  {
-    id: 'Apartamentowce Dziwnów',
-    slug: 'apartamentowce',
-    group: 'apartamenty',
-    number: '04',
-    name: 'APARTAMENTOWCE',
-    displayName: 'Apartamentowce',
-    location: 'Dziwnów, Poland',
-    year: '2016', // uzupełnij rok (pusty = niewyświetlany)
-    category: 'Apartamentowce',
-    description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
-  },
-  {
-    id: 'Baltic Riviera',
-    slug: 'baltic-riviera',
-    group: 'apartamenty',
-    number: '05',
-    name: 'BALTIC RIVIERA',
-    displayName: 'Baltic Riviera',
-    location: 'Dziwnówek, Poland',
-    year: '2019',
-    category: 'Apartamentowce',
-    description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
-  },
-  {
-    id: 'Dom na wyspie',
-    slug: 'dom-na-wyspie',
     group: 'domy',
-    number: '06',
+    description: '',
+  },
+  {
+    slug: 'zolcino',
+    name: 'ŻÓŁCINO',
+    displayName: 'Żółcino',
+    location: 'Żółcino, Polska',
+    year: '', // TODO: rok
+    category: 'Koncepcja urbanistyczna',
+    group: 'osiedla',
+    description: '',
+  },
+  {
+    slug: 'dom-na-wyspie',
     name: 'DOM NA WYSPIE',
     displayName: 'Dom na wyspie',
-    location: 'Poland', // uzupełnij miejscowość
-    year: '', // uzupełnij rok (pusty = niewyświetlany)
+    location: 'Polska', // TODO: miejscowość
+    year: '', // TODO: rok
     category: 'Dom jednorodzinny',
-    description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
-  },
-  {
-    id: 'Bliźniak Gryfice',
-    slug: 'blizniak-gryfice',
     group: 'domy',
-    number: '09',
-    name: 'BLIŹNIAK GRYFICE',
-    displayName: 'Bliźniak Gryfice',
-    location: 'Gryfice, Poland',
-    year: '2024',
-    category: 'Dom w zabudowie bliźniaczej',
-    description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
+    description: '',
   },
   {
-    id: 'Wioska Rybacka',
     slug: 'wioska-rybacka-przytor',
-    group: 'osiedla',
-    number: '10',
     name: 'WIOSKA RYBACKA',
     displayName: 'Wioska Rybacka',
-    location: 'Świnoujście-Przytór, Poland',
-    year: '', // uzupełnij rok (pusty = niewyświetlany)
+    location: 'Świnoujście-Przytór, Polska',
+    year: '', // TODO: rok
     category: 'Koncepcja urbanistyczna',
-    description: '', // krótki opis pod nazwą w galerii (pusty = niewyświetlany)
+    group: 'osiedla',
+    description: '',
+  },
+  {
+    slug: 'kamienica-kamien-pomorski',
+    name: 'KAMIENICA',
+    displayName: 'Kamienica',
+    location: 'Kamień Pomorski, Polska',
+    year: '', // TODO: rok
+    category: 'Budynek mieszkalno-usługowy',
+    group: 'osiedla',
+    description: '',
   },
 ]
 
-// Kolejność na stronie: chronologicznie, od najstarszej. Bez roku — na końcu, w kolejności z listy wyżej.
+// sortowanie zabezpiecza kolejność, gdyby nowa realizacja trafiła w złe miejsce listy
 const yearOf = (p: ProjectInfo) => Number(p.year) || Number.MAX_SAFE_INTEGER
 const byYear = (a: ProjectInfo, b: ProjectInfo) => yearOf(a) - yearOf(b)
 
-export const projects: Project[] = [...info].sort(byYear).map((p) => {
+export const projects: Project[] = [...info].sort(byYear).map((p, i) => {
   const gallery = photosOf(p.slug)
-  return { ...p, image: gallery[0], gallery }
+  return { ...p, number: String(i + 1).padStart(2, '0'), image: gallery[0], gallery }
 })

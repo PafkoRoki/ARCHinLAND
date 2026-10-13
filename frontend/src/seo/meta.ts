@@ -31,11 +31,15 @@ export const absolute = (src: string) => (/^https?:\/\//.test(src) ? src : SITE_
 const escapeHtml = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
-/** "Niechorze, Poland" → "Niechorze"; samo "Poland" → "" */
+/** "Niechorze, Polska" → "Niechorze"; samo "Polska" → "" */
 const placeOf = (p: Project) => {
   const city = p.location.split(',')[0].trim()
   return /^(poland|polska)$/i.test(city) ? '' : city
 }
+
+/** kod kraju z ostatniej części lokalizacji ("Kronoberg, Szwecja" → "SE"); domyślnie PL */
+const COUNTRY_CODES: Record<string, string> = { polska: 'PL', szwecja: 'SE' }
+const countryOf = (p: Project) => COUNTRY_CODES[p.location.split(',').pop()!.trim().toLowerCase()] ?? 'PL'
 
 const nameOf = (p: Project) => p.displayName ?? p.name
 
@@ -77,7 +81,7 @@ export function realizationMeta(p: Project): PageMeta {
         url,
         image: images,
         ...(p.year && { dateCreated: p.year }),
-        ...(place && { locationCreated: { '@type': 'Place', name: place, address: { '@type': 'PostalAddress', addressLocality: place, addressCountry: 'PL' } } }),
+        ...(place && { locationCreated: { '@type': 'Place', name: place, address: { '@type': 'PostalAddress', addressLocality: place, addressCountry: countryOf(p) } } }),
         creator: { '@id': ORG_ID },
       },
       {
