@@ -9,6 +9,7 @@ import {
 } from 'react'
 import { gsap } from 'gsap'
 import { modelReady, onModelProgress } from '../lib/modelControls'
+import LoaderStrokeText from './LoaderStrokeText'
 import './AppLoader.css'
 
 const NUM_POINTS = 5
@@ -291,8 +292,6 @@ function AppLoader() {
     Promise.race([modelReady, wait(MAX_WAIT_MS)]).then(() => setProgress(1))
   }, [])
 
-  const percent = Math.round(progress * 100)
-
   const handleStart = useCallback(() => {
     setIsWaiting(false)
   }, [])
@@ -312,6 +311,20 @@ function AppLoader() {
         onStart={handleStart}
         onComplete={handleComplete}
       />
+      {/* StrokeText na dole - rysuje się proporcjonalnie do ładowania */}
+      {showStatus && isWaiting && (
+        <div className="app-loader__brand">
+          <LoaderStrokeText
+            text="ARCHinLAND"
+            progress={progress}
+            strokeColor="#ffffff"
+            fillColor="#ffffff"
+            strokeWidth={1.5}
+            fontSize={48}
+            fontWeight={800}
+          />
+        </div>
+      )}
     </div>
   )
 }

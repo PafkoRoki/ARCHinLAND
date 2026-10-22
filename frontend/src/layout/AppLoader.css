@@ -7,6 +7,22 @@
   z-index: 9999;
 }
 
+/* StrokeText brand na dole loadera */
+.app-loader__brand {
+  position: fixed;
+  left: 50%;
+  bottom: clamp(32px, 8vh, 72px);
+  transform: translateX(-50%);
+  z-index: 10000;
+  width: min(400px, calc(100vw - 48px));
+}
+
+.loader-stroke-text {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 
 /* pasek postępu wczytywania modelu 3D — na planszy, u dołu ekranu, do startu odsłonięcia */
 .app-loader__progress {
