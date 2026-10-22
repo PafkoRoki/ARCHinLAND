@@ -98,6 +98,11 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* pokaż stronę po załadowaniu CSS (ukryta w critical CSS w index.html) */
+#root {
+  visibility: visible;
+}
+
 @supports (height: 100svh) {
   body {
     min-height: 100svh;
