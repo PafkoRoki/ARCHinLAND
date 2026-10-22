@@ -40,14 +40,13 @@
 
     <meta name="theme-color" content="#2d2d2d" />
 
-    <!-- Critical CSS: ukrywa treść do załadowania głównego CSS (zapobiega FOUC) -->
+    <!-- Critical CSS: zapobiega FOUC -->
     <style>
-      /* ukryj całą stronę do momentu załadowania CSS */
-      #root { visibility: hidden; }
-      /* loader widoczny od razu */
-      .app-loader { position: fixed; inset: 0; z-index: 9999; visibility: visible; }
-      .app-loader__progress { position: fixed; left: 50%; bottom: 8vh; transform: translateX(-50%); opacity: 0; visibility: visible; }
-      .shape-overlays { visibility: visible; }
+      html, body { background: #f0f0f0; margin: 0; }
+      /* loader widoczny od razu z ciemnym tłem */
+      .app-loader { position: fixed; inset: 0; z-index: 9999; }
+      .shape-overlays { position: fixed; inset: 0; }
+      .shape-overlays__path { fill: #222; }
     </style>
 
     <!-- Dane strukturalne: lokalna firma / usługa architektoniczna -->

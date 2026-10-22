@@ -306,7 +306,7 @@ function AppLoader() {
   }
 
   return (
-    <div className="app-loader">
+    <div className="app-loader" style={{ position: 'fixed', inset: 0, zIndex: 9999 }}>
       <AppLoaderAnimation
         start={start}
         onStart={handleStart}
@@ -314,8 +314,10 @@ function AppLoader() {
       />
       {showStatus && isWaiting && (
         // pasek postępu wczytywania modelu 3D; bez znanego rozmiaru pliku — przesuwający się odcinek
+        // inline style: ukryj do załadowania CSS (zapobiega FOUC)
         <div
           className={`app-loader__progress${progress > 0 ? '' : ' is-indeterminate'}`}
+          style={{ opacity: 0, position: 'fixed', left: '50%', bottom: '8vh', transform: 'translateX(-50%)' }}
           role="progressbar"
           aria-label="Ładowanie modelu 3D"
           aria-valuemin={0}
