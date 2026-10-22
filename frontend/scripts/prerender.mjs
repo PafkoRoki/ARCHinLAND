@@ -50,7 +50,9 @@ function render(page) {
   html = html.replace('</head>', () => `    ${extraHead}\n  </head>`)
   if (page.bodyHtml) {
     if (!html.includes('<div id="root"></div>')) throw new Error('prerender: brak <div id="root"></div>')
-    html = html.replace('<div id="root"></div>', () => `<div id="root">${page.bodyHtml}</div>`)
+    // klasa seo-fallback: ukryta przez critical CSS, widoczna tylko dla robotów bez JS
+    const fallback = page.bodyHtml.replace('<main>', '<main class="seo-fallback">')
+    html = html.replace('<div id="root"></div>', () => `<div id="root">${fallback}</div>`)
   }
   return html
 }
