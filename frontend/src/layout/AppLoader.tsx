@@ -312,28 +312,6 @@ function AppLoader() {
         onStart={handleStart}
         onComplete={handleComplete}
       />
-      {showStatus && isWaiting && (
-        // pasek postępu wczytywania modelu 3D; bez znanego rozmiaru pliku — przesuwający się odcinek
-        // inline style: ukryj do załadowania CSS (zapobiega FOUC)
-        <div
-          className={`app-loader__progress${progress > 0 ? '' : ' is-indeterminate'}`}
-          style={{ opacity: 0, position: 'fixed', left: '50%', bottom: '8vh', transform: 'translateX(-50%)' }}
-          role="progressbar"
-          aria-label="Ładowanie modelu 3D"
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-valuenow={progress > 0 ? percent : undefined}
-        >
-          <div className="app-loader__row">
-            <span className="app-loader__brand">ARCHinLAND</span>
-            <span className="app-loader__percent">{progress > 0 ? `${percent}%` : ''}</span>
-          </div>
-          <div className="app-loader__track">
-            <div className="app-loader__fill" style={{ transform: `scaleX(${progress})` }} />
-          </div>
-          <span className="app-loader__label">Ładowanie modelu 3D</span>
-        </div>
-      )}
     </div>
   )
 }
