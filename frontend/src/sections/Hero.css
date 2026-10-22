@@ -217,8 +217,8 @@
 
 /* tekst wjeżdża z dołu (--about), a po przeczytaniu odjeżdża w górę jak przewijana kartka */
 /* =====================================================
-   SEKCJA O NAS — styl POLYMER
-   minimalistyczny, dramatyczna typografia
+   SEKCJA O NAS — styl BLAMAZ
+   lekka typografia, mono etykiety, grid 3 kolumny
    ===================================================== */
 
 .hero .hero__about {
@@ -228,138 +228,93 @@
   flex-direction: column;
   gap: clamp(48px, 8vw, 100px);
   width: 100%;
-  padding-block: 60px;
+  padding-block: 80px;
   color: var(--black);
   opacity: var(--about);
   transform: translateY(calc((1 - var(--about)) * 24px - var(--lead-out) * 100svh));
   will-change: transform;
 }
 
-/* ===== GŁÓWNA STATYSTYKA — lata na całą szerokość ===== */
-.hero__feature {
+/* ===== NAGŁÓWEK SEKCJI ===== */
+.hero__about-header {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 }
 
-.hero__feature-label {
+.hero__about-title {
   font-family: var(--font-display);
-  font-size: clamp(10px, 0.9vw, 12px);
-  font-weight: 600;
+  font-size: clamp(1.875rem, 4vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+/* statystyki w jednej linii: 35 lat · 180 000 m² · Kamień Pomorski */
+.hero__stats-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 16px;
+  font-family: var(--font-mono);
+  font-size: clamp(0.75rem, 1vw, 0.875rem);
+  line-height: 1.4;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
-  opacity: 0.4;
 }
 
-.hero__feature-num {
-  font-family: var(--font-display);
-  font-size: clamp(4rem, 12vw, 11rem);
-  font-weight: 700;
-  line-height: 0.85;
-  letter-spacing: -0.04em;
+.hero__stat-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
 }
 
-/* ===== GRID: statystyka + usługi ===== */
-.hero__grid {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: clamp(32px, 6vw, 100px);
-  padding-top: clamp(32px, 5vw, 64px);
-  border-top: 1px solid var(--black);
-}
-
-/* lewa: druga statystyka */
-.hero__grid-stat {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.hero__grid-num {
-  font-family: var(--font-display);
-  font-size: clamp(2.5rem, 6vw, 5rem);
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.03em;
-  font-variant-numeric: tabular-nums;
-}
-
-.hero__grid-label {
-  font-size: clamp(10px, 0.9vw, 12px);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  opacity: 0.4;
-}
-
-/* prawa: usługi */
-.hero__services {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.hero__service {
-  display: grid;
-  grid-template-columns: 48px 1fr;
-  gap: 16px;
-  padding: clamp(20px, 3vw, 32px) 0;
-  border-bottom: 1px solid rgba(45, 45, 45, 0.15);
-}
-
-.hero__service:first-child {
-  padding-top: 0;
-}
-
-.hero__service:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.hero__service-num {
-  font-family: var(--font-display);
-  font-size: clamp(11px, 1vw, 13px);
-  font-weight: 600;
+.hero__stat-sep {
   opacity: 0.3;
 }
 
-.hero__service-content {
+.hero__stat-unit {
+  text-transform: lowercase;
+}
+
+/* ===== GRID 3 KOLUMNY — usługi (styl BLAMAZ story) ===== */
+.hero__story {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(32px, 6vw, 80px);
+  padding-top: clamp(32px, 5vw, 64px);
+  border-top: 1px solid rgba(45, 45, 45, 0.15);
+  list-style: none;
+  margin: 0;
+  padding-left: 0;
+}
+
+.hero__story-item {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 16px;
+  text-align: center;
 }
 
-.hero__service-title {
-  font-family: var(--font-display);
-  font-size: clamp(1rem, 1.5vw, 1.3rem);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-.hero__service-text {
-  font-size: clamp(0.9rem, 1.1vw, 1.05rem);
-  font-weight: 450;
-  line-height: 1.55;
-  opacity: 0.6;
-}
-
-/* ===== TAGLINE na dole ===== */
-.hero__tagline-wrap {
-  display: flex;
-  justify-content: flex-end;
-  padding-top: clamp(24px, 4vw, 48px);
-}
-
-.hero__tagline {
-  display: inline-block;
-  padding: 16px 28px;
-  background: var(--black);
-  color: var(--white);
-  font-family: var(--font-display);
-  font-size: clamp(10px, 0.9vw, 12px);
-  font-weight: 500;
-  letter-spacing: 0.18em;
+.hero__story-label {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.25;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  color: var(--black);
+  opacity: 0.5;
+}
+
+.hero__story-text {
+  font-size: clamp(0.9rem, 1.1vw, 1rem);
+  font-weight: 450;
+  line-height: 1.6;
+  color: var(--black);
+  opacity: 0.7;
+  max-width: 30ch;
+  margin: 0 auto;
 }
 
 /* podpowiedź obracania: pojawia się, gdy model jest odsłonięty (--model) */
@@ -375,15 +330,20 @@
   opacity: calc(var(--model) * var(--outro, 1)); /* gaśnie razem z uciętym modelem */
 }
 
-/* tablet: grid jedna kolumna */
+/* tablet: story 1 kolumna */
 @media (max-width: 860px) {
-  .hero__grid {
+  .hero__story {
     grid-template-columns: 1fr;
-    gap: 48px;
+    gap: 40px;
   }
 
-  .hero__tagline-wrap {
-    justify-content: flex-start;
+  .hero__story-item {
+    text-align: left;
+  }
+
+  .hero__story-text {
+    margin: 0;
+    max-width: none;
   }
 }
 
@@ -391,43 +351,29 @@
 @media (max-width: 560px) {
   .hero .hero__about {
     gap: 40px;
-    padding-block: 40px;
+    padding-block: 48px;
   }
 
-  .hero__feature {
-    gap: 12px;
+  .hero__about-title {
+    font-size: clamp(1.5rem, 7vw, 2rem);
   }
 
-  .hero__feature-num {
-    font-size: clamp(2.8rem, 14vw, 4rem);
+  .hero__stats-line {
+    font-size: 0.7rem;
+    gap: 6px 12px;
   }
 
-  .hero__grid {
+  .hero__story {
     gap: 32px;
     padding-top: 24px;
   }
 
-  .hero__grid-num {
-    font-size: clamp(2rem, 10vw, 2.5rem);
+  .hero__story-label {
+    font-size: 0.75rem;
   }
 
-  .hero__service {
-    grid-template-columns: 32px 1fr;
-    gap: 12px;
-    padding: 16px 0;
-  }
-
-  .hero__service-title {
-    font-size: 0.95rem;
-  }
-
-  .hero__service-text {
+  .hero__story-text {
     font-size: 0.85rem;
-  }
-
-  .hero__tagline {
-    padding: 12px 20px;
-    font-size: 9px;
   }
 
   .hero__list li {

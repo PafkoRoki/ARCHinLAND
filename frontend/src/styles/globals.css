@@ -37,6 +37,7 @@
 
   --font-display: 'Space Grotesk Variable', 'Space Grotesk', Arial, sans-serif; /* nagłówki, menu — geometryczny grotesk */
   --font-body: 'Inter Variable', Inter, Arial, sans-serif; /* tekst, przyciski, podpisy */
+  --font-mono: 'Space Mono', ui-monospace, Menlo, Consolas, monospace; /* etykiety uppercase, styl BLAMAZ */
   --font-hand: 'Permanent Marker', 'Segoe Print', cursive; /* odręczny akcent — oszczędnie */
 
   /* skala typografii — używaj tych zmiennych w sekcjach zamiast własnych clamp() */

@@ -1,106 +1,13 @@
 /* =====================================================
-   EXPERIENCE COUNTER — styl premium / minimalistyczny
-   inspirowany polymer.ws
+   EXPERIENCE COUNTER — styl BLAMAZ
+   kompaktowy, inline ze statystykami
    ===================================================== */
 
-/* kontener: lata nad zegarem */
 .experience-counter {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 20px;
+  display: inline;
 }
 
-/* żywy zegar — ciemna ramka, elegancki grid */
-.experience-clock {
-  display: inline-flex;
-  align-items: stretch;
-  background: var(--black);
-  border-radius: 6px;
-  padding: 16px 20px;
-  gap: 0;
-  animation: clock-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.experience-clock__unit {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 0 16px;
-  position: relative;
-}
-
-/* separatory między jednostkami */
-.experience-clock__unit:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 1px;
-  height: 60%;
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.experience-clock__num {
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-  color: var(--white);
-  letter-spacing: -0.02em;
-}
-
-.experience-clock__label {
-  font-size: 0.55rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: rgba(255, 255, 255, 0.45);
-  margin-top: 6px;
-}
-
-/* pojawienie się zegara */
-@keyframes clock-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* =====================================================
-   MOBILE
-   ===================================================== */
-@media (max-width: 640px) {
-  .experience-counter {
-    gap: 16px;
-  }
-
-  .experience-clock {
-    padding: 12px 8px;
-    border-radius: 5px;
-  }
-
-  .experience-clock__unit {
-    padding: 0 10px;
-  }
-
-  .experience-clock__unit:not(:last-child)::after {
-    height: 50%;
-  }
-
-  .experience-clock__num {
-    font-size: 1.1rem;
-  }
-
-  .experience-clock__label {
-    font-size: 0.45rem;
-    margin-top: 4px;
-  }
+/* ukryj zegar w trybie inline (statystyki w jednej linii) */
+.hero__stats-line .experience-clock {
+  display: none;
 }

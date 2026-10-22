@@ -151,52 +151,50 @@ export default function Hero() {
           <div className="container hero__about">
             <h2 className="visually-hidden">O nas</h2>
 
-            {/* główna statystyka — lata doświadczenia na całą szerokość */}
-            <div className="hero__feature">
-              <span className="hero__feature-label">Doświadczenie</span>
-              <div className="hero__feature-num">
-                <ExperienceCounter since="1991-01-01" start={aboutOn} />
-              </div>
-            </div>
-
-            {/* grid: powierzchnia + usługi */}
-            <div className="hero__grid">
-              {/* lewa kolumna: druga statystyka */}
-              <div className="hero__grid-stat">
-                <span className="hero__grid-num">
-                  <CountUp to={180000} duration={2.2} start={aboutOn} /> m²
+            {/* nagłówek sekcji — duży, lekki, styl BLAMAZ */}
+            <div className="hero__about-header">
+              <h3 className="hero__about-title">
+                Projektujemy przestrzeń.<br />
+                Od 1991 roku.
+              </h3>
+              {/* statystyki w jednej linii */}
+              <p className="hero__stats-line">
+                <span className="hero__stat-item">
+                  <ExperienceCounter since="1991-01-01" start={aboutOn} />
                 </span>
-                <span className="hero__grid-label">Zaprojektowanej powierzchni</span>
-              </div>
-
-              {/* prawa kolumna: usługi */}
-              <div className="hero__services">
-                <div className="hero__service">
-                  <span className="hero__service-num">01</span>
-                  <div className="hero__service-content">
-                    <h3 className="hero__service-title">Projektujemy</h3>
-                    <p className="hero__service-text">
-                      Nowoczesne osiedla mieszkaniowe, budynki wielorodzinne
-                      i jednorodzinne, hotele i obiekty użyteczności publicznej
-                    </p>
-                  </div>
-                </div>
-                <div className="hero__service">
-                  <span className="hero__service-num">02</span>
-                  <div className="hero__service-content">
-                    <h3 className="hero__service-title">Kompleksowo</h3>
-                    <p className="hero__service-text">
-                      Architektura, konstrukcje, instalacje sanitarne i elektryczne
-                    </p>
-                  </div>
-                </div>
-              </div>
+                <span className="hero__stat-sep">·</span>
+                <span className="hero__stat-item">
+                  <CountUp to={180000} duration={2.2} start={aboutOn} /> <span className="hero__stat-unit">m²</span>
+                </span>
+                <span className="hero__stat-sep">·</span>
+                <span className="hero__stat-item">Kamień Pomorski</span>
+              </p>
             </div>
 
-            {/* tagline na dole */}
-            <div className="hero__tagline-wrap">
-              <span className="hero__tagline">Architecture in Land Development</span>
-            </div>
+            {/* grid 3 kolumny — usługi, styl BLAMAZ story */}
+            <ul className="hero__story">
+              <li className="hero__story-item">
+                <span className="hero__story-label">01 / Projektowanie</span>
+                <p className="hero__story-text">
+                  Nowoczesne osiedla mieszkaniowe, budynki wielorodzinne i jednorodzinne,
+                  hotele oraz obiekty użyteczności publicznej
+                </p>
+              </li>
+              <li className="hero__story-item">
+                <span className="hero__story-label">02 / Kompleksowo</span>
+                <p className="hero__story-text">
+                  Architektura, konstrukcje, instalacje sanitarne i elektryczne.
+                  Pełnobranżowa dokumentacja
+                </p>
+              </li>
+              <li className="hero__story-item">
+                <span className="hero__story-label">03 / Doświadczenie</span>
+                <p className="hero__story-text">
+                  Ponad trzy dekady praktyki na Pomorzu Zachodnim,
+                  ponad 180 tysięcy m² zaprojektowanej przestrzeni
+                </p>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
