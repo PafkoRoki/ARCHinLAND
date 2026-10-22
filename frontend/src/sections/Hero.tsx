@@ -1,5 +1,6 @@
 import { PointerEvent, useEffect, useRef, useState } from 'react'
 import CountUp from '../components/CountUp'
+import ExperienceCounter from '../components/ExperienceCounter'
 import StrokeText from '../components/StrokeText'
 import { projects } from '../data/realizations'
 import { modelControls } from '../lib/modelControls'
@@ -150,40 +151,51 @@ export default function Hero() {
           <div className="container hero__about">
             <h2 className="visually-hidden">O nas</h2>
 
-            <div className="hero__about-head">
-              <span className="hero__tagline">ARCHITECTURE in LAND DEVELOPMENT</span>
+            {/* główna statystyka — lata doświadczenia na całą szerokość */}
+            <div className="hero__feature">
+              <span className="hero__feature-label">Doświadczenie</span>
+              <div className="hero__feature-num">
+                <ExperienceCounter since="1991-01-01" start={aboutOn} />
+              </div>
             </div>
 
-            <div className="hero__stats">
-              <p className="hero__stat">
-                <span className="hero__stat-num"><CountUp to={35} start={aboutOn} /></span>
-                <span className="hero__stat-label">letnie doświadczenie w projektowaniu</span>
-              </p>
-              <p className="hero__stat">
-                <span className="hero__stat-num">
+            {/* grid: powierzchnia + usługi */}
+            <div className="hero__grid">
+              {/* lewa kolumna: druga statystyka */}
+              <div className="hero__grid-stat">
+                <span className="hero__grid-num">
                   <CountUp to={180000} duration={2.2} start={aboutOn} /> m²
                 </span>
-                <span className="hero__stat-label">zaprojektowanych powierzchni</span>
-              </p>
+                <span className="hero__grid-label">Zaprojektowanej powierzchni</span>
+              </div>
+
+              {/* prawa kolumna: usługi */}
+              <div className="hero__services">
+                <div className="hero__service">
+                  <span className="hero__service-num">01</span>
+                  <div className="hero__service-content">
+                    <h3 className="hero__service-title">Projektujemy</h3>
+                    <p className="hero__service-text">
+                      Nowoczesne osiedla mieszkaniowe, budynki wielorodzinne
+                      i jednorodzinne, hotele i obiekty użyteczności publicznej
+                    </p>
+                  </div>
+                </div>
+                <div className="hero__service">
+                  <span className="hero__service-num">02</span>
+                  <div className="hero__service-content">
+                    <h3 className="hero__service-title">Kompleksowo</h3>
+                    <p className="hero__service-text">
+                      Architektura, konstrukcje, instalacje sanitarne i elektryczne
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="hero__about-cols">
-              <div className="hero__about-col">
-                <h3 className="hero__col-title"><span className="hero__col-num" aria-hidden="true">01</span>Projektujemy</h3>
-                <ul className="hero__list">
-                  <li>nowoczesne, funkcjonalne osiedla mieszkaniowe</li>
-                  <li>budynki mieszkalne wielorodzinne i jednorodzinne</li>
-                  <li>obiekty użyteczności publicznej oraz hotele i pensjonaty</li>
-                </ul>
-              </div>
-              <div className="hero__about-col">
-                <h3 className="hero__col-title"><span className="hero__col-num" aria-hidden="true">02</span>Pełnobranżowe projekty</h3>
-                <ul className="hero__list">
-                  <li>architektura</li>
-                  <li>konstrukcje</li>
-                  <li>instalacje sanitarne i elektryczne</li>
-                </ul>
-              </div>
+            {/* tagline na dole */}
+            <div className="hero__tagline-wrap">
+              <span className="hero__tagline">Architecture in Land Development</span>
             </div>
           </div>
         </div>

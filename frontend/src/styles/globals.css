@@ -35,7 +35,7 @@
 
   --radius: 24px;
 
-  --font-display: 'Inter Tight Variable', 'Inter Tight', Arial, sans-serif; /* napis, nagłówki, menu */
+  --font-display: 'Space Grotesk Variable', 'Space Grotesk', Arial, sans-serif; /* nagłówki, menu — geometryczny grotesk */
   --font-body: 'Inter Variable', Inter, Arial, sans-serif; /* tekst, przyciski, podpisy */
   --font-hand: 'Permanent Marker', 'Segoe Print', cursive; /* odręczny akcent — oszczędnie */
 
@@ -108,7 +108,7 @@ h1, h2, h3, h4, p, figure {
   margin: 0;
 }
 
-/* nagłówki w kroju nagłówkowym (Inter Tight), reszta dziedziczy --font-body */
+/* nagłówki w kroju nagłówkowym (Space Grotesk), reszta dziedziczy --font-body */
 h1, h2, h3 {
   font-family: var(--font-display);
 }

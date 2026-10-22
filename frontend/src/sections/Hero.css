@@ -176,6 +176,7 @@
 
 .hero__title .stroke-text {
   width: 100%;
+  font-family: 'Inter Tight Variable', 'Inter Tight', Arial, sans-serif;
 }
 
 /* wysokość z proporcji napisu — na całą szerokość ekranu */
@@ -215,121 +216,150 @@
 }
 
 /* tekst wjeżdża z dołu (--about), a po przeczytaniu odjeżdża w górę jak przewijana kartka */
+/* =====================================================
+   SEKCJA O NAS — styl POLYMER
+   minimalistyczny, dramatyczna typografia
+   ===================================================== */
+
 .hero .hero__about {
   position: relative;
   z-index: 2;
-  display: grid;
-  gap: clamp(24px, 3.5vw, 48px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(48px, 8vw, 100px);
   width: 100%;
-  /* równy odstęp góra/dół → blok dokładnie na środku ekranu, a nagłówek strony go nie zasłania */
-  padding-block: 64px;
+  padding-block: 60px;
   color: var(--black);
   opacity: var(--about);
   transform: translateY(calc((1 - var(--about)) * 24px - var(--lead-out) * 100svh));
   will-change: transform;
 }
 
-/* nagłówek tekstu O nas: hasło między liniami */
-.hero__about-head {
+/* ===== GŁÓWNA STATYSTYKA — lata na całą szerokość ===== */
+.hero__feature {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: clamp(16px, 3vw, 40px); /* dodatkowo do odstępu siatki — hasło odsunięte od treści */
+  gap: 20px;
 }
 
-/* hasło ARCHITECTURE in LAND DEVELOPMENT między dwiema liniami 1px.
-   Bez text-transform — wielkość liter jest częścią nazwy (małe "in"). */
-.hero__tagline {
-  display: inline-block;
-  padding: 0.7em 0;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
+.hero__feature-label {
   font-family: var(--font-display);
-  font-size: clamp(15px, 1.25vw, 18px);
+  font-size: clamp(10px, 0.9vw, 12px);
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  opacity: 0.4;
 }
 
-/* dwie duże liczby (liczniki) */
-.hero__stats {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(16px, 4vw, 64px);
+.hero__feature-num {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 12vw, 11rem);
+  font-weight: 700;
+  line-height: 0.85;
+  letter-spacing: -0.04em;
 }
 
-.hero__stat {
+/* ===== GRID: statystyka + usługi ===== */
+.hero__grid {
   display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: clamp(32px, 6vw, 100px);
+  padding-top: clamp(32px, 5vw, 64px);
+  border-top: 1px solid var(--black);
+}
+
+/* lewa: druga statystyka */
+.hero__grid-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.hero__grid-num {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.hero__grid-label {
+  font-size: clamp(10px, 0.9vw, 12px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  opacity: 0.4;
+}
+
+/* prawa: usługi */
+.hero__services {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.hero__service {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 16px;
+  padding: clamp(20px, 3vw, 32px) 0;
+  border-bottom: 1px solid rgba(45, 45, 45, 0.15);
+}
+
+.hero__service:first-child {
+  padding-top: 0;
+}
+
+.hero__service:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.hero__service-num {
+  font-family: var(--font-display);
+  font-size: clamp(11px, 1vw, 13px);
+  font-weight: 600;
+  opacity: 0.3;
+}
+
+.hero__service-content {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
-.hero__stat-num {
+.hero__service-title {
   font-family: var(--font-display);
-  font-size: clamp(2.6rem, 7.5vw, 7rem);
-  font-weight: 800;
-  line-height: 0.95;
-  letter-spacing: -0.03em;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums; /* stała szerokość cyfr — liczba nie skacze */
+  font-size: clamp(1rem, 1.5vw, 1.3rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
-.hero__stat-label {
-  font-size: var(--fs-lead);
-  font-weight: 500;
-  line-height: 1.3;
+.hero__service-text {
+  font-size: clamp(0.9rem, 1.1vw, 1.05rem);
+  font-weight: 450;
+  line-height: 1.55;
+  opacity: 0.6;
 }
 
-/* dwie kolumny list pod linią */
-.hero__about-cols {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(16px, 4vw, 64px);
-}
-
-.hero__about-col {
-  display: grid;
-  align-content: start;
-  gap: 14px;
-  padding-top: 16px;
-  border-top: 1px solid var(--border);
-}
-
-/* nagłówek kolumny jak oznaczenie na rysunku: odręczny numer, obok nazwa zwykłym tekstem */
-.hero__col-title {
+/* ===== TAGLINE na dole ===== */
+.hero__tagline-wrap {
   display: flex;
-  align-items: baseline;
-  gap: 10px;
-  font-size: clamp(1.05rem, 1.3vw, 1.25rem);
-  font-weight: 700;
-  line-height: 1.2;
+  justify-content: flex-end;
+  padding-top: clamp(24px, 4vw, 48px);
 }
 
-.hero__col-num {
-  font-family: var(--font-hand);
-  font-size: 1.35em;
-  font-weight: 400;
-  line-height: 1;
-  color: var(--orange);
-}
-
-.hero__list {
-  display: grid;
-  gap: 6px;
-  font-size: var(--fs-lead);
+.hero__tagline {
+  display: inline-block;
+  padding: 16px 28px;
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: clamp(10px, 0.9vw, 12px);
   font-weight: 500;
-  line-height: 1.35;
-  text-wrap: pretty;
-}
-
-.hero__list li {
-  position: relative;
-  padding-left: 1.2em;
-}
-
-.hero__list li::before {
-  content: '+';
-  position: absolute;
-  left: 0;
-  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
 /* podpowiedź obracania: pojawia się, gdy model jest odsłonięty (--model) */
@@ -345,42 +375,68 @@
   opacity: calc(var(--model) * var(--outro, 1)); /* gaśnie razem z uciętym modelem */
 }
 
-/* telefon / tablet: listy jedna pod drugą */
+/* tablet: grid jedna kolumna */
 @media (max-width: 860px) {
-  .hero__about-cols {
+  .hero__grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 48px;
+  }
+
+  .hero__tagline-wrap {
+    justify-content: flex-start;
   }
 }
 
-/* telefon: mniejsze odstępy, żeby wszystko zmieściło się na jednym ekranie */
+/* telefon */
 @media (max-width: 560px) {
   .hero .hero__about {
-    gap: 22px;
+    gap: 40px;
+    padding-block: 40px;
   }
 
-  /* liczby jedna pod drugą ("180 000 m²" nie mieści się w połowie ekranu), podpis pod liczbą */
-  .hero__stats {
-    grid-template-columns: 1fr;
-    gap: 16px;
+  .hero__feature {
+    gap: 12px;
   }
 
-  .hero__stat {
-    gap: 4px;
+  .hero__feature-num {
+    font-size: clamp(2.8rem, 14vw, 4rem);
   }
 
-  .hero__stat-num {
-    font-size: clamp(2rem, 10vw, 2.75rem);
+  .hero__grid {
+    gap: 32px;
+    padding-top: 24px;
   }
 
-  .hero__stat-label,
-  .hero__list {
-    font-size: 15px;
+  .hero__grid-num {
+    font-size: clamp(2rem, 10vw, 2.5rem);
   }
 
-  .hero__about-col {
-    gap: 10px;
-    padding-top: 12px;
+  .hero__service {
+    grid-template-columns: 32px 1fr;
+    gap: 12px;
+    padding: 16px 0;
+  }
+
+  .hero__service-title {
+    font-size: 0.95rem;
+  }
+
+  .hero__service-text {
+    font-size: 0.85rem;
+  }
+
+  .hero__tagline {
+    padding: 12px 20px;
+    font-size: 9px;
+  }
+
+  .hero__list li {
+    padding-left: 16px;
+  }
+
+  .hero__list li::before {
+    width: 5px;
+    height: 5px;
   }
 
   .hero__hint {

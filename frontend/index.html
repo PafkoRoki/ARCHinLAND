@@ -40,6 +40,11 @@
 
     <meta name="theme-color" content="#2d2d2d" />
 
+    <!-- Critical CSS: ukrywa loader do załadowania głównego CSS (zapobiega FOUC) -->
+    <style>
+      .app-loader { position: fixed; inset: 0; z-index: 9999; }
+      .app-loader__progress { position: fixed; left: 50%; bottom: 8vh; transform: translateX(-50%); opacity: 0; }
+    </style>
 
     <!-- Dane strukturalne: lokalna firma / usługa architektoniczna -->
     <script type="application/ld+json">
