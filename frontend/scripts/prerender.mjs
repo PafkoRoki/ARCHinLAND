@@ -48,12 +48,6 @@ function render(page) {
     ...page.jsonLd.map((data) => `<script type="application/ld+json">${JSON.stringify(data).replace(/</g, '\\u003c')}</script>`),
   ].join('\n    ')
   html = html.replace('</head>', () => `    ${extraHead}\n  </head>`)
-  if (page.bodyHtml) {
-    if (!html.includes('<div id="root"></div>')) throw new Error('prerender: brak <div id="root"></div>')
-    // klasa seo-fallback: ukryta przez critical CSS, widoczna tylko dla robotów bez JS
-    const fallback = page.bodyHtml.replace('<main>', '<main class="seo-fallback">')
-    html = html.replace('<div id="root"></div>', () => `<div id="root">${fallback}</div>`)
-  }
   return html
 }
 
