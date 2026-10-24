@@ -300,7 +300,6 @@ function ProjectCard({
           alt={project.name}
           loading="lazy"
         />
-
         <div className="projectImageOverlay">
           <span>{project.category}</span>
         </div>
@@ -312,80 +311,23 @@ function ProjectCard({
             <span className="projectNumber">
               {project.id.toUpperCase()}
             </span>
-
             <h2>{project.name}</h2>
           </div>
-
-          <span className="standardBadge">
-            {project.standard}
-          </span>
         </div>
 
         <div className="mainArea">
-          <span>Powierzchnia użytkowa</span>
           <strong>
             {project.usableArea.toLocaleString("pl-PL", {
               minimumFractionDigits: 1,
             })}{" "}
             m²
           </strong>
-        </div>
-
-        <div className="areaGrid">
-          <div>
-            <span>Pow. zabudowy</span>
-            <strong>{project.buildingArea} m²</strong>
-          </div>
-
-          <div>
-            <span>Pow. mieszkalna</span>
-            <strong>{project.residentialArea} m²</strong>
-          </div>
-
-          <div>
-            <span>Pow. całkowita</span>
-            <strong>{project.totalArea} m²</strong>
-          </div>
-
-          <div>
-            <span>Pomieszczenia</span>
-            <strong>{project.rooms}</strong>
-          </div>
-        </div>
-
-        <div className="technicalDetails">
-          <div>
-            <span>Kondygnacje</span>
-            <strong>
-              {project.floors === 1
-                ? "Parterowy"
-                : `${project.floors}`}
-            </strong>
-          </div>
-
-          <div>
-            <span>Dach</span>
-            <strong>{project.roofType}</strong>
-          </div>
-
-          <div>
-            <span>Kąt dachu</span>
-            <strong>{project.roofAngle}°</strong>
-          </div>
-
-          <div>
-            <span>Garaż</span>
-            <strong>
-              {project.garage === 0
-                ? "Brak"
-                : `${project.garage} stan.`}
-            </strong>
-          </div>
+          <span>powierzchnia użytkowa</span>
         </div>
 
         <div className="projectFooter">
           <span className="detailsButton">
-            Zobacz projekt
+            Zobacz
             <span>→</span>
           </span>
         </div>

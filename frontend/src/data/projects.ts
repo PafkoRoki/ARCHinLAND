@@ -2,16 +2,7 @@ import IgorImage1 from '../assets/projekty/Igor1.jpg'
 import DorotaImage1 from '../assets/projekty/Dorota1.jpg'
 import nastjaImage1 from '../assets/projekty/Nastja1.jpg'
 import ErykImage1 from '../assets/projekty/Eryk1.jpg'
-import ErykImage2 from '../assets/projekty/Eryk2.jpg'
-import ErykImage3 from '../assets/projekty/Eryk3.jpg'
-import ErykImage4 from '../assets/projekty/Eryk4.jpg'
-import ErykImage5 from '../assets/projekty/Eryk5.jpg'
 import ErykImage6 from '../assets/projekty/Eryk6.jpg'
-import ErykImage7 from '../assets/projekty/Eryk7.jpg'
-import ErykImage8 from '../assets/projekty/Eryk8.jpg'
-import ErykImage9 from '../assets/projekty/Eryk9.jpg'
-import ErykImage10 from '../assets/projekty/Eryk10.jpg'
-import ErykImage11 from '../assets/projekty/Eryk11.jpg'
 import DarekImage1 from '../assets/projekty/Darek1.jpg'
 
 export interface Project {
@@ -95,6 +86,9 @@ export interface Project {
   // Pełny URL embed ze Sketchfaba (przycisk "Embed" -> skopiuj src z iframe),
   // np. "https://sketchfab.com/models/<UID>/embed". Opcjonalne.
   sketchfabUrl?: string;
+
+  // URL do PDF z rysunkami (z watermarkiem) do pobrania
+  drawingsPdfUrl?: string;
 }
 
 export const projects: Project[] = [
@@ -118,10 +112,25 @@ export const projects: Project[] = [
     standard: "WT 2021",
     sketchfabUrl: "https://sketchfab.com/models/f031c0e298f74d72bffa57cc8f346c1b/embed?autostart=0&annotations_visible=0&preload=0&transparent=0&ui_theme=dark",
     gallery: {
-      visualizations: [ErykImage1,ErykImage6],
-      floorPlans: [ErykImage2,ErykImage3,ErykImage4,ErykImage5,ErykImage7],
-      elevations: [ErykImage8,ErykImage9,ErykImage10,ErykImage11],
+      visualizations: [ErykImage1, ErykImage6],
+      floorPlans: [
+        "/projekty/eryk/rysunki/01.webp",  // Rzut parteru
+        "/projekty/eryk/rysunki/03.webp",  // Rzut piętra
+        "/projekty/eryk/rysunki/05.webp",  // Rzut dachu
+        "/projekty/eryk/rysunki/02.webp",  // Aksonometria parteru
+        "/projekty/eryk/rysunki/04.webp",  // Aksonometria piętra
+        "/projekty/eryk/rysunki/06.webp",  // Przekrój
+        "/projekty/eryk/rysunki/07.webp",  // Aksonometria 3D z przekrojem
+      ],
+      elevations: [
+        "/projekty/eryk/rysunki/08.webp",  // Elewacja 1
+        "/projekty/eryk/rysunki/09.webp",  // Elewacja 2
+        "/projekty/eryk/rysunki/10.webp",  // Elewacja 3
+        "/projekty/eryk/rysunki/11.webp",  // Elewacja 4
+        "/projekty/eryk/rysunki/12.webp",  // Aksonometria zewnętrzna
+      ],
     },
+    drawingsPdfUrl: "/projekty/eryk/Eryk-rysunki.pdf",
   },
   
   {
