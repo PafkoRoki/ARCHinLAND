@@ -1,7 +1,6 @@
 import {
   useCallback,
   useEffect,
-  useId,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -46,14 +45,6 @@ function AppLoaderAnimation({
   onComplete,
 }: AppLoaderAnimationProps) {
   const overlayRef = useRef<SVGSVGElement | null>(null)
-
-  const gradientId = useId().replace(
-    /[^a-zA-Z0-9_-]/g,
-    '',
-  )
-
-  const gradient1Id = `${gradientId}-gradient1`
-  const gradient2Id = `${gradientId}-gradient2`
 
   useLayoutEffect(() => {
     const overlay = overlayRef.current
@@ -217,51 +208,16 @@ function AppLoaderAnimation({
       preserveAspectRatio="none"
       aria-hidden="true"
     >
-      <defs>
-        <linearGradient
-          id={gradient1Id}
-          x1="0%"
-          y1="0%"
-          x2="100%"
-          y2="100%"
-        >
-          <stop
-            offset="0%"
-            stopColor="#2d2d2d"
-          />
-          <stop
-            offset="100%"
-            stopColor="#1f1f1f"
-          />
-        </linearGradient>
-
-        <linearGradient
-          id={gradient2Id}
-          x1="100%"
-          y1="0%"
-          x2="0%"
-          y2="100%"
-        >
-          <stop
-            offset="0%"
-            stopColor="#f0f0f0"
-          />
-          <stop
-            offset="100%"
-            stopColor="#e2e2e2"
-          />
-        </linearGradient>
-      </defs>
-
-      {/* plansza w kolorach strony: grafitowa (#2d2d2d, jak stopka) na wierzchu, jasna pod spodem */}
+      {/* plansza w jednolitych kolorach strony (bez gradientów): grafitowa (#2d2d2d, jak stopka) na wierzchu,
+          pod nią fala w tle strony (#f0f0f0) */}
       <path
         className="shape-overlays__path"
-        fill={`url(#${gradient2Id})`}
+        fill="#f0f0f0"
       />
 
       <path
         className="shape-overlays__path"
-        fill={`url(#${gradient1Id})`}
+        fill="#2d2d2d"
       />
     </svg>
   )
