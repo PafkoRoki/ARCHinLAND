@@ -1,5 +1,3 @@
-"use client";
-
 import { FaInstagram } from "react-icons/fa";
 import { SiSketchfab } from "react-icons/si";
 import { FiArrowUp } from "react-icons/fi";
@@ -189,7 +187,8 @@ const AnimatedLink = ({
       >
         {typeof children === 'string' ? (
           <ShinyText isShining={isHovered} speed={1}>
-            <DecryptText text={textContent} isDecrypting={isHovered} />
+            {/* numer telefonu zostaje czytelny — mieszanie znaków tylko na pozostałych linkach */}
+            {href.startsWith('tel:') ? textContent : <DecryptText text={textContent} isDecrypting={isHovered} />}
           </ShinyText>
         ) : children}
       </Link>
@@ -303,7 +302,7 @@ export function Footer({
               spread={5}
               fade={3.5}
               spacing={24}
-              tint="#FE5000"
+              tint="#FF6B2C"
               tintAmount={0.1}
               grayscale
               trigger="both"
@@ -364,7 +363,7 @@ export function Footer({
         </div>
 
         <div className="py-6 min-[1250px]:py-8 text-center text-xs text-white/50">
-          <p>{copyright.companyName} ©{copyright.year} All rights reserved</p>
+          <p>{copyright.companyName} ©{copyright.year} Wszelkie prawa zastrzeżone</p>
           {copyright.additionalText && <p className="mt-2">{copyright.additionalText}</p>}
         </div>
         </div>

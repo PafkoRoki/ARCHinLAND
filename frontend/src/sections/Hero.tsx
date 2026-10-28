@@ -9,15 +9,15 @@ import './Hero.css'
 
 // Przypięta scena jak w STILL (odległości w wysokościach ekranu, liczone od góry strony):
 //   0 → 0.8   koło z modelem rozszerza się do pełnego ekranu (BackgroundModel, REVEAL_DISTANCE)
-//   0.85 → 1.25  pojawia się tekst O nas na cały ekran (czas na czytanie do 1.9)
-//   1.9 → 2.6    tekst odjeżdża w górę jak kartka i odsłania model
-//   od 2.6       model można obracać myszką / palcem
-//   do 4.6    scena stoi w miejscu (--hero-pin w Hero.css), potem wjeżdżają Realizacje
+//   0.8 → 1.1    pojawia się tekst O nas na cały ekran (czas na czytanie do 1.55)
+//   1.55 → 2.1   tekst odjeżdża w górę jak kartka i odsłania model
+//   od 2.1       model można obracać myszką / palcem; od 2.1 do 2.9 tnie go płaszczyzna (CUT_DISTANCE)
+//   do 3.9    scena stoi w miejscu (--hero-pin w Hero.css), potem wjeżdżają Realizacje
 // Długość sceny = 1 ekran + PIN_LENGTH — ustawiona w Hero.css (--hero-pin).
-const ABOUT_START = 0.85
-const ABOUT_END = 1.25
-const LEAD_OUT_START = 1.9
-const LEAD_OUT_END = 2.6
+const ABOUT_START = 0.8
+const ABOUT_END = 1.1
+const LEAD_OUT_START = 1.55
+const LEAD_OUT_END = 2.1
 const DRAG_SPEED = 0.008 // radiany na piksel przeciągnięcia
 // zdjęcie w tle tekstu O nas: realizacja (slug) i numer pliku w jej folderze (1 = 01.jpg;
 // galeria jest posortowana po nazwach plików)
@@ -108,8 +108,10 @@ export default function Hero() {
             fontWeight={900}
             letterSpacing={-5}
           />
-          <span className="visually-hidden">
-            ARCHinLAND — biuro architektoniczne Andrzej Kurka, Kamień Pomorski
+          {/* od pierwszego ekranu wiadomo, czym jest ARCHinLAND */}
+          <span className="hero__tagline">
+            <span className="visually-hidden">ARCHinLAND — </span>
+            Biuro architektoniczne Andrzej Kurka · Kamień Pomorski · od 1991
           </span>
         </h1>
       </div>
@@ -151,7 +153,7 @@ export default function Hero() {
           <div className="container hero__about">
             <h2 className="visually-hidden">O nas</h2>
 
-            {/* nagłówek sekcji — duży, lekki, styl BLAMAZ */}
+            {/* nagłówek sekcji — duży, lekki */}
             <div className="hero__about-header">
               <h3 className="hero__about-title">
                 Projektujemy przestrzeń.<br />
@@ -171,24 +173,24 @@ export default function Hero() {
               </p>
             </div>
 
-            {/* grid 3 kolumny — usługi, styl BLAMAZ story */}
+            {/* grid 3 kolumny — usługi */}
             <ul className="hero__story">
               <li className="hero__story-item">
-                <span className="hero__story-label">01 / Projektowanie</span>
+                <span className="hero__story-label">Projektowanie</span>
                 <p className="hero__story-text">
                   Nowoczesne osiedla mieszkaniowe, budynki wielorodzinne i jednorodzinne,
                   hotele oraz obiekty użyteczności publicznej
                 </p>
               </li>
               <li className="hero__story-item">
-                <span className="hero__story-label">02 / Kompleksowo</span>
+                <span className="hero__story-label">Kompleksowo</span>
                 <p className="hero__story-text">
                   Architektura, konstrukcje, instalacje sanitarne i elektryczne.
                   Pełnobranżowa dokumentacja
                 </p>
               </li>
               <li className="hero__story-item">
-                <span className="hero__story-label">03 / Doświadczenie</span>
+                <span className="hero__story-label">Doświadczenie</span>
                 <p className="hero__story-text">
                   Ponad trzy dekady praktyki na Pomorzu Zachodnim,
                   ponad 180 tysięcy m² zaprojektowanej przestrzeni

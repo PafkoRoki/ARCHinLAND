@@ -2,7 +2,6 @@ import Header from '../layout/Header'
 import Hero from '../sections/Hero'
 import Realizations from '../sections/Realizations'
 import Projects from '../sections/Projects'
-import Process from '../sections/Process'
 import Reviews from '../sections/Reviews'
 import Contact from '../sections/Contact'
 import Footer from '../layout/Footer'
@@ -25,8 +24,8 @@ export default function Home() {
 
   return (
     <>
-      <a href="#about" className="visually-hidden">
-        Skip to content
+      <a href="#about" className="visually-hidden skip-link">
+        Przejdź do treści
       </a>
       <Suspense fallback={null}>
         <BackgroundModel />
@@ -36,7 +35,6 @@ export default function Home() {
         <Hero />
         <Realizations />
         <Projects />
-        <Process />
         <Reviews />
         <Contact />
       </main>

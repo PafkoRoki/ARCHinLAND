@@ -8,10 +8,12 @@ const photoFiles = import.meta.glob<string>('../assets/realizacje/*/*.{jpg,jpeg,
   import: 'default',
 })
 
-const photosOf = (slug: string) =>
+// zdjęcie z `cover` idzie na początek, reszta według nazw plików
+const photosOf = (slug: string, cover?: string) =>
   Object.keys(photoFiles)
     .filter((file) => file.includes(`/realizacje/${slug}/`))
     .sort()
+    .sort((a, b) => Number(b.endsWith(`/${cover}`)) - Number(a.endsWith(`/${cover}`)))
     .map((file) => photoFiles[file])
 
 /** Zakładka w sekcji Realizacje */
@@ -29,7 +31,9 @@ export interface Project {
   category: string
   group: RealizationGroup // zakładka: Apartamentowce / Hotele, Osiedla, Domy jednorodzinne
   description?: string // krótki opis pod nazwą (pusty = niewyświetlany)
-  /** Zdjęcie główne (01.jpg) — pierwsze w akordeonie i na podstronie. */
+  /** Plik zdjęcia czołowego (np. "07.jpg") — zamiast 01.jpg pierwsze w akordeonie, na podstronie i w Google. */
+  cover?: string
+  /** Zdjęcie główne (cover albo 01.jpg) — pierwsze w akordeonie i na podstronie. */
   image: string
   /** Wszystkie zdjęcia z folderu realizacji. */
   gallery: string[]
@@ -51,6 +55,7 @@ const info: ProjectInfo[] = [
   },
   {
     slug: 'inwestycja-klifowa',
+    cover: '07.jpg',
     name: 'INWESTYCJA KLIFOWA',
     displayName: 'Inwestycja Klifowa',
     location: 'Rewal, Polska',
@@ -81,6 +86,7 @@ const info: ProjectInfo[] = [
   },
   {
     slug: 'osiedle-panorama',
+    cover: '03.jpg',
     name: 'OSIEDLE PANORAMA',
     displayName: 'Osiedle Panorama',
     location: 'Gryfice, Polska',
@@ -131,6 +137,7 @@ const info: ProjectInfo[] = [
   },
   {
     slug: 'wioska-rybacka-przytor',
+    cover: '04.jpg',
     name: 'WIOSKA RYBACKA',
     displayName: 'Wioska Rybacka',
     location: 'Świnoujście-Przytór, Polska',
@@ -156,6 +163,14 @@ const yearOf = (p: ProjectInfo) => Number(p.year) || Number.MAX_SAFE_INTEGER
 const byYear = (a: ProjectInfo, b: ProjectInfo) => yearOf(a) - yearOf(b)
 
 export const projects: Project[] = [...info].sort(byYear).map((p, i) => {
-  const gallery = photosOf(p.slug)
+  const gallery = photosOf(p.slug, p.cover)
   return { ...p, number: String(i + 1).padStart(2, '0'), image: gallery[0], gallery }
 })
+
+// Zakładka "Wybrane" w sekcji Realizacje (pierwsza na stronie) i zdjęcia strony głównej dla Google —
+// w tej kolejności. Czołowe zdjęcie każdej realizacji ustawia pole `cover`.
+const FEATURED_SLUGS = ['inwestycja-klifowa', 'osiedle-panorama', 'wioska-rybacka-przytor', 'baltic-cliff', 'sjas']
+
+export const featuredProjects: Project[] = FEATURED_SLUGS.map((slug) => projects.find((p) => p.slug === slug)).filter(
+  (p): p is Project => !!p && p.gallery.length > 0,
+)

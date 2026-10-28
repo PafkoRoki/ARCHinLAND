@@ -119,9 +119,9 @@ export default function Reviews() {
 
   return (
     <section id="reviews" className="reviews" aria-labelledby="reviews-title">
-      <SectionHeader index="05" label="Opinie" id="reviews-title" />
-
       <div className="container">
+        <SectionHeader index="05" label="Opinie" id="reviews-title" />
+
         {(hasScore || hasReviews) && (
           <div className={`reviews__grid${hasScore && hasReviews ? '' : ' reviews__grid--single'}`}>
             {hasScore && (

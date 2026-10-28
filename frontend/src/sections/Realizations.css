@@ -31,15 +31,13 @@
   border-top: 1px solid var(--border);
 }
 
-/* nazwy realizacji krojem z logo Baltic Cliff (Barlow 800 italic), w zwykłej pisowni.
+/* nazwy realizacji krojem nagłówków (h3 dziedziczy --font-display).
    Pojedynczy obiekt można wyróżnić klasą realization__name--<slug> */
 .realization__name {
-  font-family: 'Barlow', var(--font-display);
   font-size: var(--fs-h3);
-  font-style: italic;
-  font-weight: 800;
+  font-weight: 500;
   line-height: 1;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 .realization__meta {

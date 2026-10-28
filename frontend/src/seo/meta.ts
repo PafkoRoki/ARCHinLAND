@@ -4,7 +4,7 @@
 //  - scripts/prerender.mjs (przy budowaniu): osobny plik HTML dla każdej realizacji + sitemap.xml,
 //    żeby wyszukiwarki i podglądy linków (Facebook, Messenger) widziały treść bez JavaScriptu.
 // Katalog projektów (/projekty) jest za hasłem — celowo go tu nie ma (noindex, robots.txt).
-import { projects, type Project } from '../data/realizations'
+import { featuredProjects, projects, type Project } from '../data/realizations'
 
 export const SITE_URL = 'https://archinland.pl'
 export const SITE_NAME = 'ARCHinLAND'
@@ -108,7 +108,18 @@ export function realizationMeta(p: Project): PageMeta {
   }
 }
 
+/** Wybrane realizacje (zakładka "Wybrane") — zdjęcia czołowe, które mają reprezentować ARCHinLAND w Google Grafika */
+const featuredImages = () =>
+  featuredProjects.map((p) => {
+    const place = placeOf(p)
+    return {
+      url: absolute(p.image),
+      alt: `ARCHinLAND — ${nameOf(p)}, ${p.category.toLowerCase()}${place ? `, ${place}` : ''}`,
+    }
+  })
+
 export function homeMeta(): PageMeta {
+  const featured = featuredImages()
   return {
     path: '/',
     title: 'ARCHinLAND — Biuro Architektoniczne Andrzej Kurka | Kamień Pomorski',
@@ -117,8 +128,26 @@ export function homeMeta(): PageMeta {
       '35 lat doświadczenia: osiedla, budynki wielorodzinne i jednorodzinne, apartamentowce, hotele i obiekty użyteczności publicznej.',
     image: DEFAULT_IMAGE,
     imageAlt: 'ARCHinLAND — biuro architektoniczne',
-    images: [DEFAULT_IMAGE],
-    jsonLd: [], // dane firmy są na stałe w index.html
+    images: [DEFAULT_IMAGE, ...featured.map((f) => f.url)],
+    // dane firmy są na stałe w index.html; tu strona główna i jej zdjęcia
+    jsonLd: [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        '@id': `${SITE_URL}/#webpage`,
+        url: `${SITE_URL}/`,
+        name: 'ARCHinLAND — Biuro Architektoniczne Andrzej Kurka',
+        about: { '@id': ORG_ID },
+        primaryImageOfPage: DEFAULT_IMAGE,
+        image: featured.map((f) => ({
+          '@type': 'ImageObject',
+          contentUrl: f.url,
+          caption: f.alt,
+          creator: { '@id': ORG_ID },
+          copyrightNotice: 'ARCHinLAND',
+        })),
+      },
+    ],
     bodyHtml: `<main>
   <h1>ARCHinLAND — Architecture in Land Development</h1>
   <p>Biuro architektoniczne Andrzeja Kurki, Kamień Pomorski. 35 lat doświadczenia, 180 000 m² zaprojektowanych powierzchni.

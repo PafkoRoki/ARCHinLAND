@@ -13,14 +13,6 @@
   width: min(440px, 100%);
 }
 
-.projectGate__eyebrow {
-  margin-bottom: 14px;
-  color: #777;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-}
-
 .projectGate__title {
   font-size: clamp(34px, 5vw, 56px);
   font-weight: 500;
@@ -30,9 +22,21 @@
 
 .projectGate__box > p {
   margin: 16px 0 32px;
-  color: #737373;
+  color: var(--faint);
   font-size: 15px;
   line-height: 1.6;
+}
+
+/* telefon i mail — droga do hasła, widoczna od razu */
+.projectGate__box > p a {
+  color: var(--black);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+}
+
+.projectGate__box > p a:hover {
+  color: var(--orange);
 }
 
 .projectGate__label {
@@ -98,6 +102,11 @@
 /* w sekcji Projekty na stronie głównej: bez pełnej wysokości ekranu, formularz po lewej */
 .projectGate--inline {
   display: block;
+  place-items: normal; /* nowy Chrome stosuje justify-items także w układzie blokowym */
   min-height: 0;
   padding: 0;
+}
+
+.projectGate--inline .projectGate__box > p:first-child {
+  margin-top: 0;
 }

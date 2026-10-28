@@ -62,7 +62,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
   const iconRef = useRef<HTMLSpanElement | null>(null);
   const textInnerRef = useRef<HTMLSpanElement | null>(null);
   const textWrapRef = useRef<HTMLSpanElement | null>(null);
-  const [textLines, setTextLines] = useState<string[]>(['Menu', 'Close']);
+  const [textLines, setTextLines] = useState<string[]>(['Menu', 'Zamknij']);
 
   const openTlRef = useRef<gsap.core.Timeline | null>(null);
   const closeTweenRef = useRef<gsap.core.Tween | null>(null);
@@ -315,13 +315,13 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
     if (!inner) return;
     textCycleAnimRef.current?.kill();
 
-    const currentLabel = opening ? 'Menu' : 'Close';
-    const targetLabel = opening ? 'Close' : 'Menu';
+    const currentLabel = opening ? 'Menu' : 'Zamknij';
+    const targetLabel = opening ? 'Zamknij' : 'Menu';
     const cycles = 3;
     const seq: string[] = [currentLabel];
     let last = currentLabel;
     for (let i = 0; i < cycles; i++) {
-      last = last === 'Menu' ? 'Close' : 'Menu';
+      last = last === 'Menu' ? 'Zamknij' : 'Menu';
       seq.push(last);
     }
     if (last !== targetLabel) seq.push(targetLabel);
@@ -396,6 +396,11 @@ const toggleMenu = useCallback(() => {
     };
   }, [closeOnClickAway, open, closeMenu]);
 
+  // zamknięty panel jest poza ekranem — bez inert jego linki dalej łapałyby fokus klawiatury
+  React.useEffect(() => {
+    panelRef.current?.toggleAttribute('inert', !open);
+  }, [open]);
+
   React.useEffect(() => {
     if (!open) return;
 
@@ -449,7 +454,7 @@ const toggleMenu = useCallback(() => {
         <button
           ref={toggleBtnRef}
           className="sm-toggle"
-          aria-label={open ? 'Close menu' : 'Open menu'}
+          aria-label={open ? 'Zamknij menu' : 'Otwórz menu'}
           aria-expanded={open}
           aria-controls="staggered-menu-panel"
           onClick={toggleMenu}

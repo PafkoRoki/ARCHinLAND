@@ -31,14 +31,12 @@
   --border-inverse: rgba(236, 240, 239, 0.35); /* linie na ciemnym tle (stopka #2d2d2d): 1px, przygaszone, żeby nie "puchły" */
   --line: var(--border); /* starsza nazwa, zostawiona dla zgodności */
   --btn-pad: 12px 20px;
-  --faint: rgba(45, 45, 45, 0.45);
+  --faint: rgba(45, 45, 45, 0.7); /* drobny tekst pomocniczy — 0.7 daje kontrast ~4.9:1 na --bg (WCAG AA) */
 
   --radius: 24px;
 
   --font-display: 'Space Grotesk Variable', 'Space Grotesk', Arial, sans-serif; /* nagłówki, menu — geometryczny grotesk */
   --font-body: 'Inter Variable', Inter, Arial, sans-serif; /* tekst, przyciski, podpisy */
-  --font-mono: 'Space Mono', ui-monospace, Menlo, Consolas, monospace; /* etykiety uppercase, styl BLAMAZ */
-  --font-hand: 'Permanent Marker', 'Segoe Print', cursive; /* odręczny akcent — oszczędnie */
 
   /* skala typografii — używaj tych zmiennych w sekcjach zamiast własnych clamp() */
   --fs-hero: clamp(3.5rem, 11vw, 9.5rem);
@@ -166,6 +164,24 @@ textarea {
   white-space: nowrap;
 }
 
+/* link "Przejdź do treści": ukryty, dopóki nie dostanie fokusu z klawiatury */
+.skip-link:focus-visible {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 10001;
+  width: auto;
+  height: auto;
+  padding: var(--btn-pad);
+  clip: auto;
+  background: var(--white);
+  border: 1px solid var(--border);
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
 /* -------------------------------------------------- */
 /* Layout helpers                                      */
 /* -------------------------------------------------- */
@@ -212,10 +228,6 @@ textarea {
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--black);
-}
-
-.label {
   color: var(--faint);
 }
 
@@ -278,15 +290,26 @@ textarea {
 /* -------------------------------------------------- */
 /* Nagłówek sekcji (komponent SectionHeader)           */
 /* -------------------------------------------------- */
-/* widoczny tylko wtedy, gdy sekcja ma treść `aside` (np. ocena Google w Opiniach) */
+/* nazwa sekcji po lewej, ewentualna treść `aside` (np. ocena Google) po prawej */
 .section-head {
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: var(--head-gap);
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px 32px;
+  margin-bottom: clamp(24px, 3vw, 40px);
 }
 
-@media (max-width: 860px) {
-  .section-head {
-    justify-content: flex-start;
-  }
+.section-head__title {
+  font-size: clamp(2rem, 4.5vw, 4rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+/* sekcje na grafitowym tle (Opinie, Kontakt) nie mają klasy .section — nagłówek sam robi odstęp od góry */
+.reviews .section-head,
+.contact .section-head {
+  padding-top: clamp(56px, 8vw, 112px);
 }

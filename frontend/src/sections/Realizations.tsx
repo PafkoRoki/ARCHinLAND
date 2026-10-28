@@ -2,18 +2,19 @@
 // @ts-nocheck
 
 import { useEffect, useState } from 'react'
-import { projects } from '../data/realizations'
+import { featuredProjects, projects } from '../data/realizations'
 import AccordionGallery from '../components/AccordionGallery'
 import SectionHeader from '../components/SectionHeader'
-// krój nazw realizacji (jak w logo Baltic Cliff), tylko 800 italic
-import '@fontsource/barlow/800-italic.css'
 import './Realizations.css'
 
 // Każdy akordeon = wszystkie zdjęcia jednej realizacji. Wszystkie realizacje z data/realizations.ts,
 // ułożone tam chronologicznie (od najstarszej); realizacja bez zdjęć jest pomijana.
 
-// Zakładki — realizacja trafia do zakładki według pola `group` w data/realizations.ts
+// Zakładki — realizacja trafia do zakładki według pola `group` w data/realizations.ts;
+// "Wybrane" to lista featuredProjects (też z data/realizations.ts) — realizacje są w niej i w swojej grupie
+const FEATURED = 'wybrane'
 const TABS = [
+  { id: FEATURED, label: 'Wybrane' },
   { id: 'apartamenty', label: 'Apartamentowce / Hotele' },
   { id: 'osiedla', label: 'Osiedla' },
   { id: 'domy', label: 'Domy jednorodzinne' },
@@ -23,13 +24,15 @@ const TABS = [
 const MOBILE_QUERY = '(max-width: 520px)'
 
 const galleries = projects.filter((p) => p.gallery.length > 0)
+const projectsOf = (tab) => (tab === FEATURED ? featuredProjects : galleries.filter((p) => p.group === tab))
 
 const itemsFor = (project) =>
   project.gallery.map((image, i) => ({
     image,
     label: `${project.name} · ${i + 1}/${project.gallery.length}`,
     link: `/realizacje/${project.slug}`,
-    alt: `${project.name} — ${project.category}, ${project.location}${project.year ? `, ${project.year}` : ''} (zdjęcie ${i + 1})`,
+    // zdjęcie czołowe z nazwą biura — to ono ma reprezentować ARCHinLAND w Google Grafika
+    alt: `${i === 0 ? 'ARCHinLAND — ' : ''}${project.displayName ?? project.name} — ${project.category}, ${project.location}${project.year ? `, ${project.year}` : ''}${i ? ` (zdjęcie ${i + 1})` : ''}`,
   }))
 
 function useMediaQuery(query) {
@@ -47,7 +50,7 @@ function useMediaQuery(query) {
 export default function Realizations() {
   const [tab, setTab] = useState(TABS[0].id)
   const mobile = useMediaQuery(MOBILE_QUERY)
-  const visible = galleries.filter((p) => p.group === tab)
+  const visible = projectsOf(tab)
 
   return (
     <section id="realizations" className="section realizations" aria-labelledby="realizations-title">
@@ -56,7 +59,7 @@ export default function Realizations() {
 
         <div className="realizations__tabs" role="tablist" aria-label="Rodzaj realizacji">
           {TABS.map((t) => {
-            const count = galleries.filter((p) => p.group === t.id).length
+            const count = projectsOf(t.id).length
             return (
               <button
                 key={t.id}

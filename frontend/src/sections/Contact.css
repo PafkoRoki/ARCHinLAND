@@ -1,8 +1,55 @@
-/* Kontakt wygląda jak stopka: tło #2d2d2d, biały tekst, linie --border-inverse.
+/* Kontakt na grafitowym tle (#2d2d2d), linie --border-inverse — jak Opinie i stopka.
    .page-content > #contact — mocniejszy selektor niż reguła tła sekcji od Realizacji w globals.css */
 .page-content > #contact.contact {
   background: var(--black);
   color: var(--white);
+}
+
+/* główne działanie sekcji: zdanie zachęty, duży numer telefonu, mail */
+.contact__lead {
+  display: grid;
+  justify-items: start;
+  gap: 20px;
+  padding-bottom: clamp(48px, 7vw, 96px);
+}
+
+.contact__intro {
+  max-width: 36ch;
+  font-size: var(--fs-lead);
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.75);
+  text-wrap: pretty;
+}
+
+.contact__phone {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--white);
+  transition: color 0.3s var(--ease);
+}
+
+.contact__mail {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2.4vw, 2rem);
+  line-height: 1.2;
+  color: var(--white);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: var(--border-inverse);
+  overflow-wrap: anywhere;
+  transition: color 0.3s var(--ease), text-decoration-color 0.3s var(--ease);
+}
+
+.contact__phone:hover,
+.contact__mail:hover {
+  color: var(--orange);
+  text-decoration-color: currentColor;
 }
 
 .contact__details {
@@ -15,6 +62,10 @@
   padding: 32px 16px;
 }
 
+.contact__block:first-child {
+  padding-left: 0;
+}
+
 .contact__block + .contact__block {
   border-left: 1px solid var(--border-inverse);
 }
@@ -23,31 +74,38 @@
 .contact__label {
   display: block;
   margin-bottom: 12px;
-  font-size: 12px;
+  font-size: var(--fs-label);
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.6);
 }
 
-/* jak linki w stopce: 14px, biały */
+/* logo ARCHinLAND (StrokeText) — ten sam krój co w Hero */
+.contact__logo {
+  width: min(240px, 100%);
+}
+
+.contact__logo .stroke-text {
+  font-family: 'Inter Tight Variable', 'Inter Tight', Arial, sans-serif;
+}
+
+.contact__logo .stroke-text__svg {
+  height: auto;
+}
+
 .contact__value {
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.5;
   color: var(--white);
-}
-
-.contact__link {
-  display: inline-block;
-  transition: color 0.3s var(--ease);
-}
-
-.contact__link:hover {
-  color: var(--orange);
 }
 
 @media (max-width: 720px) {
   .contact__details {
     grid-template-columns: 1fr;
+  }
+
+  .contact__block {
+    padding-inline: 0;
   }
 
   .contact__block + .contact__block {

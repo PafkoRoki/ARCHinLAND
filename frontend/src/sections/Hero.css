@@ -1,7 +1,7 @@
 /* Przypięta scena: wysoka sekcja, w której warstwy stoją w miejscu (sticky) podczas przewijania.
    --hero-pin = ile ekranów przewijania trwa scena po pierwszym ekranie (patrz Hero.tsx). */
 .hero {
-  --hero-pin: 360svh;
+  --hero-pin: 290svh;
   --about: 0;
   --lead-out: 0;
   --model: 0;
@@ -14,7 +14,7 @@
 /* kotwica "O nas": przewinięcie tutaj pokazuje scenę z widocznym tekstem */
 .hero__anchor {
   position: absolute;
-  top: 130svh;
+  top: 115svh;
   left: 0;
 }
 
@@ -165,6 +165,7 @@
 }
 
 .hero__title {
+  position: relative;
   display: grid;
   height: 100%;
   place-items: center;
@@ -175,13 +176,32 @@
 }
 
 .hero__title .stroke-text {
-  width: 100%;
+  width: min(100%, 760px);
   font-family: 'Inter Tight Variable', 'Inter Tight', Arial, sans-serif;
 }
 
 /* wysokość z proporcji napisu — na całą szerokość ekranu */
 .hero__title .stroke-text__svg {
   height: auto;
+}
+
+/* linijka pod napisem: kto, gdzie, od kiedy — krojem i stylem etykiet (.label).
+   Nisko, nad podpowiedzią "Przewiń" — poza soczewką z modelem (LENS_REST w BackgroundModel). */
+.hero__tagline {
+  position: absolute;
+  left: 50%;
+  bottom: 160px;
+  width: min(100% - 2 * var(--gutter), 640px);
+  transform: translateX(-50%);
+  font-family: var(--font-body);
+  font-size: var(--fs-label);
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-align: center;
+  text-wrap: balance;
+  color: var(--black);
 }
 
 /* panel O nas: cały ekran, półprzezroczyste tło z rozmyciem — model widać, tekst czytelny.
@@ -217,8 +237,8 @@
 
 /* tekst wjeżdża z dołu (--about), a po przeczytaniu odjeżdża w górę jak przewijana kartka */
 /* =====================================================
-   SEKCJA O NAS — styl BLAMAZ
-   lekka typografia, mono etykiety, grid 3 kolumny
+   SEKCJA O NAS
+   lekka typografia, etykiety jak .label, grid 3 kolumny
    ===================================================== */
 
 .hero .hero__about {
@@ -257,11 +277,12 @@
   flex-wrap: wrap;
   align-items: baseline;
   gap: 8px 16px;
-  font-family: var(--font-mono);
-  font-size: clamp(0.75rem, 1vw, 0.875rem);
+  font-size: var(--fs-label);
+  font-weight: 700;
   line-height: 1.4;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
 }
 
 .hero__stat-item {
@@ -278,7 +299,7 @@
   text-transform: lowercase;
 }
 
-/* ===== GRID 3 KOLUMNY — usługi (styl BLAMAZ story) ===== */
+/* ===== GRID 3 KOLUMNY — usługi ===== */
 .hero__story {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -298,13 +319,12 @@
 }
 
 .hero__story-label {
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
+  font-size: var(--fs-label);
+  font-weight: 700;
   line-height: 1.25;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--black);
-  opacity: 0.5;
+  color: var(--faint);
 }
 
 .hero__story-text {
@@ -359,7 +379,6 @@
   }
 
   .hero__stats-line {
-    font-size: 0.7rem;
     gap: 6px 12px;
   }
 
@@ -368,21 +387,8 @@
     padding-top: 24px;
   }
 
-  .hero__story-label {
-    font-size: 0.75rem;
-  }
-
   .hero__story-text {
     font-size: 0.85rem;
-  }
-
-  .hero__list li {
-    padding-left: 16px;
-  }
-
-  .hero__list li::before {
-    width: 5px;
-    height: 5px;
   }
 
   .hero__hint {

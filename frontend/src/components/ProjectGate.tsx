@@ -29,16 +29,18 @@ export default function ProjectGate({ children, inline = false }: Props) {
 
   const inputId = inline ? 'project-password-inline' : 'project-password'
   const errorId = `${inputId}-error`
-  // na stronie głównej h1 już jest (ARCHinLAND), a sekcja ma własne h2
-  const Title = inline ? 'h3' : 'h1'
   const Wrapper = inline ? 'div' : 'main'
 
   return (
     <Wrapper className={`projectGate${inline ? ' projectGate--inline' : ''}`}>
       <form className="projectGate__box" onSubmit={onSubmit}>
-        <span className="projectGate__eyebrow">PROJEKTY ARCHITEKTONICZNE</span>
-        <Title className="projectGate__title">Katalog projektów</Title>
-        <p>Katalog jest dostępny po podaniu hasła.</p>
+        {/* w sekcji Projekty nazwę daje nagłówek sekcji */}
+        {!inline && <h1 className="projectGate__title">Katalog projektów</h1>}
+        <p>
+          Katalog udostępniamy klientom biura. Nie masz hasła? Zadzwoń:{' '}
+          <a href="tel:+48790820114">790&nbsp;820&nbsp;114</a> lub napisz:{' '}
+          <a href="mailto:ARCHinLAND@wp.pl">ARCHinLAND@wp.pl</a>
+        </p>
 
         <label className="projectGate__label" htmlFor={inputId}>
           Hasło
@@ -60,7 +62,7 @@ export default function ProjectGate({ children, inline = false }: Props) {
         />
         {error && (
           <p id={errorId} className="projectGate__error" role="alert">
-            Nieprawidłowe hasło.
+            To hasło nie pasuje. Sprawdź wielkość liter albo zadzwoń po aktualne hasło.
           </p>
         )}
 

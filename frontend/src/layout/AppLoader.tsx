@@ -18,14 +18,16 @@ const DELAY_PER_PATH = 0.25
 const DURATION = 1.9
 
 // Na stronie głównej ekran ładowania czeka na model 3D (BackgroundModel),
-// ale nie dłużej niż MAX_WAIT_MS — np. przy bardzo wolnym łączu.
-const MAX_WAIT_MS = 20000
+// ale nie dłużej niż MAX_WAIT_MS — przy wolnym łączu strona pokazuje się bez modelu,
+// a model dorysowuje się w soczewce, gdy dojdzie (plik ma ~8.6 MB).
+const MAX_WAIT_MS = 4000
 // po wczytaniu pasek postępu dopełnia się do 100% — chwila, żeby to było widać
 const BAR_FINISH_MS = 450
 // na model czekamy tylko przy wejściu na górę strony głównej — z adresem sekcji
 // (np. /#realizations) model jest poza ekranem, więc nie ma na co czekać
 const isHome = () => window.location.pathname === '/' && !window.location.hash
 const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
+const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 function waitForPage() {
   if (!isHome()) return Promise.resolve()
@@ -70,27 +72,18 @@ function AppLoaderAnimation({
 
     let isOpened = true
 
-    const appRoot = overlay.parentElement
-
+    // strona pod planszą: rodzeństwo .app-loader w #root (sam loader zostaje dostępny — ma komunikat o wczytywaniu)
+    const loader = overlay.parentElement
     const hasInertSupport =
       'inert' in document.createElement('div')
+    const blocked: Element[] = []
 
-    const wasInert =
-      appRoot?.hasAttribute('inert') ?? false
-
-    const hiddenSiblings: Element[] = []
-
-    if (appRoot) {
-      if (hasInertSupport) {
-        appRoot.setAttribute('inert', '')
-      } else {
-        for (const child of Array.from(appRoot.children)) {
-          if (child !== overlay) {
-            hiddenSiblings.push(child)
-            child.setAttribute('aria-hidden', 'true')
-          }
-        }
-      }
+    for (const child of Array.from(loader?.parentElement?.children ?? [])) {
+      if (child === loader) continue
+      const attr = hasInertSupport ? 'inert' : 'aria-hidden'
+      if (child.hasAttribute(attr)) continue
+      child.setAttribute(attr, hasInertSupport ? '' : 'true')
+      blocked.push(child)
     }
 
     for (let i = 0; i < numPaths; i++) {
@@ -200,7 +193,9 @@ function AppLoaderAnimation({
       start.then(() => {
         if (cancelled) return
         onStart()
-        timeline.play()
+        // ograniczony ruch: bez fali — plansza znika od razu
+        if (prefersReducedMotion()) onComplete()
+        else timeline.play()
       })
     }, overlay)
 
@@ -208,17 +203,9 @@ function AppLoaderAnimation({
       cancelled = true
       context.revert()
 
-      if (appRoot) {
-        if (hasInertSupport) {
-          if (!wasInert) {
-            appRoot.removeAttribute('inert')
-          }
-        } else {
-          hiddenSiblings.forEach((node) =>
-            node.removeAttribute('aria-hidden'),
-          )
-        }
-      }
+      blocked.forEach((node) =>
+        node.removeAttribute(hasInertSupport ? 'inert' : 'aria-hidden'),
+      )
     }
   }, [start, onStart, onComplete])
 
@@ -240,11 +227,11 @@ function AppLoaderAnimation({
         >
           <stop
             offset="0%"
-            stopColor="#fad184"
+            stopColor="#2d2d2d"
           />
           <stop
             offset="100%"
-            stopColor="#ffe4b1"
+            stopColor="#1f1f1f"
           />
         </linearGradient>
 
@@ -257,15 +244,16 @@ function AppLoaderAnimation({
         >
           <stop
             offset="0%"
-            stopColor="#111111"
+            stopColor="#f0f0f0"
           />
           <stop
             offset="100%"
-            stopColor="#333333"
+            stopColor="#e2e2e2"
           />
         </linearGradient>
       </defs>
 
+      {/* plansza w kolorach strony: grafitowa (#2d2d2d, jak stopka) na wierzchu, jasna pod spodem */}
       <path
         className="shape-overlays__path"
         fill={`url(#${gradient2Id})`}
@@ -306,6 +294,9 @@ function AppLoader() {
 
   return (
     <div className="app-loader" style={{ position: 'fixed', inset: 0, zIndex: 9999 }}>
+      <p className="visually-hidden" role="status">
+        {isWaiting ? 'Wczytywanie strony…' : 'Strona wczytana'}
+      </p>
       <AppLoaderAnimation
         start={start}
         onStart={handleStart}

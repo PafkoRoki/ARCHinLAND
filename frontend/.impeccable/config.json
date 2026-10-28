@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "files": [
+          "src/sections/Contact.css"
+        ],
+        "createdAt": "2026-10-28T11:03:10.148Z",
+        "reason": "Claude decided: Inter Tight is the ARCHinLAND wordmark face (same as Hero logo, main.tsx comment); logo only, not body text"
+      }
+    ]
+  }
+}

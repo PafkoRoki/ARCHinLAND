@@ -25,7 +25,7 @@ const LENS_REST = { x: 0.5, y: 0.42 } // pozycja koła bez kursora (ułamek ekra
 const REVEAL_DISTANCE = 0.8 // ile wysokości ekranu przewijania trwa powiększanie koła
 // Koniec sceny O nas: pozioma płaszczyzna tnie model od dachu do podstawy (jak rzut na planie),
 // aż model zniknie tuż przed odpięciem sceny. Tyle wysokości ekranu przewijania trwa cięcie.
-const CUT_DISTANCE = 0.9
+const CUT_DISTANCE = 0.8
 
 // reakcja na kursor w Hero (radiany)
 const HOVER_TILT_Y = 0.45
