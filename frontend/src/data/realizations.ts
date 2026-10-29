@@ -55,7 +55,7 @@ const info: ProjectInfo[] = [
   },
   {
     slug: 'inwestycja-klifowa',
-    cover: '07.jpg',
+    cover: '05.jpg',
     name: 'INWESTYCJA KLIFOWA',
     displayName: 'Inwestycja Klifowa',
     location: 'Rewal, Polska',
@@ -169,7 +169,7 @@ export const projects: Project[] = [...info].sort(byYear).map((p, i) => {
 
 // Zakładka "Wybrane" w sekcji Realizacje (pierwsza na stronie) i zdjęcia strony głównej dla Google —
 // w tej kolejności. Czołowe zdjęcie każdej realizacji ustawia pole `cover`.
-const FEATURED_SLUGS = ['inwestycja-klifowa', 'osiedle-panorama', 'wioska-rybacka-przytor', 'baltic-cliff', 'sjas']
+const FEATURED_SLUGS = ['osiedle-panorama', 'wioska-rybacka-przytor', 'baltic-cliff', 'sjas']
 
 export const featuredProjects: Project[] = FEATURED_SLUGS.map((slug) => projects.find((p) => p.slug === slug)).filter(
   (p): p is Project => !!p && p.gallery.length > 0,

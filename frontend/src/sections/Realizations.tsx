@@ -1,17 +1,16 @@
 /// <reference types="vite/client" />
 // @ts-nocheck
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { featuredProjects, projects } from '../data/realizations'
-import AccordionGallery from '../components/AccordionGallery'
+import MirGrid from '../components/MirGrid'
 import SectionHeader from '../components/SectionHeader'
 import './Realizations.css'
 
-// Każdy akordeon = wszystkie zdjęcia jednej realizacji. Wszystkie realizacje z data/realizations.ts,
-// ułożone tam chronologicznie (od najstarszej); realizacja bez zdjęć jest pomijana.
-
+// Siatka w stylu mir.no — asymetryczny układ, duże zdjęcia, minimalistyczny overlay.
 // Zakładki — realizacja trafia do zakładki według pola `group` w data/realizations.ts;
-// "Wybrane" to lista featuredProjects (też z data/realizations.ts) — realizacje są w niej i w swojej grupie
+// "Wybrane" to lista featuredProjects (też z data/realizations.ts).
+
 const FEATURED = 'wybrane'
 const TABS = [
   { id: FEATURED, label: 'Wybrane' },
@@ -20,36 +19,11 @@ const TABS = [
   { id: 'domy', label: 'Domy jednorodzinne' },
 ]
 
-// telefon: w akordeonie tylko pierwsze zdjęcie (reszta na podstronie realizacji)
-const MOBILE_QUERY = '(max-width: 520px)'
-
 const galleries = projects.filter((p) => p.gallery.length > 0)
 const projectsOf = (tab) => (tab === FEATURED ? featuredProjects : galleries.filter((p) => p.group === tab))
 
-const itemsFor = (project) =>
-  project.gallery.map((image, i) => ({
-    image,
-    label: `${project.name} · ${i + 1}/${project.gallery.length}`,
-    link: `/realizacje/${project.slug}`,
-    // zdjęcie czołowe z nazwą biura — to ono ma reprezentować ARCHinLAND w Google Grafika
-    alt: `${i === 0 ? 'ARCHinLAND — ' : ''}${project.displayName ?? project.name} — ${project.category}, ${project.location}${project.year ? `, ${project.year}` : ''}${i ? ` (zdjęcie ${i + 1})` : ''}`,
-  }))
-
-function useMediaQuery(query) {
-  const [matches, setMatches] = useState(() => window.matchMedia(query).matches)
-  useEffect(() => {
-    const mq = window.matchMedia(query)
-    const onChange = () => setMatches(mq.matches)
-    onChange()
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
-  }, [query])
-  return matches
-}
-
 export default function Realizations() {
   const [tab, setTab] = useState(TABS[0].id)
-  const mobile = useMediaQuery(MOBILE_QUERY)
   const visible = projectsOf(tab)
 
   return (
@@ -79,58 +53,11 @@ export default function Realizations() {
 
         <div
           id="realizations-panel"
-          className="realizations__galleries"
+          className="realizations__grid"
           role="tabpanel"
           aria-labelledby={`realizations-tab-${tab}`}
         >
-          {visible.map((project) => (
-            <figure className="realization" key={project.slug}>
-              {/* podpis galerii jak opis na rysunku: nazwa + dane obiektu + krótki opis */}
-              <figcaption className="realization__caption">
-                <h3 className={`realization__name realization__name--${project.slug}`}>
-                  {project.displayName ?? project.name}
-                </h3>
-                <dl className="realization__meta">
-                  <div>
-                    <dt>Lokalizacja</dt>
-                    <dd>{project.location}</dd>
-                  </div>
-                  {project.year && (
-                    <div>
-                      <dt>Rok</dt>
-                      <dd>{project.year}</dd>
-                    </div>
-                  )}
-                  <div>
-                    <dt>Typ</dt>
-                    <dd>{project.category}</dd>
-                  </div>
-                </dl>
-                {project.description && <p className="realization__desc">{project.description}</p>}
-              </figcaption>
-              <AccordionGallery
-                key={mobile ? 'mobile' : 'desktop'}
-                items={mobile ? itemsFor(project).slice(0, 1) : itemsFor(project)}
-                defaultIndex={0}
-                expandRatio={0.52}
-                trigger="hover"
-                accentColor="#ffffff"
-                overlayColor="#2d2d2d"
-                textColor="#ffffff"
-                grayscale
-                showLabels={false}
-                duration={0.6}
-                ease="power3.out"
-                parallax={0.5}
-                tilt={8}
-                stagger={0.06}
-                height={460}
-                gap={10}
-                radius={0}
-                orientation="horizontal"
-              />
-            </figure>
-          ))}
+          <MirGrid projects={visible} />
         </div>
       </div>
     </section>

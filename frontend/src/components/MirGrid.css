@@ -1,0 +1,120 @@
+/* mir.no-style work grid — larger gaps, clean layout */
+.mir-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.mir-grid__item {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background: #111;
+  text-decoration: none;
+  color: #fff;
+  aspect-ratio: 3 / 2;
+}
+
+/* Large items span 2 columns — full width */
+.mir-grid__item--large {
+  grid-column: span 2;
+  aspect-ratio: 16 / 9;
+}
+
+/* Image wrapper */
+.mir-grid__image-wrap {
+  position: absolute;
+  inset: 0;
+}
+
+.mir-grid__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Overlay — content at bottom, centered */
+.mir-grid__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 40px 32px;
+  text-align: center;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.55) 0%,
+    rgba(0, 0, 0, 0) 60%
+  );
+}
+
+/* Content container */
+.mir-grid__content {
+  opacity: 1;
+}
+
+/* Category label — small, above title */
+.mir-grid__category {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+/* Project title — centered, elegant */
+.mir-grid__title {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: clamp(18px, 2.5vw, 28px);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+
+.mir-grid__item--large .mir-grid__title {
+  font-size: clamp(24px, 3.5vw, 42px);
+}
+
+/* Location — below title */
+.mir-grid__location {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  opacity: 0.6;
+}
+
+/* Responsive: single column on mobile */
+@media (max-width: 768px) {
+  .mir-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .mir-grid__item,
+  .mir-grid__item--large {
+    grid-column: span 1;
+    aspect-ratio: 3 / 2;
+  }
+
+  .mir-grid__title {
+    font-size: 20px;
+  }
+
+  .mir-grid__overlay {
+    padding: 24px 20px;
+  }
+}
+
+/* Focus states for accessibility */
+.mir-grid__item:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -2px;
+  z-index: 1;
+}

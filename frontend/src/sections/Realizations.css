@@ -1,4 +1,6 @@
-/* zakładki: Apartamentowce / Hotele · Osiedla · Domy jednorodzinne (wygląd .btn z globals.css) */
+/* mir.no-style realizations section */
+
+/* zakładki: Wybrane · Apartamentowce / Hotele · Osiedla · Domy jednorodzinne */
 .realizations__tabs {
   display: flex;
   flex-wrap: wrap;
@@ -10,81 +12,18 @@
   opacity: 0.6;
 }
 
-/* odstęp między kolejnymi realizacjami (podpis + akordeon) */
-.realizations__galleries {
-  display: grid;
-  gap: var(--head-gap);
+/* wrapper for the mir-style grid */
+.realizations__grid {
+  /* full-bleed on mobile */
 }
 
-.realization {
-  margin: 0;
-}
-
-/* podpis galerii: nazwa po lewej, dane obiektu po prawej, opis pod spodem */
-.realization__caption {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: end;
-  gap: 16px 32px;
-  margin-bottom: 20px;
-  padding-top: 16px;
-  border-top: 1px solid var(--border);
-}
-
-/* nazwy realizacji krojem nagłówków (h3 dziedziczy --font-display).
-   Pojedynczy obiekt można wyróżnić klasą realization__name--<slug> */
-.realization__name {
-  font-size: var(--fs-h3);
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
-
-.realization__meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 32px;
-  margin: 0;
-}
-
-.realization__meta dt {
-  font-size: var(--fs-label);
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--faint);
-}
-
-.realization__meta dd {
-  margin: 4px 0 0;
-  font-size: 14px;
-  font-variant-numeric: tabular-nums;
-}
-
-.realization__desc {
-  grid-column: 1 / -1;
-  max-width: 62ch;
-  font-size: 15px;
-  line-height: 1.55;
-  color: var(--faint);
-}
-
-@media (max-width: 720px) {
-  .realization__caption {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* telefon: galeria ma tylko pierwsze zdjęcie (Realizations.tsx) — pełne proporcje zamiast paska */
-@media (max-width: 520px) {
-  .realization .ag-panel {
-    flex: none !important; /* galeria ustawia flex-grow w stylu — bez tego wysokość = 0 */
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    min-height: 0;
+@media (max-width: 768px) {
+  .realizations__tabs {
+    gap: 6px;
   }
 
-  .realization .ag-panel__media {
-    height: 100% !important;
+  .realizations__tabs .btn {
+    font-size: 12px;
+    padding: 8px 12px;
   }
 }
