@@ -48,10 +48,12 @@
     <!-- Critical CSS -->
     <style>
       html, body { background: #f0f0f0; margin: 0; }
-      /* treść z prerendera (scripts/prerender.mjs) — widoczna do startu Reacta, w kolorach planszy ładowania */
-      .seo-fallback { position: fixed; inset: 0; overflow: auto; padding: 24px 16px; background: #2d2d2d; color: #f0f0f0; font: 16px/1.5 Arial, sans-serif; }
-      .seo-fallback a { color: inherit; }
-      .seo-fallback img { display: block; max-width: 100%; height: auto; margin: 16px 0; }
+      /* treść z prerendera (scripts/prerender.mjs) dla robotów bez JavaScriptu i podglądów linków.
+         Do startu Reacta odwiedzający widzi tylko grafitową planszę (jak ekran ładowania), bez napisów.
+         React usuwa ten blok przy pierwszym renderze, więc Google (renderuje JS) indeksuje zwykłą stronę. */
+      .seo-fallback { position: fixed; inset: 0; overflow: hidden; background: #2d2d2d; }
+      .seo-fallback main { visibility: hidden; }
+      .seo-fallback img { max-width: 100%; height: auto; }
     </style>
 
     <!-- Dane strukturalne: lokalna firma / usługa architektoniczna -->

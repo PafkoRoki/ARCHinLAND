@@ -54,8 +54,8 @@ function render(page) {
   html = html.replace('</head>', () => `    ${extraHead}\n  </head>`)
 
   // treść strony w <div id="root"> — dla robotów bez JavaScriptu i podglądów linków.
-  // React (createRoot) zastępuje ją przy pierwszym renderze; do tego czasu jest na grafitowym tle
-  // planszy ładowania (style .seo-fallback w index.html), więc przejście jest prawie niewidoczne.
+  // React (createRoot) zastępuje ją przy pierwszym renderze; do tego czasu odwiedzający widzi samą
+  // grafitową planszę jak ekran ładowania (style .seo-fallback w index.html).
   const root = '<div id="root"></div>'
   if (!html.includes(root)) throw new Error('prerender: brak pustego <div id="root"></div> w index.html')
   html = html.replace(root, () => `<div id="root"><div class="seo-fallback">${page.bodyHtml}</div></div>`)
