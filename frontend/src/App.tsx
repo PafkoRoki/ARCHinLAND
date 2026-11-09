@@ -7,7 +7,7 @@ import RealizationDetail from './pages/RealizationDetail'
 import Home from './pages/Home'
 import { projects } from './data/realizations'
 import { useSeo } from './hooks/useSeo'
-import { homeMeta, realizationMeta } from './seo/meta'
+import { catalogMeta, homeMeta, realizationMeta } from './seo/meta'
 
 // katalog projektów dostępny po haśle — ładowany dopiero po odblokowaniu
 const CatalogPage = lazy(() => import('./pages/ProjectPages').then((m) => ({ default: m.CatalogPage })))
@@ -71,7 +71,7 @@ function RouteSeo() {
     }
     if (pathname.startsWith('/projekty')) {
       // katalog za hasłem — poza wyszukiwarką
-      return { ...homeMeta(), path: pathname, title: 'Katalog projektów | ARCHinLAND', noindex: true }
+      return catalogMeta(pathname)
     }
     return homeMeta()
   }, [pathname])

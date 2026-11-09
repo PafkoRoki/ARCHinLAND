@@ -1,0 +1,3 @@
+# Cloudflare Pages. Strona ma 404.html (scripts/prerender.mjs), więc adresy bez pliku dostają 404.
+# Katalog projektów (za hasłem) to jedna aplikacja dla wszystkich /projekty/<slug> — serwujemy projekty.html.
+/projekty/*  /projekty  200
