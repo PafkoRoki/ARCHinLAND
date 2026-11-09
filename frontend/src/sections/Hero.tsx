@@ -111,6 +111,8 @@ export default function Hero() {
           {/* od pierwszego ekranu wiadomo, czym jest ARCHinLAND */}
           <span className="hero__tagline">
             <span className="visually-hidden">ARCHinLAND — </span>
+            {/* pełna nazwa biura — fraza, pod którą ludzie szukają firmy */}
+            <span className="hero__tagline-name">Architecture in Land Development</span>
             Biuro architektoniczne Andrzej Kurka · Kamień Pomorski · od 1991
           </span>
         </h1>

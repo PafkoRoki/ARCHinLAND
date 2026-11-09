@@ -122,7 +122,7 @@ export function homeMeta(): PageMeta {
   const featured = featuredImages()
   return {
     path: '/',
-    title: 'ARCHinLAND — Biuro Architektoniczne Andrzej Kurka | Kamień Pomorski',
+    title: 'ARCHinLAND — Architecture in Land Development | Andrzej Kurka, Kamień Pomorski',
     description:
       'ARCHinLAND (Architecture in Land Development) — biuro architektoniczne Andrzeja Kurki w Kamieniu Pomorskim. ' +
       '35 lat doświadczenia: osiedla, budynki wielorodzinne i jednorodzinne, apartamentowce, hotele i obiekty użyteczności publicznej.',
@@ -136,7 +136,7 @@ export function homeMeta(): PageMeta {
         '@type': 'WebPage',
         '@id': `${SITE_URL}/#webpage`,
         url: `${SITE_URL}/`,
-        name: 'ARCHinLAND — Biuro Architektoniczne Andrzej Kurka',
+        name: 'ARCHinLAND — Architecture in Land Development, biuro architektoniczne Andrzeja Kurki',
         about: { '@id': ORG_ID },
         primaryImageOfPage: DEFAULT_IMAGE,
         image: featured.map((f) => ({
