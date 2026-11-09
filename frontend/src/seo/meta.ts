@@ -122,7 +122,7 @@ export function homeMeta(): PageMeta {
   const featured = featuredImages()
   return {
     path: '/',
-    title: 'ARCHinLAND — Biuro Architektoniczne Andrzej Kurka | Kamień Pomorski',
+    title: 'ARCHinLAND — Architecture in Land Development | Andrzej Kurka, Kamień Pomorski',
     description:
       'ARCHinLAND (Architecture in Land Development) — biuro architektoniczne Andrzeja Kurki w Kamieniu Pomorskim. ' +
       '35 lat doświadczenia: osiedla, budynki wielorodzinne i jednorodzinne, apartamentowce, hotele i obiekty użyteczności publicznej.',
@@ -136,7 +136,7 @@ export function homeMeta(): PageMeta {
         '@type': 'WebPage',
         '@id': `${SITE_URL}/#webpage`,
         url: `${SITE_URL}/`,
-        name: 'ARCHinLAND — Biuro Architektoniczne Andrzej Kurka',
+        name: 'ARCHinLAND — Architecture in Land Development, biuro architektoniczne Andrzeja Kurki',
         about: { '@id': ORG_ID },
         primaryImageOfPage: DEFAULT_IMAGE,
         image: featured.map((f) => ({
@@ -160,3 +160,39 @@ export function homeMeta(): PageMeta {
 }
 
 export const publicPages = (): PageMeta[] => [homeMeta(), ...projects.map(realizationMeta)]
+
+/** Katalog projektów za hasłem — plik HTML istnieje tylko po to, żeby /projekty działało (poza wyszukiwarką). */
+export function catalogMeta(path = '/projekty'): PageMeta {
+  return {
+    ...homeMeta(),
+    path,
+    title: `Katalog projektów | ${SITE_NAME}`,
+    images: [],
+    jsonLd: [],
+    noindex: true,
+    bodyHtml: `<main>
+  <p><a href="/">${SITE_NAME}</a></p>
+  <h1>Katalog projektów</h1>
+  <p>Katalog projektów jest dostępny po podaniu hasła.</p>
+</main>`,
+  }
+}
+
+/** Strona 404 — serwowana przez Cloudflare Pages ze statusem 404 dla nieistniejących adresów. */
+export function notFoundMeta(): PageMeta {
+  return {
+    ...homeMeta(),
+    path: '/404',
+    title: `Nie znaleziono strony | ${SITE_NAME}`,
+    images: [],
+    jsonLd: [],
+    noindex: true,
+    bodyHtml: `<main>
+  <h1>Nie znaleziono strony</h1>
+  <p>Ta strona nie istnieje albo została przeniesiona. <a href="/">Przejdź na stronę główną ${SITE_NAME}</a>.</p>
+  <nav><h2>Realizacje</h2><ul>${projects
+    .map((p) => `<li><a href="${realizationPath(p)}">${escapeHtml(nameOf(p))}</a></li>`)
+    .join('')}</ul></nav>
+</main>`,
+  }
+}

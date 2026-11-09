@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Podstawowe SEO -->
-    <title>ARCHinLAND — Biuro Architektoniczne Andrzej Kurka | Kamień Pomorski</title>
+    <title>ARCHinLAND — Architecture in Land Development | Andrzej Kurka, Kamień Pomorski</title>
     <meta
       name="description"
       content="ARCHinLAND (Architecture in Land Development) — biuro architektoniczne Andrzeja Kurki w Kamieniu Pomorskim. 35 lat doświadczenia: domy jednorodzinne, budynki wielorodzinne, apartamentowce, hotele i inwestycje deweloperskie."
@@ -20,7 +20,7 @@
     <meta property="og:url" content="https://archinland.pl/" />
     <meta property="og:site_name" content="ARCHinLAND" />
     <meta property="og:locale" content="pl_PL" />
-    <meta property="og:title" content="ARCHinLAND — Biuro Architektoniczne Andrzej Kurka | Kamień Pomorski" />
+    <meta property="og:title" content="ARCHinLAND — Architecture in Land Development | Andrzej Kurka, Kamień Pomorski" />
     <meta
       property="og:description"
       content="35 lat doświadczenia w projektowaniu architektonicznym. Domy jednorodzinne, budynki wielorodzinne, apartamentowce, hotele i inwestycje deweloperskie w Kamieniu Pomorskim i regionie."
@@ -31,7 +31,7 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="ARCHinLAND — Biuro Architektoniczne Andrzej Kurka" />
+    <meta name="twitter:title" content="ARCHinLAND — Architecture in Land Development" />
     <meta
       name="twitter:description"
       content="Biuro architektoniczne w Kamieniu Pomorskim. 35 lat doświadczenia w projektowaniu domów, budynków wielorodzinnych i inwestycji."
@@ -48,6 +48,10 @@
     <!-- Critical CSS -->
     <style>
       html, body { background: #f0f0f0; margin: 0; }
+      /* treść z prerendera (scripts/prerender.mjs) — widoczna do startu Reacta, w kolorach planszy ładowania */
+      .seo-fallback { position: fixed; inset: 0; overflow: auto; padding: 24px 16px; background: #2d2d2d; color: #f0f0f0; font: 16px/1.5 Arial, sans-serif; }
+      .seo-fallback a { color: inherit; }
+      .seo-fallback img { display: block; max-width: 100%; height: auto; margin: 16px 0; }
     </style>
 
     <!-- Dane strukturalne: lokalna firma / usługa architektoniczna -->
@@ -57,7 +61,7 @@
         "@type": "ProfessionalService",
         "@id": "https://archinland.pl/#organization",
         "name": "ARCHinLAND — Architecture in Land Development",
-        "alternateName": "ARCHinLAND",
+        "alternateName": ["ARCHinLAND", "Architecture in Land Development"],
         "description": "Biuro architektoniczne Andrzeja Kurki w Kamieniu Pomorskim. Projektowanie budynków mieszkalnych, wielorodzinnych, apartamentowców, hoteli i inwestycji deweloperskich.",
         "url": "https://archinland.pl/",
         "telephone": "+48790820114",

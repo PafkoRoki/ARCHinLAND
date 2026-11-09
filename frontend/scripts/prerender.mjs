@@ -13,7 +13,9 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const dist = path.join(root, 'dist')
 const seoDir = path.join(root, 'dist-seo')
 
-const { publicPages, SITE_URL } = await import(pathToFileURL(path.join(seoDir, 'meta.js')).href)
+const { publicPages, catalogMeta, notFoundMeta, SITE_URL, DEFAULT_IMAGE } = await import(
+  pathToFileURL(path.join(seoDir, 'meta.js')).href
+)
 
 const template = fs.readFileSync(path.join(dist, 'index.html'), 'utf8')
 const attr = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
@@ -38,9 +40,11 @@ function render(page) {
   html = setContent(html, 'meta\\s+name="twitter:title"', page.title)
   html = setContent(html, 'meta\\s+name="twitter:description"', page.description)
   html = setContent(html, 'meta\\s+name="twitter:image"', page.image)
-  if (page.path !== '/') {
+  if (page.image !== DEFAULT_IMAGE) {
     // wymiary w index.html dotyczą og-image.jpg (1200×630), nie zdjęć realizacji
     html = html.replace(/\s*<meta\s+property="og:image:(?:width|height)"[^>]*>/g, '')
+  }
+  if (page.path !== '/' && !page.noindex) {
     html = html.replace(/(<meta\s+property="og:type"\s+content=")website(")/, '$1article$2')
   }
   const extraHead = [
@@ -48,16 +52,31 @@ function render(page) {
     ...page.jsonLd.map((data) => `<script type="application/ld+json">${JSON.stringify(data).replace(/</g, '\\u003c')}</script>`),
   ].join('\n    ')
   html = html.replace('</head>', () => `    ${extraHead}\n  </head>`)
+
+  // treść strony w <div id="root"> — dla robotów bez JavaScriptu i podglądów linków.
+  // React (createRoot) zastępuje ją przy pierwszym renderze; do tego czasu jest na grafitowym tle
+  // planszy ładowania (style .seo-fallback w index.html), więc przejście jest prawie niewidoczne.
+  const root = '<div id="root"></div>'
+  if (!html.includes(root)) throw new Error('prerender: brak pustego <div id="root"></div> w index.html')
+  html = html.replace(root, () => `<div id="root"><div class="seo-fallback">${page.bodyHtml}</div></div>`)
   return html
 }
 
-const pages = publicPages()
-for (const page of pages) {
-  const file = page.path === '/' ? 'index.html' : `${page.path.slice(1)}.html`
+const write = (file, page) => {
   const out = path.join(dist, file)
   fs.mkdirSync(path.dirname(out), { recursive: true })
   fs.writeFileSync(out, render(page))
 }
+
+const pages = publicPages()
+for (const page of pages) {
+  write(page.path === '/' ? 'index.html' : `${page.path.slice(1)}.html`, page)
+}
+// Cloudflare Pages: gdy w dist jest 404.html, nieistniejące adresy dostają status 404 (bez niego —
+// index.html ze statusem 200, czyli „soft 404” w Google). Katalog /projekty/* nie ma osobnych plików,
+// więc public/_redirects kieruje go na projekty.html.
+write('projekty.html', catalogMeta())
+write('404.html', notFoundMeta())
 
 // sitemap.xml ze zdjęciami (Google Images)
 const today = new Date().toISOString().slice(0, 10)
@@ -78,4 +97,4 @@ ${p.images.map((img) => `    <image:image><image:loc>${xml(img)}</image:loc></im
 `
 fs.writeFileSync(path.join(dist, 'sitemap.xml'), sitemap)
 fs.rmSync(seoDir, { recursive: true, force: true })
-console.log(`prerender: ${pages.length} stron + sitemap.xml`)
+console.log(`prerender: ${pages.length} stron + projekty.html + 404.html + sitemap.xml`)
