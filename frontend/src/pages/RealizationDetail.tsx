@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
-import { projects } from '../data/realizations'
+import { projects, srcsetOf } from '../data/realizations'
 import './RealizationDetail.css'
 
 export default function RealizationDetail() {
@@ -54,6 +54,8 @@ export default function RealizationDetail() {
           <img
             key={src + i}
             src={src}
+            srcSet={srcsetOf(src) || undefined}
+            sizes="(min-width: 1500px) 1400px, 100vw"
             alt={`${project.name} — zdjęcie ${i + 1} z ${images.length}, ${project.location}`}
             loading={i === 0 ? 'eager' : 'lazy'}
             decoding="async"

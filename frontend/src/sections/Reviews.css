@@ -135,7 +135,9 @@
 
 .review__more {
   align-self: flex-start;
-  padding: 0;
+  /* pole dotyku 44 px przy tekście 12 px — padding zjedzony ujemnym marginesem */
+  padding: 13px 0;
+  margin: -13px 0;
   font-size: 12px;
   letter-spacing: 0.15em;
   text-transform: uppercase;

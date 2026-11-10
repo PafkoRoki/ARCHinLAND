@@ -46,6 +46,14 @@
   transition: color 0.3s var(--ease), text-decoration-color 0.3s var(--ease);
 }
 
+/* większe pole dotyku (44 px) bez zmiany wyglądu: padding zjedzony ujemnym marginesem */
+.contact__phone,
+.contact__mail {
+  display: inline-block;
+  padding-block: 10px;
+  margin-block: -10px;
+}
+
 .contact__phone:hover,
 .contact__mail:hover {
   color: var(--orange);

@@ -37,6 +37,7 @@
     "@types/three": "^0.185.4",
     "pdf-lib": "^1.17.1",
     "sharp": "^0.35.5",
+    "vite-imagetools": "^9",
     "wrangler": "^4.124.0"
   }
 }

@@ -19,10 +19,12 @@
 
 @media (max-width: 768px) {
   .realizations__tabs {
-    gap: 6px;
+    gap: 8px;
   }
 
+  /* palec: zakładka co najmniej 44 px wysokości, 8 px od sąsiedniej */
   .realizations__tabs .btn {
+    min-height: 44px;
     font-size: 12px;
     padding: 8px 12px;
   }
