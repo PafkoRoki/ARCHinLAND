@@ -9,6 +9,7 @@ import {
 import { gsap } from 'gsap'
 import { modelReady, onModelProgress } from '../lib/modelControls'
 import LoaderLiquidText from './LoaderLiquidText'
+import LoaderBubble, { canUseBubble } from './LoaderBubble'
 import './AppLoader.css'
 
 const NUM_POINTS = 5
@@ -28,7 +29,28 @@ const isHome = () => window.location.pathname === '/' && !window.location.hash
 const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
 const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
+/** Strona pod planszą (rodzeństwo .app-loader w #root) jest niedostępna, dopóki loader stoi; sam loader zostaje
+ *  dostępny — ma komunikat o wczytywaniu. Zwraca funkcję, która to cofa. */
+function blockSiblings(loader: Element) {
+  const hasInertSupport = 'inert' in document.createElement('div')
+  const attr = hasInertSupport ? 'inert' : 'aria-hidden'
+  const blocked: Element[] = []
+  for (const child of Array.from(loader.parentElement?.children ?? [])) {
+    if (child === loader || child.hasAttribute(attr)) continue
+    child.setAttribute(attr, hasInertSupport ? '' : 'true')
+    blocked.push(child)
+  }
+  return () => blocked.forEach((node) => node.removeAttribute(attr))
+}
+
+// Tylko `bun run dev`: /?loader=40 zatrzymuje loader na 40% (lokalnie model wczytuje się w ułamku sekundy),
+// kliknięcie w ekran uruchamia wyjście. W buildzie produkcyjnym import.meta.env.DEV = false i kodu nie ma.
+const DEV_PREVIEW = import.meta.env.DEV ? new URLSearchParams(window.location.search).get('loader') : null
+
 function waitForPage() {
+  if (DEV_PREVIEW !== null) {
+    return new Promise<void>((resolve) => window.addEventListener('pointerdown', () => resolve(), { once: true }))
+  }
   if (!isHome()) return Promise.resolve()
   return Promise.race([modelReady, wait(MAX_WAIT_MS)]).then(() => wait(BAR_FINISH_MS))
 }
@@ -63,19 +85,6 @@ function AppLoaderAnimation({
 
     let isOpened = true
 
-    // strona pod planszą: rodzeństwo .app-loader w #root (sam loader zostaje dostępny — ma komunikat o wczytywaniu)
-    const loader = overlay.parentElement
-    const hasInertSupport =
-      'inert' in document.createElement('div')
-    const blocked: Element[] = []
-
-    for (const child of Array.from(loader?.parentElement?.children ?? [])) {
-      if (child === loader) continue
-      const attr = hasInertSupport ? 'inert' : 'aria-hidden'
-      if (child.hasAttribute(attr)) continue
-      child.setAttribute(attr, hasInertSupport ? '' : 'true')
-      blocked.push(child)
-    }
 
     for (let i = 0; i < numPaths; i++) {
       const points: number[] = []
@@ -193,10 +202,6 @@ function AppLoaderAnimation({
     return () => {
       cancelled = true
       context.revert()
-
-      blocked.forEach((node) =>
-        node.removeAttribute(hasInertSupport ? 'inert' : 'aria-hidden'),
-      )
     }
   }, [start, onStart, onComplete])
 
@@ -229,12 +234,38 @@ function AppLoader() {
   const [progress, setProgress] = useState(0)
   const start = useMemo(waitForPage, [])
   const showStatus = useMemo(isHome, [])
+  // strona główna: szklana bańka (WebGL); bez WebGL albo z ograniczonym ruchem — napis wypełniany falą
+  const [mode, setMode] = useState<'bubble' | 'wave'>(() =>
+    isHome() && !prefersReducedMotion() && canUseBubble() ? 'bubble' : 'wave',
+  )
+  const loaderRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => onModelProgress(setProgress), [])
+  useEffect(() => {
+    if (DEV_PREVIEW !== null) return setProgress(Number(DEV_PREVIEW) / 100)
+    return onModelProgress(setProgress)
+  }, [])
   // gotowe (albo limit czasu) → pasek dopełnia się do 100% przed odsłonięciem
   useEffect(() => {
+    if (DEV_PREVIEW !== null) return
     Promise.race([modelReady, wait(MAX_WAIT_MS)]).then(() => setProgress(1))
   }, [])
+
+  useLayoutEffect(() => {
+    if (!isVisible || !loaderRef.current) return
+    return blockSiblings(loaderRef.current)
+  }, [isVisible])
+
+  // bańka sama prowadzi wyjście — tu tylko sygnał, że strona jest gotowa (fala robi to w AppLoaderAnimation)
+  useEffect(() => {
+    if (mode !== 'bubble') return
+    let cancelled = false
+    start.then(() => {
+      if (!cancelled) setIsWaiting(false)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [mode, start])
 
   const handleStart = useCallback(() => {
     setIsWaiting(false)
@@ -244,29 +275,49 @@ function AppLoader() {
     setIsVisible(false)
   }, [])
 
+  const handleBubbleFail = useCallback(() => setMode('wave'), [])
+
   if (!isVisible) {
     return null
   }
 
+  const percent = (
+    <p className="app-loader__percent" aria-hidden="true">
+      <span>{Math.round(progress * 100)}%</span>
+    </p>
+  )
+
   return (
-    <div className="app-loader" style={{ position: 'fixed', inset: 0, zIndex: 9999 }}>
+    <div ref={loaderRef} className="app-loader" style={{ position: 'fixed', inset: 0, zIndex: 9999 }}>
       <p className="visually-hidden" role="status">
         {isWaiting ? 'Wczytywanie strony…' : 'Strona wczytana'}
       </p>
-      <AppLoaderAnimation
-        start={start}
-        onStart={handleStart}
-        onComplete={handleComplete}
-      />
-      {/* napis ARCHinLAND na środku wypełnia się od dołu falą w miarę wczytywania modelu;
-          przy odsłonięciu strony gaśnie (klasa --out), a plansza schodzi falą jak dotąd */}
-      {showStatus && (
-        <div className={`app-loader__brand${isWaiting ? '' : ' app-loader__brand--out'}`}>
-          <LoaderLiquidText text="ARCHinLAND" progress={progress} />
-          <p className="app-loader__percent" aria-hidden="true">
-            Wczytywanie… <span>{Math.round(progress * 100)}%</span>
-          </p>
-        </div>
+      {mode === 'bubble' ? (
+        <>
+          <LoaderBubble
+            progress={progress}
+            exiting={!isWaiting}
+            onExited={handleComplete}
+            onFail={handleBubbleFail}
+          />
+          {/* napis i licznik na środku bańki; gasną, gdy bańka zaczyna zamieniać się w soczewkę */}
+          <div className={`app-loader__mark${isWaiting ? '' : ' app-loader__mark--out'}`}>
+            <span className="app-loader__wordmark">ARCHinLAND</span>
+            {percent}
+          </div>
+        </>
+      ) : (
+        <>
+          <AppLoaderAnimation start={start} onStart={handleStart} onComplete={handleComplete} />
+          {/* bez WebGL: napis ARCHinLAND wypełnia się od dołu falą; przy odsłonięciu gaśnie,
+              a plansza schodzi falą */}
+          {showStatus && (
+            <div className={`app-loader__brand${isWaiting ? '' : ' app-loader__brand--out'}`}>
+              <LoaderLiquidText text="ARCHinLAND" progress={progress} />
+              {percent}
+            </div>
+          )}
+        </>
       )}
     </div>
   )
