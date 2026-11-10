@@ -50,7 +50,7 @@
   }
 }
 
-/* "Wczytywanie… 42%" pod prawym końcem napisu */
+/* "42%" pod prawym końcem napisu */
 .app-loader__percent {
   margin: 8px 0 0;
   text-align: right;
@@ -76,4 +76,50 @@
   .loader-liquid-text__level {
     transition: none;
   }
+}
+
+/* ---- strona główna: szklana bańka (LoaderBubble, WebGL) ---- */
+
+/* płótno na cały ekran; grafitowe tło zasłania stronę do pierwszej klatki (potem LoaderBubble je zdejmuje) */
+.loader-bubble {
+  position: fixed;
+  inset: 0;
+  background: #2d2d2d;
+  z-index: 9999;
+}
+
+.loader-bubble canvas {
+  display: block;
+}
+
+/* napis i licznik na środku bańki (ten sam punkt co CENTER w LoaderBubble) */
+.app-loader__mark {
+  position: fixed;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+  text-align: center;
+  pointer-events: none;
+  transition: opacity 0.35s ease-out;
+}
+
+.app-loader__mark--out {
+  opacity: 0;
+}
+
+.app-loader__wordmark {
+  display: block;
+  font-family: 'Inter Tight Variable', 'Inter Tight', Arial, sans-serif;
+  font-size: clamp(16px, 3.6vw, 28px);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: #ffffff;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.45);
+}
+
+.app-loader__mark .app-loader__percent {
+  text-align: center;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
 }

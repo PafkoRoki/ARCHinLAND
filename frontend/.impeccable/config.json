@@ -11,6 +11,15 @@
         ],
         "createdAt": "2026-10-28T11:03:10.148Z",
         "reason": "Claude decided: Inter Tight is the ARCHinLAND wordmark face (same as Hero logo, main.tsx comment); logo only, not body text"
+      },
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "files": [
+          "src/layout/AppLoader.css"
+        ],
+        "createdAt": "2026-11-10T03:20:51.799Z",
+        "reason": "Claude: Inter Tight is the existing ARCHinLAND wordmark face (main.tsx: 'Inter Tight — tylko logo ARCHinLAND'); loader wordmark reuses it for brand consistency"
       }
     ]
   }
