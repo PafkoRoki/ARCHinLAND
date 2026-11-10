@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { Mesh, Program, Renderer, Texture, Triangle } from 'ogl'
 
-// Ekran ładowania strony głównej: szklana, płynna bańka (kilka zlanych kul) na grafitowym tle.
-// Przez bańkę widać zmieniające się zdjęcia realizacji — załamane jak w soczewce, z jasną krawędzią
-// i lekkim rozszczepieniem kolorów. Bańka rośnie razem z postępem wczytywania modelu 3D.
+// Ekran ładowania strony głównej: płynna bańka z "liquid glass" (kilka zlanych kul) na grafitowym tle.
+// Przez szkło widać zmieniające się zdjęcia realizacji — środek przezroczysty, obraz zagina się tylko
+// na wąskiej zaokrąglonej krawędzi; cienkie refleksy światła na brzegu i miękki cień pod spodem. Bańka rośnie razem z postępem wczytywania modelu 3D.
 // Wyjście: bańka zamienia się w koło soczewki z Hero (to samo miejsce i promień), a potem
 // tło i zdjęcie gasną — pod spodem jest już ta sama soczewka z modelem.
 //
@@ -98,31 +98,37 @@ void main() {
   vec2 n = normalize(vec2(sdf(p + e.xy) - sdf(p - e.xy), sdf(p + e.yx) - sdf(p - e.yx)) + 1e-5);
 
   float R = mix(uRadius, uLens.z, uMorph);
-  float depth = clamp(-d / (R * 0.45), 0.0, 1.0); // 0 przy krawędzi, 1 głęboko w środku
-  float edge = 1.0 - depth;
-  float bend = pow(edge, 2.4) * (1.0 - uMorph * 0.85); // soczewka z Hero jest płaska
+  float glass = 1.0 - uMorph; // soczewka z Hero jest płaska — efekty szkła gasną przy wyjściu
 
-  // środek lekko powiększony, przy krawędzi obraz mocno zagięty (jak w grubym szkle)
+  // liquid glass: płaski, przezroczysty środek i wąska, zaokrąglona krawędź (fazka), tylko ona załamuje obraz
+  float rimW = R * 0.24;                            // szerokość zaokrąglonej krawędzi
+  float x = clamp(-d / rimW, 0.0, 1.0);             // 0 na samym brzegu, 1 = płaski środek
+  float bevel = pow(1.0 - x, 2.6);                  // nachylenie fazki: stromo przy brzegu, zero w środku
   vec2 c = mix(uCenter, uLens.xy, uMorph);
-  vec2 q = c + (p - c) * mix(0.8, 1.0, uMorph);
-  vec2 refr = q + n * bend * R * 0.75;
-  vec2 ca = n * bend * 7.0; // rozszczepienie kolorów przy krawędzi
+  vec2 q = c + (p - c) * mix(0.94, 1.0, uMorph);    // środek prawie 1:1, minimalnie powiększony
+  vec2 refr = q - n * bevel * rimW * 1.35 * glass;  // przy brzegu obraz zagina się do środka
+  vec2 ca = n * bevel * 3.5 * glass;                // delikatne rozszczepienie kolorów tylko na fazce
 
   vec3 inside;
   if (uHasPhoto > 0.5) {
-    float size = 2.0 * R * 1.25; // kwadrat nieco większy od bańki — zagięty brzeg sięga poza nią
+    float size = 2.0 * R * 1.15;
     inside = vec3(scene(refr + ca, c, size).r, scene(refr, c, size).g, scene(refr - ca, c, size).b);
   } else {
     inside = BG + 0.06;
   }
-  // grubość szkła: ciemniejszy pas przy krawędzi, jasny refleks na samym brzegu i odblask z góry
-  inside *= mix(1.0, 0.62, smoothstep(0.55, 0.92, edge) * (1.0 - uMorph));
-  inside += pow(edge, 7.0) * 0.55 * (1.0 - uMorph * 0.6);
-  float spec = pow(max(dot(n, normalize(vec2(-0.55, -0.85))), 0.0), 6.0) * pow(edge, 3.0);
-  inside += spec * 0.45 * (1.0 - uMorph);
 
-  // na zewnątrz: grafit z delikatną poświatą wokół bańki
-  vec3 outside = BG + 0.045 * exp(-max(d, 0.0) / 28.0) * (1.0 - uMorph);
+  // światło na szkle: dwa refleksy z przeciwnych stron (góra-lewo mocniej, dół-prawo słabiej)
+  float lightA = pow(max(dot(n, normalize(vec2(-0.7, -0.75))), 0.0), 2.0);
+  float lightB = pow(max(dot(n, normalize(vec2(0.7, 0.75))), 0.0), 2.0);
+  float rimLine = smoothstep(2.2, 0.2, -d);         // cienka jasna linia na samym brzegu (~2 px)
+  float sheen = bevel * (0.32 * lightA + 0.14 * lightB); // miękki połysk na fazce
+  inside = mix(inside, vec3(1.0), 0.035 * glass);   // szkło lekko rozjaśnia to, co pod nim
+  inside += (rimLine * (0.22 + 0.75 * lightA + 0.4 * lightB) + sheen) * glass;
+
+  // na zewnątrz: grafit i miękki cień pod szkłem (bańka "unosi się" nad tłem)
+  float ds = sdf(p - vec2(0.0, R * 0.08));
+  float shadow = 0.32 * smoothstep(R * 0.35, -R * 0.1, ds) * glass;
+  vec3 outside = BG * (1.0 - shadow);
 
   float mask = smoothstep(1.0, -1.0, d);
   vec3 col = mix(outside, inside, mask);
