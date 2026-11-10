@@ -7,6 +7,7 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
 import { modelControls, reportModelProgress, reportModelReady } from '../lib/modelControls'
 import { screenHeight } from '../lib/viewport'
 import { createShapeCluster, type ClusterCursor } from './shapeCluster'
+import GlassLens, { type LensState } from './GlassLens'
 import './BackgroundModel.css'
 
 // Eryk.glb = Eryk.dae przekonwertowany i skompresowany (meshopt + tekstury WebP 1024 px)
@@ -183,9 +184,10 @@ type Motion = {
   cut: MutableRefObject<number> // 0 = cały model, 1 = model ucięty do podstawy (zniknął)
   pointer: MutableRefObject<{ x: number; y: number } | null> // kursor w px, null = brak
   layer: RefObject<HTMLDivElement> // tu ustawiamy zmienne CSS soczewki
+  lensState: MutableRefObject<LensState> // soczewka dla szkła (GlassLens)
 }
 
-function Model({ reveal, cut, pointer, layer }: Motion) {
+function Model({ reveal, cut, pointer, layer, lensState }: Motion) {
   const group = useRef<THREE.Group>(null!)
   const { viewport, camera, size, gl } = useThree()
   const loaded = useSubject()
@@ -255,6 +257,8 @@ function Model({ reveal, cut, pointer, layer }: Motion) {
       el.style.setProperty('--lens-fade', `${h}`)
       el.dataset.full = r > 0.999 ? 'true' : 'false'
     }
+    // szklana bańka wokół soczewki (jak w loaderze) gaśnie, gdy koło rośnie na cały ekran
+    Object.assign(lensState.current, { x: lx, y: ly, r: radius, glass: h })
 
     // poza kołem CSS i tak ucina obraz (clip-path) — rysuj tylko prostokąt wokół soczewki
     if (r <= 0.999) {
@@ -381,6 +385,7 @@ export default function BackgroundModel() {
   const reveal = useRef(0)
   const cut = useRef(0)
   const pointer = useRef<{ x: number; y: number } | null>(null)
+  const lensState = useRef<LensState>({ x: 0, y: 0, r: 0, glass: 0 })
   // po zniknięciu modelu (sekcja Realizacje) scena przestaje się renderować
   const [hidden, setHidden] = useState(false)
 
@@ -428,7 +433,8 @@ export default function BackgroundModel() {
 
   return (
     <div ref={layer} className="bg-model" aria-hidden="true">
-      <div className="bg-model__halo" />
+      {/* miękki cień pod szklaną bańką — "unosi się" nad stroną, jak bańka w loaderze */}
+      <div className="bg-model__shadow" />
       <div className="bg-model__lens">
         <div className="bg-model__lens-bg" />
         <div className="bg-model__canvas">
@@ -443,7 +449,8 @@ export default function BackgroundModel() {
             <hemisphereLight args={['#f4f1ea', '#b9b2a6', 0.15]} />
             {/* chłodne światło kontrowe od tyłu — rysuje krawędzie bryły */}
             <directionalLight position={[-5, 4, -6]} intensity={0.9} color="#dfe7f2" />
-            <Model reveal={reveal} cut={cut} pointer={pointer} layer={layer} />
+            <Model reveal={reveal} cut={cut} pointer={pointer} layer={layer} lensState={lensState} />
+            <GlassLens lens={lensState} />
           </Canvas>
         </div>
       </div>
