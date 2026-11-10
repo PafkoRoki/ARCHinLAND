@@ -2,7 +2,6 @@ import { PointerEvent, useEffect, useRef, useState } from 'react'
 import CountUp from '../components/CountUp'
 import ExperienceCounter from '../components/ExperienceCounter'
 import StrokeText from '../components/StrokeText'
-import { projects, srcsetOf } from '../data/realizations'
 import { modelControls } from '../lib/modelControls'
 import { screenHeight } from '../lib/viewport'
 import './Hero.css'
@@ -20,9 +19,10 @@ const ABOUT_END = 1.2
 const LEAD_OUT_START = 1.55
 const LEAD_OUT_END = 2.1
 const DRAG_SPEED = 0.008 // radiany na piksel przeciągnięcia
-// zdjęcie w tle tekstu O nas: realizacja (slug) i numer pliku w jej folderze (1 = 01.jpg;
-// galeria jest posortowana po nazwach plików)
-const ABOUT_PHOTO = projects.find((p) => p.slug === 'baltic-cliff')?.gallery[1 - 1]
+// model a panel O nas (ułamki ich ruchu): model poza ekranem, zanim panel wjedzie na 25% wysokości,
+// i wraca dopiero, gdy panel odjedzie o 60% w górę
+const MODEL_OUT_BY = 0.25
+const MODEL_IN_FROM = 0.6
 
 const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3)
 const easeInOutSine = (t: number) => -(Math.cos(Math.PI * t) - 1) / 2
@@ -55,9 +55,14 @@ export default function Hero() {
       // tekst odjeżdża liniowo (jak zwykłe przewijanie), potem model jest do obracania
       const leadOut = Math.min(1, Math.max(0, (p - LEAD_OUT_START) / (LEAD_OUT_END - LEAD_OUT_START)))
       el.style.setProperty('--lead-out', leadOut.toFixed(4))
-      // model (płótno w BackgroundModel): ucieka w lewo, gdy panel wjeżdża; gdy panel zasłania ekran,
-      // przeskakuje na prawo i wraca za odjeżdżającym panelem. Ułamek szerokości ekranu, ujemny = w lewo.
-      const shift = leadOut > 0 ? 1 - easeOutCubic(leadOut) : -easeInOutSine(enter)
+      // model (płótno w BackgroundModel) znika tylko za krawędzią ekranu, nigdy pod panelem:
+      // ucieka w lewo, zanim górna krawędź wjeżdżającego panelu do niego dojdzie (model stoi
+      // w ~50–75% wysokości ekranu), i wraca z prawej dopiero, gdy dolna krawędź odjeżdżającego
+      // panelu minie go od góry. Ułamek szerokości ekranu, ujemny = w lewo.
+      const shift =
+        leadOut > 0
+          ? 1 - easeOutCubic(Math.max(0, (leadOut - MODEL_IN_FROM) / (1 - MODEL_IN_FROM)))
+          : -easeInOutSine(Math.min(1, enter / MODEL_OUT_BY))
       document.documentElement.style.setProperty('--model-shift', shift.toFixed(4))
       el.style.setProperty('--model', smoothstep(LEAD_OUT_END - 0.1, LEAD_OUT_END + 0.2, p).toFixed(3))
       el.dataset.model = leadOut > 0.9 ? 'on' : 'off'
@@ -163,16 +168,6 @@ export default function Hero() {
       {/* tekst O nas na cały ekran, NAD modelem; po przeczytaniu odjeżdża w górę */}
       <div className="hero__layer hero__layer--about">
         <div className="hero__panel">
-          {ABOUT_PHOTO && (
-            <img
-              className="hero__panel-photo"
-              src={ABOUT_PHOTO}
-              srcSet={srcsetOf(ABOUT_PHOTO) || undefined}
-              sizes="100vw"
-              alt=""
-              decoding="async"
-            />
-          )}
           <div className="container hero__about">
             <h2 className="visually-hidden">O nas</h2>
 
