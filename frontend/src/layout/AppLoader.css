@@ -7,19 +7,73 @@
   z-index: 9999;
 }
 
-/* StrokeText brand na dole loadera */
+/* napis ARCHinLAND na środku planszy, wypełniany falą (LoaderLiquidText) */
 .app-loader__brand {
   position: fixed;
   left: 50%;
-  bottom: 56px;
-  transform: translateX(-50%);
+  top: 50%;
+  transform: translate(-50%, -50%);
   z-index: 10000;
-  width: min(400px, calc(100vw - 48px));
+  width: min(880px, calc(100% - 32px));
+  transition: opacity 0.45s ease-out;
 }
 
-.loader-stroke-text {
+/* odsłanianie strony: napis gaśnie, zanim zejdzie plansza */
+.app-loader__brand--out {
+  opacity: 0;
+}
+
+.loader-liquid-text {
   display: block;
   width: 100%;
   height: auto;
 }
 
+/* poziom cieczy dojeżdża płynnie do kolejnych wartości postępu */
+.loader-liquid-text__level {
+  transition: transform 0.6s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+/* fala przesuwa się w poziomie o jedną długość — pętla bez szwu */
+.loader-liquid-text__wave {
+  animation: loader-wave 1.6s linear infinite;
+}
+
+.loader-liquid-text__wave--back {
+  animation-duration: 2.4s;
+  animation-direction: reverse;
+}
+
+@keyframes loader-wave {
+  to {
+    transform: translateX(calc(-1 * var(--wave-length)));
+  }
+}
+
+/* "Wczytywanie… 42%" pod prawym końcem napisu */
+.app-loader__percent {
+  margin: 8px 0 0;
+  text-align: right;
+  font-family: var(--font-body);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #f0f0f0;
+}
+
+.app-loader__percent span {
+  display: inline-block;
+  min-width: 4ch;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader-liquid-text__wave {
+    animation: none;
+  }
+
+  .loader-liquid-text__level {
+    transition: none;
+  }
+}

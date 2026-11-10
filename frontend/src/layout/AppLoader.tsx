@@ -8,7 +8,7 @@ import {
 } from 'react'
 import { gsap } from 'gsap'
 import { modelReady, onModelProgress } from '../lib/modelControls'
-import LoaderStrokeText from './LoaderStrokeText'
+import LoaderLiquidText from './LoaderLiquidText'
 import './AppLoader.css'
 
 const NUM_POINTS = 5
@@ -258,18 +258,14 @@ function AppLoader() {
         onStart={handleStart}
         onComplete={handleComplete}
       />
-      {/* StrokeText na dole - rysuje się proporcjonalnie do ładowania */}
-      {showStatus && isWaiting && (
-        <div className="app-loader__brand">
-          <LoaderStrokeText
-            text="ARCHinLAND"
-            progress={progress}
-            strokeColor="#ffffff"
-            fillColor="#ffffff"
-            strokeWidth={1.5}
-            fontSize={48}
-            fontWeight={800}
-          />
+      {/* napis ARCHinLAND na środku wypełnia się od dołu falą w miarę wczytywania modelu;
+          przy odsłonięciu strony gaśnie (klasa --out), a plansza schodzi falą jak dotąd */}
+      {showStatus && (
+        <div className={`app-loader__brand${isWaiting ? '' : ' app-loader__brand--out'}`}>
+          <LoaderLiquidText text="ARCHinLAND" progress={progress} />
+          <p className="app-loader__percent" aria-hidden="true">
+            Wczytywanie… <span>{Math.round(progress * 100)}%</span>
+          </p>
         </div>
       )}
     </div>
