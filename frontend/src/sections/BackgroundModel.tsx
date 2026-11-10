@@ -6,10 +6,13 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import { modelControls, reportModelProgress, reportModelReady } from '../lib/modelControls'
 import { screenHeight } from '../lib/viewport'
+import { createShapeCluster } from './shapeCluster'
 import './BackgroundModel.css'
 
 // Eryk.glb = Eryk.dae przekonwertowany i skompresowany (meshopt + tekstury WebP 1024 px)
 const MODEL_URL = '/models/Eryk.glb'
+// na razie zamiast domu gromada kul (shapeCluster.ts) — false przywraca Eryk.glb
+const USE_SHAPE = true
 const TARGET = 4.6 // najdłuższy bok modelu w jednostkach sceny
 const MODEL_SCALE = 0.62 // ogólny rozmiar modelu na ekranie
 // telefon (ekran pionowy): model po rozszerzeniu koła niżej (ułamek wysokości ekranu) i nieco mniejszy
@@ -43,7 +46,8 @@ const MAX_DPR =
 
 const { lerp, clamp, smoothstep } = THREE.MathUtils
 
-type Loaded = { obj: THREE.Object3D; height: number }
+// tick = animacja obiektu (gromada kul), wołana w każdej klatce
+type Loaded = { obj: THREE.Object3D; height: number; tick?: (t: number) => void }
 
 // Materiały z modelu mają roughness 1 i zero metalu (wyglądają jak papier).
 // Stroimy je po nazwie; env = względna siła odbić otoczenia (RoomEnvironment w <Reflections />).
@@ -159,6 +163,19 @@ function useModel(url: string) {
   return loaded
 }
 
+// gromada kul: gotowa od razu, bez pobierania pliku
+function useShape(): Loaded {
+  const [shape] = useState(createShapeCluster)
+  useEffect(() => {
+    const t = setTimeout(reportModelReady, 300) // jak w useModel: zapas, gdy scena nie rysuje klatek
+    return () => clearTimeout(t)
+  }, [])
+  return shape
+}
+
+// stała na poziomie modułu, więc kolejność hooków się nie zmienia
+const useSubject = USE_SHAPE ? useShape : () => useModel(MODEL_URL)
+
 const lensRadius = (w: number) => Math.min(LENS_RADIUS, w * 0.32)
 
 type Motion = {
@@ -171,7 +188,7 @@ type Motion = {
 function Model({ reveal, cut, pointer, layer }: Motion) {
   const group = useRef<THREE.Group>(null!)
   const { viewport, camera, size, gl } = useThree()
-  const loaded = useModel(MODEL_URL)
+  const loaded = useSubject()
   // płaszczyzna cięcia w układzie świata: widać tylko to, co leży poniżej jej wysokości (constant)
   const cutPlane = useRef(new THREE.Plane(new THREE.Vector3(0, -1, 0), 1e6))
   const ground = useRef<THREE.ShadowMaterial>(null!)
@@ -207,6 +224,8 @@ function Model({ reveal, cut, pointer, layer }: Motion) {
       announced.current = true
       requestAnimationFrame(() => reportModelReady()) // po narysowaniu tej klatki
     }
+
+    loaded?.tick?.(state.clock.elapsedTime)
 
     const g = group.current
     const r = reveal.current
