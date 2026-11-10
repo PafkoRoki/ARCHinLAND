@@ -150,9 +150,12 @@ textarea {
   font-family: inherit;
 }
 
+/* fokus z klawiatury: grafitowa ramka z białą obwódką — widoczna na jasnym i na grafitowym tle
+   (sama pomarańczowa ramka na #f0f0f0 miała kontrast 2,5:1, potrzeba 3:1) */
 :focus-visible {
-  outline: 2px solid var(--orange);
+  outline: 2px solid var(--black);
   outline-offset: 3px;
+  box-shadow: 0 0 0 3px var(--white);
 }
 
 .visually-hidden {

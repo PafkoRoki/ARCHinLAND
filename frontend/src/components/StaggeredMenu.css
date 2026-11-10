@@ -79,10 +79,7 @@
   color: var(--white) !important;
 }
 
-.sm-toggle:focus-visible {
-  outline: 2px solid var(--orange);
-  outline-offset: 3px;
-}
+/* .sm-toggle:focus-visible — ramka z globals.css (grafit + biała obwódka), jak każdy przycisk */
 
 .sm-line:last-of-type {
   margin-top: 6px;
@@ -353,5 +350,12 @@
     left: 0;
     right: 0;
     border-left: 0; /* panel na całą szerokość — brak lewej krawędzi */
+  }
+}
+
+/* telefon: przycisk MENU co najmniej 44 px wysokości (palec) */
+@media (max-width: 768px) {
+  .sm-toggle {
+    min-height: 44px;
   }
 }

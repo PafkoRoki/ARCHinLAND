@@ -190,7 +190,10 @@ const AnimatedLink = ({
             {/* numer telefonu zostaje czytelny — mieszanie znaków tylko na pozostałych linkach */}
             {href.startsWith('tel:') ? textContent : <DecryptText text={textContent} isDecrypting={isHovered} />}
           </ShinyText>
-        ) : children}
+        ) : (
+          // ikona: nazwę czyta czytnik z aria-label linku, sam rysunek jest ukryty
+          <span aria-hidden={ariaLabel ? true : undefined} className="flex">{children}</span>
+        )}
       </Link>
     </motion.div>
   );
@@ -224,9 +227,10 @@ const AnimatedIconLink = ({
       <Link
         href={href}
         aria-label={ariaLabel}
-        className="text-white hover:text-[var(--orange)] transition-colors z-10 relative"
+        // link wypełnia cały kafelek (na telefonie ~1/2 szerokości), nie tylko ikonę 32 px
+        className="text-white hover:text-[var(--orange)] transition-colors z-10 relative self-stretch w-full flex items-center justify-center"
       >
-        {icon}
+        <span aria-hidden="true" className="flex">{icon}</span>
       </Link>
     </motion.div>
   );

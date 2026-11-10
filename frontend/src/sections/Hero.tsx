@@ -2,7 +2,7 @@ import { PointerEvent, useEffect, useRef, useState } from 'react'
 import CountUp from '../components/CountUp'
 import ExperienceCounter from '../components/ExperienceCounter'
 import StrokeText from '../components/StrokeText'
-import { projects } from '../data/realizations'
+import { projects, srcsetOf } from '../data/realizations'
 import { modelControls } from '../lib/modelControls'
 import { screenHeight } from '../lib/viewport'
 import './Hero.css'
@@ -151,7 +151,16 @@ export default function Hero() {
       {/* tekst O nas na cały ekran, NAD modelem; po przeczytaniu odjeżdża w górę */}
       <div className="hero__layer hero__layer--about">
         <div className="hero__panel">
-          {ABOUT_PHOTO && <img className="hero__panel-photo" src={ABOUT_PHOTO} alt="" decoding="async" />}
+          {ABOUT_PHOTO && (
+            <img
+              className="hero__panel-photo"
+              src={ABOUT_PHOTO}
+              srcSet={srcsetOf(ABOUT_PHOTO) || undefined}
+              sizes="100vw"
+              alt=""
+              decoding="async"
+            />
+          )}
           <div className="container hero__about">
             <h2 className="visually-hidden">O nas</h2>
 

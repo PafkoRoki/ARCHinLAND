@@ -8,6 +8,18 @@ const photoFiles = import.meta.glob<string>('../assets/realizacje/*/*.{jpg,jpeg,
   import: 'default',
 })
 
+// Te same zdjęcia w mniejszych wersjach WebP (vite-imagetools, przy budowaniu) — do srcset, żeby telefon
+// nie pobierał zdjęcia 2000 px do ramki 350 px. Oryginał zostaje jako src (zapas, SEO, podgląd linków).
+const photoSrcsets = import.meta.glob<string>('../assets/realizacje/*/*.{jpg,jpeg,png,webp}', {
+  eager: true,
+  import: 'default',
+  query: { w: '480;800;1200;1600', format: 'webp', withoutEnlargement: true, as: 'srcset' },
+})
+const srcsetByUrl = new Map(Object.keys(photoFiles).map((file) => [photoFiles[file], photoSrcsets[file]]))
+
+/** srcset (mniejsze wersje WebP) dla adresu zdjęcia z `image` / `gallery`; pusty, gdy go nie ma. */
+export const srcsetOf = (src: string) => srcsetByUrl.get(src) ?? ''
+
 // zdjęcie z `cover` idzie na początek, reszta według nazw plików
 const photosOf = (slug: string, cover?: string) =>
   Object.keys(photoFiles)

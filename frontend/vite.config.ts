@@ -3,6 +3,7 @@ import path from "path"
 import { defineConfig, type Plugin } from "vite"
 import react from "@vitejs/plugin-react"
 import tailwindcss from "@tailwindcss/vite"
+import { imagetools } from "vite-imagetools"
 
 // Eksport ze SketchUpa (Eryk.dae + folder tekstur) leży w public/models obok Eryk.glb, ale strona
 // wczytuje tylko .glb. Bez tego Vite kopiowałby źródła do dist, a Cloudflare Pages odrzuca pliki
@@ -23,7 +24,8 @@ function dropModelSources(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), dropModelSources()],
+  // imagetools: zmniejszone wersje zdjęć realizacji (srcset) — patrz src/data/realizations.ts
+  plugins: [react(), tailwindcss(), imagetools(), dropModelSources()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

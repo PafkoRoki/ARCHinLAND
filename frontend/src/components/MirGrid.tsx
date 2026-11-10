@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import type { Project } from '../data/realizations'
+import { srcsetOf, type Project } from '../data/realizations'
 import './MirGrid.css'
 
 interface MirGridProps {
@@ -25,6 +25,9 @@ export default function MirGrid({ projects }: MirGridProps) {
             <div className="mir-grid__image-wrap">
               <img
                 src={project.image}
+                srcSet={srcsetOf(project.image) || undefined}
+                // duży kafelek: dwie kolumny (cała szerokość), zwykły: jedna; telefon: jedna kolumna
+                sizes={isLarge ? '(max-width: 768px) 100vw, 92vw' : '(max-width: 768px) 100vw, 46vw'}
                 alt={`${project.displayName ?? project.name} — ${project.category}, ${project.location}`}
                 className="mir-grid__image"
                 loading="lazy"
