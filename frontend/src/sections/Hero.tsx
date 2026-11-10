@@ -9,19 +9,23 @@ import './Hero.css'
 
 // Przypięta scena jak w STILL (odległości w wysokościach ekranu, liczone od góry strony):
 //   0 → 0.8   koło z modelem rozszerza się do pełnego ekranu (BackgroundModel, REVEAL_DISTANCE)
-//   0.8 → 1.1    pojawia się tekst O nas na cały ekran (czas na czytanie do 1.55)
-//   1.55 → 2.1   tekst odjeżdża w górę jak kartka i odsłania model
+//   0.8 → 1.2    panel O nas wjeżdża z dołu (jak kolejna strona), model ucieka w lewo
+//   1.2 → 1.55   panel zasłania cały ekran — czas na czytanie; model przeskakuje (niewidocznie) na prawo
+//   1.55 → 2.1   panel odjeżdża w górę, a model wraca za nim z prawej na środek
 //   od 2.1       model można obracać myszką / palcem; od 2.1 do 2.9 tnie go płaszczyzna (CUT_DISTANCE)
 //   do 3.9    scena stoi w miejscu (--hero-pin w Hero.css), potem wjeżdżają Realizacje
 // Długość sceny = 1 ekran + PIN_LENGTH — ustawiona w Hero.css (--hero-pin).
 const ABOUT_START = 0.8
-const ABOUT_END = 1.1
+const ABOUT_END = 1.2
 const LEAD_OUT_START = 1.55
 const LEAD_OUT_END = 2.1
 const DRAG_SPEED = 0.008 // radiany na piksel przeciągnięcia
 // zdjęcie w tle tekstu O nas: realizacja (slug) i numer pliku w jej folderze (1 = 01.jpg;
 // galeria jest posortowana po nazwach plików)
 const ABOUT_PHOTO = projects.find((p) => p.slug === 'baltic-cliff')?.gallery[1 - 1]
+
+const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3)
+const easeInOutSine = (t: number) => -(Math.cos(Math.PI * t) - 1) / 2
 
 const smoothstep = (a: number, b: number, x: number) => {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)))
@@ -44,10 +48,17 @@ export default function Hero() {
       const p = window.scrollY / vh
       const about = smoothstep(ABOUT_START, ABOUT_END, p)
       el.style.setProperty('--about', about.toFixed(3))
+      // wjazd panelu liniowo z przewijaniem — wygląda jak zwykłe przewinięcie strony
+      const enter = Math.min(1, Math.max(0, (p - ABOUT_START) / (ABOUT_END - ABOUT_START)))
+      el.style.setProperty('--enter', enter.toFixed(4))
       if (about > 0.6) setAboutOn(true)
       // tekst odjeżdża liniowo (jak zwykłe przewijanie), potem model jest do obracania
       const leadOut = Math.min(1, Math.max(0, (p - LEAD_OUT_START) / (LEAD_OUT_END - LEAD_OUT_START)))
       el.style.setProperty('--lead-out', leadOut.toFixed(4))
+      // model (płótno w BackgroundModel): ucieka w lewo, gdy panel wjeżdża; gdy panel zasłania ekran,
+      // przeskakuje na prawo i wraca za odjeżdżającym panelem. Ułamek szerokości ekranu, ujemny = w lewo.
+      const shift = leadOut > 0 ? 1 - easeOutCubic(leadOut) : -easeInOutSine(enter)
+      document.documentElement.style.setProperty('--model-shift', shift.toFixed(4))
       el.style.setProperty('--model', smoothstep(LEAD_OUT_END - 0.1, LEAD_OUT_END + 0.2, p).toFixed(3))
       el.dataset.model = leadOut > 0.9 ? 'on' : 'off'
       // podpowiedź przewijania znika przy pierwszym ruchu
@@ -68,6 +79,7 @@ export default function Hero() {
     return () => {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onScroll)
+      document.documentElement.style.removeProperty('--model-shift')
     }
   }, [])
 

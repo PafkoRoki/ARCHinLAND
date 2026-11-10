@@ -3,6 +3,7 @@
 .hero {
   --hero-pin: 290svh;
   --about: 0;
+  --enter: 0;
   --lead-out: 0;
   --model: 0;
 
@@ -14,7 +15,7 @@
 /* kotwica "O nas": przewinięcie tutaj pokazuje scenę z widocznym tekstem */
 .hero__anchor {
   position: absolute;
-  top: 115svh;
+  top: 125svh;
   left: 0;
 }
 
@@ -211,22 +212,24 @@
   font-weight: 800;
 }
 
-/* panel O nas: cały ekran, półprzezroczyste tło z rozmyciem — model widać, tekst czytelny.
-   Pojawia się z --about, potem odjeżdża w górę jak kartka (--lead-out) i odsłania model. */
+/* panel O nas: cały ekran, wjeżdża z dołu jak kolejna strona (--enter), a po przeczytaniu
+   odjeżdża w górę (--lead-out) i odsłania model, który wraca za nim z boku (--model-shift). */
 .hero__panel {
   position: relative;
   display: flex;
   align-items: center;
   height: 100%;
+  transform: translateY(calc((1 - var(--enter)) * 100% - var(--lead-out) * 100%));
+  will-change: transform;
+  background: var(--bg); /* pełne krycie także zanim wczyta się zdjęcie (jasna warstwa ma 80%) */
 }
 
-/* tło stoi w miejscu: zdjęcie realizacji + jasna warstwa dla czytelności tekstu.
-   Rozjaśnia się z --about i tak samo płynnie gaśnie z --lead-out, odsłaniając model. */
+/* tło jedzie razem z panelem: zdjęcie realizacji + jasna warstwa dla czytelności tekstu.
+   Nieprzezroczyste — zasłania przeskok modelu z lewej na prawą stronę. */
 .hero__panel-photo,
 .hero__panel::before {
   position: absolute;
   inset: 0;
-  opacity: calc(var(--about) * (1 - var(--lead-out)));
 }
 
 .hero__panel-photo {
@@ -257,9 +260,7 @@
   width: 100%;
   padding-block: 80px;
   color: var(--black);
-  opacity: var(--about);
-  transform: translateY(calc((1 - var(--about)) * 24px - var(--lead-out) * 100svh));
-  will-change: transform;
+  /* tekst jedzie razem z panelem (transform na .hero__panel) */
 }
 
 /* ===== NAGŁÓWEK SEKCJI ===== */

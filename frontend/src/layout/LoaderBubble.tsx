@@ -19,9 +19,12 @@ const PHOTO_ASPECT = 1024 / 768
 const PHOTO_EVERY = 0.65 // s — jak często zmienia się zdjęcie w bańce
 const PHOTO_FADE = 0.12 // s — krótkie przenikanie między zdjęciami
 const CENTER = { x: 0.5, y: 0.45 } // środek bańki (ułamek ekranu); napis stoi w tym samym miejscu
+// Wyjście w dwóch łagodnych etapach (bez błysku: wcześniej cały ekran przeskakiwał z grafitu na jasne tło w ~0,2 s):
 const MORPH_S = 0.9 // s — bańka → koło soczewki
-const FADE_DELAY_S = 0.6 // s od początku wyjścia
-const FADE_S = 0.7 // s — gaśnięcie tła i zdjęcia
+const OUT_START_S = 0.35 // tło wokół koła płynnie jaśnieje do koloru strony i jednocześnie znika…
+const OUT_S = 1.0
+const IN_START_S = 0.8 // …a dopiero potem zdjęcie w kole przenika w model z soczewki
+const IN_S = 0.75
 
 // soczewka z Hero (BackgroundModel): LENS_REST i lensRadius — gdyby zmienne CSS nie były jeszcze ustawione
 const LENS_REST = { x: 0.5, y: 0.42 }
@@ -44,7 +47,8 @@ uniform vec2 uCenter;   // px CSS, od lewego górnego rogu
 uniform float uRadius;  // px CSS
 uniform vec3 uLens;     // x, y, r soczewki z Hero (px CSS)
 uniform float uMorph;   // 0 = bańka, 1 = koło soczewki
-uniform float uFade;    // 0 = widoczne, 1 = przezroczyste
+uniform float uOutFade; // tło: 0 = grafit, 1 = kolor strony i przezroczyste
+uniform float uInFade;  // wnętrze koła: 0 = zdjęcie, 1 = przezroczyste (widać soczewkę z modelem)
 uniform sampler2D uPhotoA;
 uniform sampler2D uPhotoB;
 uniform float uMix;     // przenikanie A → B
@@ -52,6 +56,7 @@ uniform float uHasPhoto;
 uniform float uPhotoAspect;
 
 const vec3 BG = vec3(0.1765); // #2d2d2d — kolor planszy i stopki
+const vec3 PAGE = vec3(0.9412); // #f0f0f0 — tło strony pod loaderem
 
 float smin(float a, float b, float k) {
   float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0);
@@ -128,15 +133,16 @@ void main() {
   // na zewnątrz: grafit i miękki cień pod szkłem (bańka "unosi się" nad tłem)
   float ds = sdf(p - vec2(0.0, R * 0.08));
   float shadow = 0.32 * smoothstep(R * 0.35, -R * 0.1, ds) * glass;
-  vec3 outside = BG * (1.0 - shadow);
+  vec3 outside = mix(BG * (1.0 - shadow), PAGE, uOutFade);
 
   float mask = smoothstep(1.0, -1.0, d);
   vec3 col = mix(outside, inside, mask);
-  gl_FragColor = vec4(col, 1.0 - uFade);
+  // przezroczystość osobno dla tła i wnętrza koła — jasność ekranu rośnie równo, bez skoku
+  float alpha = mix(1.0 - uOutFade, 1.0 - uInFade, mask);
+  gl_FragColor = vec4(col, alpha);
 }
 `
 
-const ease = (t: number) => (t <= 0 ? 0 : t >= 1 ? 1 : 1 - Math.pow(1 - t, 3))
 const easeInOut = (t: number) => (t <= 0 ? 0 : t >= 1 ? 1 : t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2)
 
 /** Czy przeglądarka ma WebGL (bez niego AppLoader zostaje przy wersji z falą). */
@@ -234,7 +240,8 @@ export default function LoaderBubble({ progress, exiting, onExited, onFail }: Pr
         uRadius: { value: 100 },
         uLens: { value: [0, 0, 100] },
         uMorph: { value: 0 },
-        uFade: { value: 0 },
+        uOutFade: { value: 0 },
+        uInFade: { value: 0 },
         uPhotoA: { value: blank },
         uPhotoB: { value: blank },
         uMix: { value: 0 },
@@ -272,7 +279,8 @@ export default function LoaderBubble({ progress, exiting, onExited, onFail }: Pr
       u.uRadius.value = base * (0.22 + 0.12 * shown)
 
       // zdjęcia: co PHOTO_EVERY s następne, z krótkim przenikaniem
-      if (textures.length) {
+      // przy wyjściu zdjęcie stoi (zmiana zdjęcia w trakcie przenikania w model migała)
+      if (textures.length && !exitingRef.current) {
         const step = t / PHOTO_EVERY
         const i = Math.floor(step)
         const into = (step - i) * PHOTO_EVERY
@@ -287,12 +295,16 @@ export default function LoaderBubble({ progress, exiting, onExited, onFail }: Pr
         if (exitStart < 0) {
           exitStart = t
           lens = heroLens(w, h)
+          // zdjęcia stają: przenikanie w toku dociągnięte do bliższego zdjęcia (bez zamrożonej mieszanki dwóch)
+          if (u.uMix.value > 0.5) u.uPhotoA.value = u.uPhotoB.value
+          u.uMix.value = 0
         }
         const e = t - exitStart
         u.uLens.value = lens!
         u.uMorph.value = easeInOut(e / MORPH_S)
-        u.uFade.value = ease((e - FADE_DELAY_S) / FADE_S)
-        if (e >= FADE_DELAY_S + FADE_S && !done) {
+        u.uOutFade.value = easeInOut((e - OUT_START_S) / OUT_S)
+        u.uInFade.value = easeInOut((e - IN_START_S) / IN_S)
+        if (e >= Math.max(OUT_START_S + OUT_S, IN_START_S + IN_S) && !done) {
           done = true
           callbacks.current.onExited()
           return
