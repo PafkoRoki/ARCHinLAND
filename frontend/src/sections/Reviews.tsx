@@ -152,7 +152,7 @@ export default function Reviews() {
           {hasReviews ? (
             <span className="reviews__count" aria-live="polite">
               {first + 1}
-              {last > first + 1 ? `–${last}` : ''} / {reviews.length}
+              {last > first + 1 ? `-${last}` : ''} / {reviews.length}
             </span>
           ) : (
             <span />

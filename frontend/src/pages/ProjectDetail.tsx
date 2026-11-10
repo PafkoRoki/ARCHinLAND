@@ -225,7 +225,7 @@ export function ProjectDetail({ projects }: ProjectDetailProps) {
             {images.length > 0 ? (
               <img
                 src={images[activeImage]}
-                alt={`${project.name} — ${TAB_LABELS[activeTab]}`}
+                alt={`${project.name}, ${TAB_LABELS[activeTab]}`}
               />
             ) : (
               <div className="projectDetail__noImage">
@@ -316,7 +316,7 @@ export function ProjectDetail({ projects }: ProjectDetailProps) {
                     {floor.plan ? (
                       <ZoomImage
                         src={floor.plan}
-                        alt={`${project.name} — ${floor.name}`}
+                        alt={`${project.name}, ${floor.name}`}
                         className="projectDetail__floorPlan"
                         onOpen={setLightbox}
                       />
@@ -355,7 +355,7 @@ export function ProjectDetail({ projects }: ProjectDetailProps) {
                     <ZoomImage
                       key={src}
                       src={src}
-                      alt={`${project.name} — rzut ${index + 1}`}
+                      alt={`${project.name}, rzut ${index + 1}`}
                       className="projectDetail__floorPlan"
                       onOpen={setLightbox}
                     />
@@ -400,7 +400,7 @@ export function ProjectDetail({ projects }: ProjectDetailProps) {
               {project.plotImage ? (
                 <ZoomImage
                   src={project.plotImage}
-                  alt={`${project.name} — działka`}
+                  alt={`${project.name}, działka`}
                   className="projectDetail__plotImage"
                   onOpen={setLightbox}
                 />
@@ -430,7 +430,7 @@ export function ProjectDetail({ projects }: ProjectDetailProps) {
                     <ZoomImage
                       key={src}
                       src={src}
-                      alt={`${project.name} — elewacja ${index + 1}`}
+                      alt={`${project.name}, elewacja ${index + 1}`}
                       className="projectDetail__elevation"
                       onOpen={setLightbox}
                     />
@@ -450,7 +450,7 @@ export function ProjectDetail({ projects }: ProjectDetailProps) {
             <h2 className="projectDetail__title">Model 3D</h2>
             <div className="projectDetail__model3dFrame">
               <iframe
-                title={`Model 3D — ${project.name}`}
+                title={`Model 3D: ${project.name}`}
                 src={project.sketchfabUrl}
                 frameBorder="0"
                 allow="autoplay; fullscreen; xr-spatial-tracking"

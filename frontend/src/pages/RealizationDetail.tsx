@@ -56,7 +56,7 @@ export default function RealizationDetail() {
             src={src}
             srcSet={srcsetOf(src) || undefined}
             sizes="(min-width: 1500px) 1400px, 100vw"
-            alt={`${project.name} — zdjęcie ${i + 1} z ${images.length}, ${project.location}`}
+            alt={`${project.name}, zdjęcie ${i + 1} z ${images.length}, ${project.location}`}
             loading={i === 0 ? 'eager' : 'lazy'}
             decoding="async"
           />

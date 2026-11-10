@@ -29,7 +29,7 @@ export default function MirGrid({ projects }: MirGridProps) {
                 srcSet={srcsetOf(project.image) || undefined}
                 // duży kafelek: dwie kolumny (cała szerokość), zwykły: jedna; telefon: jedna kolumna
                 sizes={isLarge ? '(max-width: 768px) 100vw, 92vw' : '(max-width: 768px) 100vw, 46vw'}
-                alt={`${project.displayName ?? project.name} — ${project.category}, ${project.location}`}
+                alt={`${project.displayName ?? project.name}, ${project.category}, ${project.location}`}
                 className="mir-grid__image"
                 loading="lazy"
               />

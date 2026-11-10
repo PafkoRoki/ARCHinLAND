@@ -12,7 +12,7 @@ export default function Contact() {
 
         <div className="contact__lead">
           <p className="contact__intro">
-            Zadzwoń albo napisz — porozmawiamy o działce i o tym, co chcesz na niej zbudować.
+            Zadzwoń albo napisz, porozmawiamy o działce i o tym, co chcesz na niej zbudować.
           </p>
           <a className="contact__phone" href="tel:+48790820114">
             790 820 114

@@ -181,8 +181,8 @@ export function ProjectCatalog({
             Pow. użytkowa
           </option>
           <option value="do-100">do 100 m²</option>
-          <option value="100-150">100–150 m²</option>
-          <option value="150-200">150–200 m²</option>
+          <option value="100-150">100-150 m²</option>
+          <option value="150-200">150-200 m²</option>
           <option value="200-plus">powyżej 200 m²</option>
         </select>
 

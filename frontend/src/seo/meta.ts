@@ -48,7 +48,7 @@ export const realizationPath = (p: Project) => `/realizacje/${p.slug}`
 export function realizationMeta(p: Project): PageMeta {
   const name = nameOf(p)
   const place = placeOf(p)
-  const where = place ? ` — ${place}` : ''
+  const where = place ? `, ${place}` : ''
   const year = p.year ? ` (${p.year})` : ''
   const path = realizationPath(p)
   const url = SITE_URL + path
@@ -58,13 +58,13 @@ export function realizationMeta(p: Project): PageMeta {
   const description =
     p.description?.trim() ||
     `${name}: ${p.category.toLowerCase()}${place ? ` w miejscowości ${place}` : ''}${p.year ? `, ${p.year}` : ''}. ` +
-      `Realizacja biura architektonicznego ARCHinLAND — Andrzej Kurka, Kamień Pomorski.`
+      `Realizacja biura architektonicznego ARCHinLAND, Andrzej Kurka, Kamień Pomorski.`
 
-  const imageAlt = `${name} — ${p.category}${place ? `, ${place}` : ''}`
+  const imageAlt = `${name}, ${p.category}${place ? `, ${place}` : ''}`
 
   return {
     path,
-    title: `${name}${where} — ${p.category}${year} | ${SITE_NAME}`,
+    title: `${name}${where} | ${p.category}${year} | ${SITE_NAME}`,
     description,
     image: images[0] ?? DEFAULT_IMAGE,
     imageAlt,
@@ -99,7 +99,7 @@ export function realizationMeta(p: Project): PageMeta {
   <h1>${escapeHtml(name)}</h1>
   <p>${escapeHtml(p.category)}${place ? ` · ${escapeHtml(place)}` : ''}${p.year ? ` · ${p.year}` : ''}</p>
   <p>${escapeHtml(description)}</p>
-  ${p.gallery.map((src, i) => `<img src="${src}" alt="${escapeHtml(imageAlt)}${i ? ` — zdjęcie ${i + 1}` : ''}" width="2000" loading="lazy">`).join('\n  ')}
+  ${p.gallery.map((src, i) => `<img src="${src}" alt="${escapeHtml(imageAlt)}${i ? `, zdjęcie ${i + 1}` : ''}" width="2000" loading="lazy">`).join('\n  ')}
   <nav><h2>Inne realizacje</h2><ul>${projects
     .filter((o) => o.slug !== p.slug)
     .map((o) => `<li><a href="${realizationPath(o)}">${escapeHtml(nameOf(o))}</a></li>`)
@@ -114,7 +114,7 @@ const featuredImages = () =>
     const place = placeOf(p)
     return {
       url: absolute(p.image),
-      alt: `ARCHinLAND — ${nameOf(p)}, ${p.category.toLowerCase()}${place ? `, ${place}` : ''}`,
+      alt: `ARCHinLAND: ${nameOf(p)}, ${p.category.toLowerCase()}${place ? `, ${place}` : ''}`,
     }
   })
 
@@ -122,12 +122,12 @@ export function homeMeta(): PageMeta {
   const featured = featuredImages()
   return {
     path: '/',
-    title: 'ARCHinLAND — Architecture in Land Development | Andrzej Kurka, Kamień Pomorski',
+    title: 'ARCHinLAND: Architecture in Land Development | Andrzej Kurka, Kamień Pomorski',
     description:
-      'ARCHinLAND (Architecture in Land Development) — biuro architektoniczne Andrzeja Kurki w Kamieniu Pomorskim. ' +
+      'ARCHinLAND (Architecture in Land Development), biuro architektoniczne Andrzeja Kurki w Kamieniu Pomorskim. ' +
       '35 lat doświadczenia: osiedla, budynki wielorodzinne i jednorodzinne, apartamentowce, hotele i obiekty użyteczności publicznej.',
     image: DEFAULT_IMAGE,
-    imageAlt: 'ARCHinLAND — biuro architektoniczne',
+    imageAlt: 'ARCHinLAND, biuro architektoniczne',
     images: [DEFAULT_IMAGE, ...featured.map((f) => f.url)],
     // dane firmy są na stałe w index.html; tu strona główna i jej zdjęcia
     jsonLd: [
@@ -136,7 +136,7 @@ export function homeMeta(): PageMeta {
         '@type': 'WebPage',
         '@id': `${SITE_URL}/#webpage`,
         url: `${SITE_URL}/`,
-        name: 'ARCHinLAND — Architecture in Land Development, biuro architektoniczne Andrzeja Kurki',
+        name: 'ARCHinLAND: Architecture in Land Development, biuro architektoniczne Andrzeja Kurki',
         about: { '@id': ORG_ID },
         primaryImageOfPage: DEFAULT_IMAGE,
         image: featured.map((f) => ({
@@ -149,11 +149,11 @@ export function homeMeta(): PageMeta {
       },
     ],
     bodyHtml: `<main>
-  <h1>ARCHinLAND — Architecture in Land Development</h1>
+  <h1>ARCHinLAND: Architecture in Land Development</h1>
   <p>Biuro architektoniczne Andrzeja Kurki, Kamień Pomorski. 35 lat doświadczenia, 180 000 m² zaprojektowanych powierzchni.
   Pełnobranżowe projekty: architektura, konstrukcje, instalacje sanitarne i elektryczne.</p>
   <nav><h2>Realizacje</h2><ul>${projects
-    .map((p) => `<li><a href="${realizationPath(p)}">${escapeHtml(nameOf(p))} — ${escapeHtml(p.category)}${placeOf(p) ? `, ${escapeHtml(placeOf(p))}` : ''}</a></li>`)
+    .map((p) => `<li><a href="${realizationPath(p)}">${escapeHtml(nameOf(p))}, ${escapeHtml(p.category)}${placeOf(p) ? `, ${escapeHtml(placeOf(p))}` : ''}</a></li>`)
     .join('')}</ul></nav>
 </main>`,
   }
