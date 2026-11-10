@@ -104,7 +104,9 @@ void main() {
   vec2 n = normalize(vec2(sdf(p + e.xy) - sdf(p - e.xy), sdf(p + e.yx) - sdf(p - e.yx)) + 1e-5);
 
   float R = mix(uRadius, uLens.z, uMorph);
-  float glass = 1.0 - uMorph; // soczewka z Hero jest płaska — efekty szkła gasną przy wyjściu
+  // soczewka z Hero jest tą samą szklaną bańką (GlassLens.tsx), więc szkło zostaje do końca:
+  // bańka płynie na miejsce soczewki, a w środku zdjęcie przenika w model
+  float glass = 1.0;
 
   // liquid glass: płaski, przezroczysty środek i wąska, zaokrąglona krawędź (fazka), tylko ona załamuje obraz
   float rimW = R * 0.24;                            // szerokość zaokrąglonej krawędzi
@@ -305,7 +307,9 @@ export default function LoaderBubble({ progress, exiting, onExited, onFail }: Pr
           u.uMix.value = 0
         }
         const e = t - exitStart
-        u.uLens.value = lens!
+        // soczewka idzie za kursorem, więc jej miejsce czytamy w każdej klatce (koła muszą się pokrywać)
+        lens = heroLens(w, h)
+        u.uLens.value = lens
         u.uMorph.value = easeInOut(e / MORPH_S)
         u.uOutFade.value = easeSine((e - OUT_START_S) / OUT_S)
         u.uInFade.value = easeSine((e - IN_START_S) / IN_S)
