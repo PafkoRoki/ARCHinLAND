@@ -21,12 +21,13 @@
   text-wrap: pretty;
 }
 
+/* numer grubym krojem logo ARCHinLAND (Inter Tight 900, już wczytany) — jak napis w Hero */
 .contact__phone {
-  font-family: var(--font-display);
+  font-family: 'Inter Tight Variable', 'Inter Tight', var(--font-display);
   font-size: clamp(2.5rem, 8vw, 6rem);
-  font-weight: 400;
+  font-weight: 900;
   line-height: 0.95;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   color: var(--white);

@@ -14,9 +14,9 @@ import './Realizations.css'
 const FEATURED = 'wybrane'
 const TABS = [
   { id: FEATURED, label: 'Wybrane' },
-  { id: 'apartamenty', label: 'Apartamentowce / Hotele' },
+  { id: 'apartamenty', label: 'Apartamentowce' },
   { id: 'osiedla', label: 'Osiedla' },
-  { id: 'domy', label: 'Domy jednorodzinne' },
+  { id: 'domy', label: 'Domy' },
 ]
 
 const galleries = projects.filter((p) => p.gallery.length > 0)

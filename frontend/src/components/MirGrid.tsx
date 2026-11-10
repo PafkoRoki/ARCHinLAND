@@ -8,7 +8,8 @@ interface MirGridProps {
 
 /**
  * mir.no-style asymmetric work grid.
- * Projects 1, 4, 7… span 2 columns (large), others are single column.
+ * Projects 1, 4, 7… span 2 columns (large), others are single column;
+ * a last project left alone in its row is large too, so rows are always full.
  */
 export default function MirGrid({ projects }: MirGridProps) {
   return (

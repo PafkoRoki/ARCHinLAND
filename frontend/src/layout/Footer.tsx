@@ -3,13 +3,7 @@ import { SiSketchfab } from "react-icons/si";
 import { FiArrowUp } from "react-icons/fi";
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import RippleDistortion from "../components/RippleDistortion";
-import { projects as realizations } from "../data/realizations";
 
-// zdjęcie w stopce: losowe zdjęcie główne (01.jpg) jednej z realizacji
-const footerImages = realizations.map((r) => r.image).filter(Boolean);
-const randomFooterImage = () =>
-  footerImages[Math.floor(Math.random() * footerImages.length)] ?? "/images/osiedle-panorama.jpg";
 
 const cn = (...classes: Array<string | undefined | false>) =>
   classes.filter(Boolean).join(" ");
@@ -262,7 +256,6 @@ export function Footer({
     additionalText: "ARCHITECTURE in LAND DEVELOPMENT"
   }
 }: FooterProps) {
-  const [image] = useState(randomFooterImage);
 
   return (
   <footer className="w-full bg-[#2d2d2d] text-white relative z-50">
@@ -296,25 +289,8 @@ export function Footer({
             />
           ))}
 
-          <div className="h-40 min-[1250px]:h-auto min-[1250px]:col-span-8 min-[1250px]:row-span-1 border-b border-[var(--border-inverse)] min-[1250px]:border-r relative">
-            <RippleDistortion
-              src={image}
-              brushSize={170}
-              strength={0.16}
-              swirl={0.9}
-              rings={4}
-              spread={5}
-              fade={3.5}
-              spacing={24}
-              tint="#FF6B2C"
-              tintAmount={0.1}
-              grayscale
-              trigger="both"
-              quality="low"
-              clickStrength={2}
-              className="h-full w-full"
-            />
-          </div>
+          {/* puste szare pole obok ikon (dawniej zdjęcie realizacji); na telefonie go nie ma */}
+          <div className="hidden min-[1250px]:block min-[1250px]:col-span-8 min-[1250px]:row-span-1 border-b border-r border-[var(--border-inverse)]" aria-hidden="true" />
 
           <div className="grid grid-cols-2 min-[1250px]:hidden border-b border-[var(--border-inverse)]">
             {links.slice(0, 4).map((link, i) => (

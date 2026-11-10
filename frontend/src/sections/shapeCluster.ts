@@ -13,6 +13,12 @@ const MIN_S = 0.45 // rozmiar bryły (≈ promień kuli, w której się mieści)
 const MAX_S = 0.85
 const DRIFT = 0.1 // jak daleko bryła odpływa od swojego miejsca
 const SPIN = 0.25 // szybkość obracania brył (rad/s)
+// kursor jako przeszkoda: niewidzialny walec wzdłuż promienia spod kursora w głąb sceny.
+// Bryła, która w niego wejdzie, zostaje wypchnięta, a potem sprężyną wraca na swoje miejsce.
+const CURSOR_R = 0.35 // promień przeszkody (jednostki gromady)
+const SPRING = 14 // siła powrotu na miejsce
+const DAMPING = 5 // tłumienie — im więcej, tym mniej się kołysze
+const KICK_SPIN = 2.5 // ile obrotu dostaje bryła przy uderzeniu
 
 // Bryły architektoniczne: wieża, płyta, sześcian, kolumna, łuk, dom z dwuspadowym dachem,
 // schody, kształt L, sklepienie, piramida i klin. Każda wyśrodkowana i przeskalowana tak,
@@ -88,7 +94,14 @@ type Item = {
   base: THREE.Quaternion
   mesh: THREE.Mesh
   inner: THREE.Mesh
+  off: THREE.Vector3 // wychylenie od kursora (wraca sprężyną do zera)
+  vel: THREE.Vector3 // prędkość wychylenia
+  spinAngle: number // dodatkowy obrót od uderzeń
+  spinVel: number
 }
+
+/** Promień spod kursora w układzie gromady (createShapeCluster().obj); strength 0–1 = siła odpychania. */
+export type ClusterCursor = { ray: THREE.Ray; strength: number } | null
 
 // prosty, powtarzalny los (ta sama gromada przy każdym wejściu)
 function rng(seed: number) {
@@ -193,6 +206,10 @@ export function createShapeCluster() {
       base,
       mesh,
       inner,
+      off: new THREE.Vector3(),
+      vel: new THREE.Vector3(),
+      spinAngle: 0,
+      spinVel: 0,
     })
   }
 
@@ -203,15 +220,43 @@ export function createShapeCluster() {
   const d = new THREE.Vector3()
   const spin = new THREE.Quaternion()
 
-  function tick(t: number) {
-    // 1. każda bryła pływa wokół swojego miejsca
+  const centre = new THREE.Vector3()
+  const closest = new THREE.Vector3()
+
+  function tick(t: number, dt = 0, cursor: ClusterCursor = null) {
+    const step = Math.min(dt, 1 / 30) // po przerwie (karta w tle) bez wielkiego skoku
     for (const it of items) {
+      // 1. sprężyna ściąga wychylenie z powrotem do zera (półjawny Euler — stabilny)
+      it.vel.addScaledVector(it.off, -SPRING * step).multiplyScalar(Math.max(0, 1 - DAMPING * step))
+      it.off.addScaledVector(it.vel, step)
+      it.spinVel *= Math.max(0, 1 - 2 * step)
+      it.spinAngle += it.spinVel * step
+
+      // 2. bryła pływa wokół swojego miejsca (+ wychylenie)
       const w = t * it.speed + it.phase
       it.pos.set(
         it.rest.x + Math.sin(w) * DRIFT,
         it.rest.y + Math.sin(w * 1.3 + 1.7) * DRIFT,
         it.rest.z + Math.cos(w * 0.9) * DRIFT,
-      )
+      ).add(it.off)
+
+      // 3. kursor: bryła wchodząca w przeszkodę zostaje wypchnięta prostopadle do promienia
+      if (cursor && cursor.strength > 0 && step > 0) {
+        centre.set(it.pos.x, it.pos.y + centreY, it.pos.z)
+        cursor.ray.closestPointToPoint(centre, closest)
+        d.subVectors(centre, closest)
+        const dist = d.length()
+        const overlap = it.r + CURSOR_R - dist
+        if (overlap > 0) {
+          if (dist < 1e-4) d.set(1, 0, 0)
+          else d.divideScalar(dist)
+          const push = overlap * cursor.strength
+          it.off.addScaledVector(d, push) // twarda kolizja: od razu poza przeszkodą
+          it.pos.addScaledVector(d, push)
+          it.vel.addScaledVector(d, (push / step) * 0.35) // i rozpęd — odbija się, a nie tylko przesuwa
+          it.spinVel += push * KICK_SPIN * 10 * (it.phase > Math.PI ? 1 : -1)
+        }
+      }
     }
     // 2. nachodzące na siebie bryły odpychają się (bryły przybliżone kulami)
     for (let pass = 0; pass < 2; pass++) {
@@ -232,7 +277,7 @@ export function createShapeCluster() {
     // 3. położenie, obrót i rozmiar
     for (const it of items) {
       it.mesh.position.set(it.pos.x, it.pos.y + centreY, it.pos.z)
-      spin.setFromAxisAngle(it.axis, t * SPIN * it.speed)
+      spin.setFromAxisAngle(it.axis, t * SPIN * it.speed + it.spinAngle)
       it.mesh.quaternion.multiplyQuaternions(spin, it.base)
       it.mesh.scale.setScalar(it.size)
     }
