@@ -25,7 +25,7 @@ export default function Contact() {
         <div className="contact__details">
           <div className="contact__block">
             <span className="contact__label">Studio</span>
-            {/* logo jak w Hero, w odwróconych kolorach (grafitowe tło): biały obrys, grafitowe litery */}
+            {/* logo jak w Hero, w odwróconych kolorach (grafitowe tło): biały obrys, grafitowe litery; bez animacji */}
             <div className="contact__logo">
               <StrokeText
                 text="ARCHinLAND"
@@ -36,7 +36,7 @@ export default function Contact() {
                 fillDelay={0.2}
                 stagger={0.095}
                 ease="power2.out"
-                trigger="scroll"
+                trigger="static"
                 fillMode="wipe"
                 fontSize={150}
                 fontWeight={900}

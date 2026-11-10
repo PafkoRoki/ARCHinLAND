@@ -8,7 +8,8 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export type StrokeTextTrigger = 'mount' | 'hover' | 'scroll' | 'loop';
+// static = napis od razu gotowy, bez animacji
+export type StrokeTextTrigger = 'mount' | 'hover' | 'scroll' | 'loop' | 'static';
 export type StrokeTextFillMode = 'wipe' | 'fade' | 'none';
 export type StrokeTextButtonVariant = 'link' | 'icon-slide';
 
@@ -162,7 +163,7 @@ const StrokeText = ({
     };
 
     const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) {
+    if (prefersReducedMotion || trigger === 'static') {
       setEnd();
       return () => gsap.killTweensOf(targets);
     }

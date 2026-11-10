@@ -6,7 +6,7 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import { modelControls, reportModelProgress, reportModelReady } from '../lib/modelControls'
 import { screenHeight } from '../lib/viewport'
-import { createShapeCluster } from './shapeCluster'
+import { createShapeCluster, type ClusterCursor } from './shapeCluster'
 import './BackgroundModel.css'
 
 // Eryk.glb = Eryk.dae przekonwertowany i skompresowany (meshopt + tekstury WebP 1024 px)
@@ -47,7 +47,7 @@ const MAX_DPR =
 const { lerp, clamp, smoothstep } = THREE.MathUtils
 
 // tick = animacja obiektu (gromada kul), wołana w każdej klatce
-type Loaded = { obj: THREE.Object3D; height: number; tick?: (t: number) => void }
+type Loaded = { obj: THREE.Object3D; height: number; tick?: (t: number, dt: number, cursor: ClusterCursor) => void }
 
 // Materiały z modelu mają roughness 1 i zero metalu (wyglądają jak papier).
 // Stroimy je po nazwie; env = względna siła odbić otoczenia (RoomEnvironment w <Reflections />).
@@ -209,7 +209,13 @@ function Model({ reveal, cut, pointer, layer }: Motion) {
   }, [gl, loaded])
 
   const lens = useRef({ x: 0, y: 0, ready: false })
-  const tmp = useRef({ ndc: new THREE.Vector3(), dir: new THREE.Vector3(), hit: new THREE.Vector3() })
+  const tmp = useRef({
+    ndc: new THREE.Vector3(),
+    dir: new THREE.Vector3(),
+    hit: new THREE.Vector3(),
+    raycaster: new THREE.Raycaster(),
+    inverse: new THREE.Matrix4(),
+  })
   const key = useRef<THREE.DirectionalLight>(null!)
 
   useEffect(() => {
@@ -224,8 +230,6 @@ function Model({ reveal, cut, pointer, layer }: Motion) {
       announced.current = true
       requestAnimationFrame(() => reportModelReady()) // po narysowaniu tej klatki
     }
-
-    loaded?.tick?.(state.clock.elapsedTime)
 
     const g = group.current
     const r = reveal.current
@@ -294,6 +298,21 @@ function Model({ reveal, cut, pointer, layer }: Motion) {
     light.position.set(g.position.x + KEY_OFFSET[0], g.position.y + KEY_OFFSET[1], KEY_OFFSET[2])
     light.target.position.copy(g.position)
     light.target.updateMatrixWorld()
+
+    // gromada brył: kursor jako przeszkoda — promień spod kursora przeliczony do układu gromady.
+    // Działa po rozszerzeniu soczewki (w Hero kursor i tak prowadzi soczewkę z modelem).
+    if (loaded?.tick) {
+      let cursor: ClusterCursor = null
+      const p = pointer.current
+      if (p && r > 0.5) {
+        g.updateMatrixWorld(true)
+        const { raycaster, inverse } = tmp.current
+        raycaster.setFromCamera(new THREE.Vector2((p.x / w) * 2 - 1, -(p.y / hgt) * 2 + 1), camera)
+        inverse.copy(loaded.obj.matrixWorld).invert()
+        cursor = { ray: raycaster.ray.clone().applyMatrix4(inverse), strength: smoothstep(r, 0.5, 1) }
+      }
+      loaded.tick(state.clock.elapsedTime, dt, cursor)
+    }
 
     // cięcie od góry: wysokość płaszczyzny zjeżdża od dachu do podstawy modelu
     if (loaded) {

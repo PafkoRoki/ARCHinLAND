@@ -41,7 +41,7 @@ export interface Project {
   location: string // "Miejscowość, Kraj"
   year: string // pusty = niewyświetlany, realizacja trafia na koniec listy
   category: string
-  group: RealizationGroup // zakładka: Apartamentowce / Hotele, Osiedla, Domy jednorodzinne
+  group: RealizationGroup // zakładka: Apartamentowce, Osiedla, Domy
   description?: string // krótki opis pod nazwą (pusty = niewyświetlany)
   /** Plik zdjęcia czołowego (np. "07.jpg") — zamiast 01.jpg pierwsze w akordeonie, na podstronie i w Google. */
   cover?: string
