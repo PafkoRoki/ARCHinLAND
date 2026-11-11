@@ -164,14 +164,52 @@ function useModel(url: string) {
   return loaded
 }
 
-// gromada kul: gotowa od razu, bez pobierania pliku
+// gromada brył: gotowa od razu, bez pobierania pliku. Gotowość zgłasza Model po skompilowaniu
+// shaderów; tu tylko zapas, gdy scena nie rysuje klatek (strona otwarta poniżej Hero)
 function useShape(): Loaded {
   const [shape] = useState(createShapeCluster)
   useEffect(() => {
-    const t = setTimeout(reportModelReady, 300) // jak w useModel: zapas, gdy scena nie rysuje klatek
+    const t = setTimeout(reportModelReady, 2500)
     return () => clearTimeout(t)
   }, [])
   return shape
+}
+
+// Kompilacja shaderów w tle, zanim scena się pokaże. Materiały brył są bogate (lakier, perła,
+// welur), a three.js potrzebuje dwóch wersji każdego programu: do tekstury (scena pod szklaną
+// soczewką, GlassLens) i prosto na ekran (koło rozszerzone na cały ekran). Bez tego pierwsza
+// klatka każdej wersji kompilowała je w locie: zacinał się loader, a przy rozszerzeniu koła strona
+// stawała na prawie sekundę. compileAsync kompiluje równolegle i nie blokuje strony.
+// Uwaga: wersja programu zależy też od liczby płaszczyzn cięcia, a compileAsync bierze ją
+// z ostatniego rysowania. Dlatego najpierw rysujemy niewidoczny punkt z płaszczyzną cięcia
+// (wszystkie materiały sceny mają jedną: cutPlane), żeby kompilacja trafiła w te same wersje.
+async function precompile(
+  gl: THREE.WebGLRenderer,
+  scene: THREE.Scene,
+  camera: THREE.Camera,
+  target: THREE.WebGLRenderTarget | null,
+  plane: THREE.Plane,
+) {
+  try {
+    const primer = new THREE.Scene()
+    const dot = new THREE.Mesh(new THREE.PlaneGeometry(1e-4, 1e-4), new THREE.MeshBasicMaterial({ clippingPlanes: [plane] }))
+    primer.add(dot)
+    gl.render(primer, camera)
+    dot.geometry.dispose()
+    ;(dot.material as THREE.Material).dispose()
+
+    const jobs: Promise<unknown>[] = []
+    if (target) {
+      // wersję programu wybiera aktualny cel rysowania w chwili wywołania
+      gl.setRenderTarget(target)
+      jobs.push(gl.compileAsync(scene, camera))
+      gl.setRenderTarget(null)
+    }
+    jobs.push(gl.compileAsync(scene, camera))
+    await Promise.all(jobs)
+  } catch (e) {
+    console.warn('Kompilacja shaderów w tle nie powiodła się', e)
+  }
 }
 
 // stała na poziomie modułu, więc kolejność hooków się nie zmienia
@@ -208,6 +246,9 @@ function Model({ reveal, cut, pointer, layer, lensState }: Motion) {
         m.needsUpdate = true
       }
     })
+    // cień na ziemi też z płaszczyzną cięcia: wszystkie materiały sceny mają wtedy jedną płaszczyznę,
+    // więc wstępna kompilacja shaderów (precompile) trafia we wszystkie wersje programów
+    if (ground.current) ground.current.clippingPlanes = [cutPlane.current]
   }, [gl, loaded])
 
   const lens = useRef({ x: 0, y: 0, ready: false })
@@ -230,7 +271,11 @@ function Model({ reveal, cut, pointer, layer, lensState }: Motion) {
   useFrame((state, dt) => {
     if (loaded && !announced.current) {
       announced.current = true
-      requestAnimationFrame(() => reportModelReady()) // po narysowaniu tej klatki
+      // najpierw shadery (w tle), potem rysowanie i zgłoszenie gotowości dla ekranu ładowania
+      precompile(gl, state.scene, camera, lensState.current.target, cutPlane.current).then(() => {
+        lensState.current.ready = true
+        requestAnimationFrame(() => requestAnimationFrame(() => reportModelReady())) // po narysowaniu klatki
+      })
     }
 
     const g = group.current
@@ -258,7 +303,11 @@ function Model({ reveal, cut, pointer, layer, lensState }: Motion) {
       el.dataset.full = r > 0.999 ? 'true' : 'false'
     }
     // szklana bańka wokół soczewki (jak w loaderze) gaśnie, gdy koło rośnie na cały ekran
-    Object.assign(lensState.current, { x: lx, y: ly, r: radius, glass: h })
+    const L = lensState.current
+    L.x = lx
+    L.y = ly
+    L.r = radius
+    L.glass = h
 
     // poza kołem CSS i tak ucina obraz (clip-path) — rysuj tylko prostokąt wokół soczewki
     if (r <= 0.999) {
@@ -385,7 +434,7 @@ export default function BackgroundModel() {
   const reveal = useRef(0)
   const cut = useRef(0)
   const pointer = useRef<{ x: number; y: number } | null>(null)
-  const lensState = useRef<LensState>({ x: 0, y: 0, r: 0, glass: 0 })
+  const lensState = useRef<LensState>({ x: 0, y: 0, r: 0, glass: 0, target: null, ready: false })
   // po zniknięciu modelu (sekcja Realizacje) scena przestaje się renderować
   const [hidden, setHidden] = useState(false)
 

@@ -18,6 +18,9 @@ const TEXT =
   'Kompleksowo: architektura, konstrukcje, instalacje sanitarne i elektryczne. ' +
   'Ponad trzy dekady praktyki na Pomorzu Zachodnim.'
 const PHOTO_EVERY_MS = 3200 // co tyle zmienia się zdjęcie w ramce
+// łuk w tle (współrzędne rysunku 1440 × 1400); końce biegną daleko poza rysunek
+const ARC =
+  'M -1200 900 C -800 820, -380 540, -120 330 C 140 120, 420 160, 470 420 S 360 980, 760 1080 S 1380 900, 1580 1260 C 1780 1620, 2200 1700, 2700 1720'
 
 // zdjęcia do ramki: najpierw wybrane realizacje, potem pozostałe (bez powtórek)
 const PHOTOS = [...featuredProjects, ...projects]
@@ -66,6 +69,7 @@ export default function About() {
   const stageRef = useRef<HTMLDivElement>(null) // miejsce dużej ramki (przyklejone na środku ekranu)
   const frameRef = useRef<HTMLAnchorElement>(null) // ramka, która przelatuje z miniatury do dużej ramki
   const arcRef = useRef<SVGPathElement>(null)
+  const shadowRef = useRef<SVGPathElement>(null)
   const [inView, setInView] = useState(false)
   const [near, setNear] = useState(false) // sekcja blisko ekranu: zdjęcia się zmieniają
   const [photo, setPhoto] = useState(0)
@@ -99,6 +103,7 @@ export default function About() {
   useEffect(() => {
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     let arcLength = 0
+    let lastOffset = -1
     const onScroll = () => {
       const section = sectionRef.current
       const slot = slotRef.current
@@ -109,14 +114,20 @@ export default function About() {
 
       // łuk w tle: rysuje się od wejścia sekcji na ekran do połowy jej długości
       const arc = arcRef.current
-      if (arc) {
+      const shade = shadowRef.current
+      if (arc && shade) {
         if (!arcLength) {
           arcLength = arc.getTotalLength()
-          arc.style.strokeDasharray = `${arcLength}`
+          arc.style.strokeDasharray = shade.style.strokeDasharray = `${arcLength}`
         }
         const s = section.getBoundingClientRect()
         const draw = still ? 1 : clamp01((vh - s.top) / (s.height * 0.55))
-        arc.style.strokeDashoffset = `${arcLength * (1 - draw)}`
+        // łuk przerysowujemy tylko, gdy realnie urósł (każda zmiana to praca karty graficznej)
+        const offset = Math.round(arcLength * (1 - draw))
+        if (offset !== lastOffset) {
+          lastOffset = offset
+          arc.style.strokeDashoffset = shade.style.strokeDashoffset = `${offset}`
+        }
       }
       if (still) return
 
@@ -166,14 +177,8 @@ export default function About() {
             <stop offset="1" stopColor="#d9531a" />
           </linearGradient>
         </defs>
-        <path
-          ref={arcRef}
-          d="M -1200 900 C -800 820, -380 540, -120 330 C 140 120, 420 160, 470 420 S 360 980, 760 1080 S 1380 900, 1580 1260 C 1780 1620, 2200 1700, 2700 1720"
-          fill="none"
-          stroke="url(#about-arc-shade)"
-          strokeWidth="70"
-          strokeLinecap="round"
-        />
+        <path ref={shadowRef} className="about__arc-shadow" d={ARC} fill="none" strokeWidth="70" strokeLinecap="round" />
+        <path ref={arcRef} d={ARC} fill="none" stroke="url(#about-arc-shade)" strokeWidth="70" strokeLinecap="round" />
       </svg>
 
       <div className="container about__intro">

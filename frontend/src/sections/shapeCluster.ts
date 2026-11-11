@@ -154,7 +154,9 @@ function materials(rand: () => number): { material: THREE.MeshPhysicalMaterial; 
     M({ color: '#c8774a', metalness: 1, roughness: 0.22, envMapIntensity: 1.2 }, 1), // miedź
     // efekty
     M({ ...gloss, color: '#f6f3f0', roughness: 0.2, iridescence: 1, iridescenceIOR: 1.6, iridescenceThicknessRange: [250, 900], envMapIntensity: 1 }, 1.2), // perła
-    M({ color: '#ffffff', roughness: 0.28, transmission: 1, thickness: 0.8, ior: 1.45, envMapIntensity: 1 }, 1), // mleczne szkło
+    // porcelana zamiast mlecznego szkła: szkło (transmission) zmuszało kartę graficzną do rysowania
+    // całej sceny drugi raz w każdej klatce, co na słabszych telefonach dawało ścinki
+    M({ ...gloss, color: '#fbfbf8', roughness: 0.12, sheen: 0.4, sheenColor: '#dfe6ee', envMapIntensity: 1.1 }, 1), // porcelana
   ]
 }
 
