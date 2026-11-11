@@ -17,15 +17,12 @@ const TEXT =
   'Nowoczesne osiedla, budynki wielorodzinne i jednorodzinne, hotele oraz obiekty użyteczności publicznej. ' +
   'Kompleksowo: architektura, konstrukcje, instalacje sanitarne i elektryczne. ' +
   'Ponad trzy dekady praktyki na Pomorzu Zachodnim.'
-const PHOTO_EVERY_MS = 3200 // co tyle zmienia się zdjęcie w ramce
 // łuk w tle (współrzędne rysunku 1440 × 1400); końce biegną daleko poza rysunek
 const ARC =
   'M -1200 900 C -800 820, -380 540, -120 330 C 140 120, 420 160, 470 420 S 360 980, 760 1080 S 1380 900, 1580 1260 C 1780 1620, 2200 1700, 2700 1720'
 
-// zdjęcia do ramki: najpierw wybrane realizacje, potem pozostałe (bez powtórek)
-const PHOTOS = [...featuredProjects, ...projects]
-  .filter((p, i, all) => p.image && all.findIndex((q) => q.slug === p.slug) === i)
-  .slice(0, 6)
+// zdjęcie w ramce: pierwsza z wybranych realizacji (statyczne, bez zmieniania i ruchu)
+const PHOTO = [...featuredProjects, ...projects].find((p) => p.image)
 
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x))
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2)
@@ -71,10 +68,8 @@ export default function About() {
   const arcRef = useRef<SVGPathElement>(null)
   const shadowRef = useRef<SVGPathElement>(null)
   const [inView, setInView] = useState(false)
-  const [near, setNear] = useState(false) // sekcja blisko ekranu: zdjęcia się zmieniają
-  const [photo, setPhoto] = useState(0)
 
-  // tekst wjeżdża raz, gdy sekcja pokaże się na ekranie; zdjęcia zmieniają się tylko blisko ekranu
+  // tekst wjeżdża raz, gdy nagłówek pokaże się na ekranie
   useEffect(() => {
     const section = sectionRef.current
     if (!section) return
@@ -84,20 +79,9 @@ export default function About() {
     const reveal = new IntersectionObserver(([e]) => e.isIntersecting && setInView(true), {
       rootMargin: '0px 0px -15% 0px',
     })
-    const nearby = new IntersectionObserver(([e]) => setNear(e.isIntersecting), { rootMargin: '50% 0px' })
     if (title) reveal.observe(title)
-    nearby.observe(section)
-    return () => {
-      reveal.disconnect()
-      nearby.disconnect()
-    }
+    return () => reveal.disconnect()
   }, [])
-
-  useEffect(() => {
-    if (!near || PHOTOS.length < 2) return
-    const id = window.setInterval(() => setPhoto((i) => (i + 1) % PHOTOS.length), PHOTO_EVERY_MS)
-    return () => window.clearInterval(id)
-  }, [near])
 
   // przewijanie: ramka przelatuje z miejsca miniatury na miejsce dużej ramki; łuk w tle się rysuje
   useEffect(() => {
@@ -234,18 +218,17 @@ export default function About() {
             onClick={toRealizations}
             aria-label="Zobacz realizacje"
           >
-            {PHOTOS.map((p, i) => (
+            {PHOTO && (
               <img
-                key={p.slug}
-                className={`about__photo${i === photo ? ' is-on' : ''}`}
-                src={p.image}
-                srcSet={srcsetOf(p.image) || undefined}
+                className="about__photo"
+                src={PHOTO.image}
+                srcSet={srcsetOf(PHOTO.image) || undefined}
                 sizes="(max-width: 768px) 100vw, 92vw"
                 alt=""
                 loading="lazy"
                 decoding="async"
               />
-            ))}
+            )}
             <span className="about__reel-title" aria-hidden="true">
               <RollWord text="Zobacz" />
               <RollWord text="realizacje" />
