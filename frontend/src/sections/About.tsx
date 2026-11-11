@@ -200,13 +200,6 @@ export default function About() {
             </span>
             <span>Kamień Pomorski</span>
           </p>
-          <a className="about__cta" href="#realizations" onClick={toRealizations}>
-            <span className="about__cta-dot" aria-hidden="true" />
-            <span className="about__cta-text">Zobacz realizacje</span>
-            <span className="about__cta-arrow" aria-hidden="true">
-              →
-            </span>
-          </a>
         </div>
       </div>
 
