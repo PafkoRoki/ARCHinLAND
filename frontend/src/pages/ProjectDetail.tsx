@@ -85,6 +85,9 @@ export function ProjectDetail({ projects }: ProjectDetailProps) {
   const [activeImage, setActiveImage] = useState(0);
   const [mirrored, setMirrored] = useState(false);
   const [lightbox, setLightbox] = useState<string | null>(null);
+  // Sketchfab wczytujemy dopiero po kliknięciu: to zewnętrzny serwis, który ustawia własne ciasteczka,
+  // a bez kliknięcia strona nie łączy się z nim wcale (i nie potrzebuje banera zgody)
+  const [show3d, setShow3d] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -449,14 +452,28 @@ export function ProjectDetail({ projects }: ProjectDetailProps) {
           <div className="projectDetail__section projectDetail__model3d">
             <h2 className="projectDetail__title">Model 3D</h2>
             <div className="projectDetail__model3dFrame">
-              <iframe
-                title={`Model 3D: ${project.name}`}
-                src={project.sketchfabUrl}
-                frameBorder="0"
-                allow="autoplay; fullscreen; xr-spatial-tracking"
-                allowFullScreen
-                loading="lazy"
-              />
+              {show3d ? (
+                <iframe
+                  title={`Model 3D: ${project.name}`}
+                  // po kliknięciu model startuje od razu (bez drugiego kliknięcia w Sketchfab)
+                  src={project.sketchfabUrl.replace("autostart=0", "autostart=1")}
+                  frameBorder="0"
+                  allow="autoplay; fullscreen; xr-spatial-tracking"
+                  allowFullScreen
+                />
+              ) : (
+                <button
+                  type="button"
+                  className="projectDetail__model3dStart"
+                  onClick={() => setShow3d(true)}
+                  style={project.image ? { backgroundImage: `url(${project.image})` } : undefined}
+                >
+                  <span className="projectDetail__model3dStartLabel">Wczytaj model 3D</span>
+                  <span className="projectDetail__model3dStartNote">
+                    Model otworzy się z serwisu Sketchfab
+                  </span>
+                </button>
+              )}
             </div>
             <p className="projectDetail__model3dCredit">
               Model 3D via{" "}
