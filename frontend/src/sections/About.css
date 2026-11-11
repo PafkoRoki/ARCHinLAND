@@ -132,54 +132,6 @@
   min-width: 7.4ch;
 }
 
-/* przycisk-pigułka: kropka, napis, a po najechaniu wjeżdża strzałka (jak "Our approach") */
-.about__cta {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 1em;
-  overflow: hidden;
-  padding: 1em 1.5em 1em 1.625em;
-  border-radius: 999px;
-  background: var(--white);
-  color: var(--black);
-  font-size: clamp(0.875rem, 1vw, 1.1rem);
-  font-weight: 500;
-  text-decoration: none;
-}
-
-.about__cta-dot {
-  width: 0.5em;
-  height: 0.5em;
-  border-radius: 50%;
-  background: var(--black);
-  transition: transform 0.4s cubic-bezier(0.35, 0, 0, 1), background 0.5s;
-}
-
-.about__cta-text {
-  transition: transform 0.4s cubic-bezier(0.35, 0, 0, 1);
-}
-
-.about__cta-arrow {
-  position: absolute;
-  right: 1em;
-  color: var(--orange);
-  transform: translate3d(3em, 0, 0);
-  transition: transform 0.4s cubic-bezier(0.35, 0, 0, 1);
-}
-
-.about__cta:hover .about__cta-dot {
-  transform: scale(0);
-}
-
-.about__cta:hover .about__cta-text {
-  transform: translate3d(-1em, 0, 0);
-}
-
-.about__cta:hover .about__cta-arrow {
-  transform: none;
-}
-
 /* słowa wjeżdżają od dołu spod maski, jedno po drugim */
 .about__word {
   display: inline-block;
@@ -201,15 +153,13 @@
   transform: none;
 }
 
-.about__stats,
-.about__cta {
+.about__stats {
   opacity: 0;
   transform: translate3d(0, 16px, 0);
   transition: opacity 0.8s var(--ease) 0.7s, transform 0.8s var(--ease) 0.7s;
 }
 
-.about.is-in .about__stats,
-.about.is-in .about__cta {
+.about.is-in .about__stats {
   opacity: 1;
   transform: none;
 }
@@ -408,8 +358,7 @@
   }
 
   .about__word-inner,
-  .about__stats,
-  .about__cta {
+  .about__stats {
     transform: none;
     opacity: 1;
     transition: none;
