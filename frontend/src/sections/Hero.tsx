@@ -1,33 +1,16 @@
-import { PointerEvent, useEffect, useRef, useState } from 'react'
-import CountUp from '../components/CountUp'
-import ExperienceCounter from '../components/ExperienceCounter'
+import { PointerEvent, useEffect, useRef } from 'react'
 import StrokeText from '../components/StrokeText'
 import { modelControls } from '../lib/modelControls'
 import { screenHeight } from '../lib/viewport'
 import './Hero.css'
 
-// Przypięta scena jak w STILL (odległości w wysokościach ekranu, liczone od góry strony):
-//   0 → 0.8   koło z modelem rozszerza się do pełnego ekranu (BackgroundModel, REVEAL_DISTANCE)
-//   0.8 → 1.8    panel O nas wjeżdża z dołu jak kolejna strona, model ucieka w lewo
-//   1.8 → 2.3    panel zasłania cały ekran: czas na czytanie; model przeskakuje (niewidocznie) na prawo
-//   2.3 → 3.3    panel odjeżdża w górę, a model wraca za nim z prawej na środek
-//   od 3.3       model można obracać myszką / palcem; od 3.7 do 4.5 tnie go płaszczyzna (CUT_DISTANCE)
-//   4.5          koniec sceny (--hero-pin w Hero.css), potem wjeżdżają Realizacje
-// Panel wjeżdża i odjeżdża o jeden ekran na jeden ekran przewinięcia, czyli dokładnie
-// w tempie palca / kółka myszy (wcześniej 2,5 razy szybciej i sekcja "przeskakiwała").
-// Długość sceny = 1 ekran + PIN_LENGTH — ustawiona w Hero.css (--hero-pin).
-const ABOUT_START = 0.8
-const ABOUT_END = 1.8
-const LEAD_OUT_START = 2.3
-const LEAD_OUT_END = 3.3
+// Przypięta scena z modelem (odległości w wysokościach ekranu, liczone od góry strony):
+//   0 → 0.8      koło z modelem rozszerza się do pełnego ekranu (BackgroundModel, REVEAL_DISTANCE)
+//   0.8 → 1.6    model na całym ekranie, można go obracać myszką / palcem
+//   1.6 → 2.4    tnie go płaszczyzna od dachu do podstawy (CUT_DISTANCE w BackgroundModel)
+//   2.4          koniec sceny (--hero-pin w Hero.css), potem sekcja O nas (About.tsx)
+const MODEL_START = 0.8
 const DRAG_SPEED = 0.008 // radiany na piksel przeciągnięcia
-// model a panel O nas (ułamki ich ruchu): model poza ekranem, zanim panel wjedzie na 25% wysokości,
-// i wraca dopiero, gdy panel odjedzie o 60% w górę
-const MODEL_OUT_BY = 0.25
-const MODEL_IN_FROM = 0.6
-
-const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3)
-const easeInOutSine = (t: number) => -(Math.cos(Math.PI * t) - 1) / 2
 
 const smoothstep = (a: number, b: number, x: number) => {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)))
@@ -37,47 +20,26 @@ const smoothstep = (a: number, b: number, x: number) => {
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null)
   const lastX = useRef<number | null>(null)
-  // tekst O nas pokazał się choć raz → liczniki ruszają (warstwa jest na ekranie od początku,
-  // tylko przezroczysta, więc IntersectionObserver tu nie zadziała)
-  const [aboutOn, setAboutOn] = useState(false)
 
-  // postęp pojawiania się tekstu O nas → zmienna CSS --about (0–1)
   useEffect(() => {
     const onScroll = () => {
       const el = sectionRef.current
       if (!el) return
       const vh = screenHeight() // stała wysokość (telefon: pasek adresu)
       const p = window.scrollY / vh
-      const about = smoothstep(ABOUT_START, ABOUT_END, p)
-      el.style.setProperty('--about', about.toFixed(3))
-      // wjazd panelu liniowo z przewijaniem — wygląda jak zwykłe przewinięcie strony
-      const enter = Math.min(1, Math.max(0, (p - ABOUT_START) / (ABOUT_END - ABOUT_START)))
-      el.style.setProperty('--enter', enter.toFixed(4))
-      if (about > 0.6) setAboutOn(true)
-      // tekst odjeżdża liniowo (jak zwykłe przewijanie), potem model jest do obracania
-      const leadOut = Math.min(1, Math.max(0, (p - LEAD_OUT_START) / (LEAD_OUT_END - LEAD_OUT_START)))
-      el.style.setProperty('--lead-out', leadOut.toFixed(4))
-      // model (płótno w BackgroundModel) znika tylko za krawędzią ekranu, nigdy pod panelem:
-      // ucieka w lewo, zanim górna krawędź wjeżdżającego panelu do niego dojdzie (model stoi
-      // w ~50–75% wysokości ekranu), i wraca z prawej dopiero, gdy dolna krawędź odjeżdżającego
-      // panelu minie go od góry. Ułamek szerokości ekranu, ujemny = w lewo.
-      const shift =
-        leadOut > 0
-          ? 1 - easeOutCubic(Math.max(0, (leadOut - MODEL_IN_FROM) / (1 - MODEL_IN_FROM)))
-          : -easeInOutSine(Math.min(1, enter / MODEL_OUT_BY))
-      document.documentElement.style.setProperty('--model-shift', shift.toFixed(4))
-      el.style.setProperty('--model', smoothstep(LEAD_OUT_END - 0.1, LEAD_OUT_END + 0.2, p).toFixed(3))
-      el.dataset.model = leadOut > 0.9 ? 'on' : 'off'
+      // model odsłonięty: podpowiedź obracania i samo obracanie
+      el.style.setProperty('--model', smoothstep(MODEL_START - 0.1, MODEL_START + 0.15, p).toFixed(3))
+      el.dataset.model = p > MODEL_START - 0.05 ? 'on' : 'off'
       // podpowiedź przewijania znika przy pierwszym ruchu
       el.style.setProperty('--intro', (1 - smoothstep(0, 0.2, p)).toFixed(3))
 
-      // wskaźnik przewijania w O nas: model stoi, ale linia się wypełnia — strona nadal jedzie.
-      // 0 = początek tekstu O nas, 1 = odpięcie sceny (wjeżdżają Realizacje)
+      // wskaźnik przewijania: model stoi, ale linia się wypełnia, strona nadal jedzie.
+      // 0 = model na całym ekranie, 1 = odpięcie sceny (wjeżdża sekcja O nas)
       const pinEnd = (el.offsetHeight - vh) / vh // w wysokościach ekranu
-      const progress = Math.min(1, Math.max(0, (p - ABOUT_START) / Math.max(0.01, pinEnd - ABOUT_START)))
+      const progress = Math.min(1, Math.max(0, (p - MODEL_START) / Math.max(0.01, pinEnd - MODEL_START)))
       el.style.setProperty('--pin', progress.toFixed(4))
       const outro = 1 - smoothstep(0.9, 1, progress) // koniec sceny: model ucięty do zera
-      el.style.setProperty('--pin-show', (about * outro).toFixed(3))
+      el.style.setProperty('--pin-show', (smoothstep(MODEL_START - 0.1, MODEL_START + 0.1, p) * outro).toFixed(3))
       el.style.setProperty('--outro', outro.toFixed(3))
     }
     onScroll()
@@ -86,7 +48,6 @@ export default function Hero() {
     return () => {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onScroll)
-      document.documentElement.style.removeProperty('--model-shift')
     }
   }, [])
 
@@ -106,9 +67,6 @@ export default function Hero() {
 
   return (
     <section id="top" ref={sectionRef} className="hero" data-model="off" aria-labelledby="hero-title">
-      {/* kotwica menu "O nas" — miejsce w scenie, w którym tekst jest już widoczny */}
-      <span id="about" className="hero__anchor" aria-hidden="true" />
-
       {/* napis stoi w miejscu przez całą scenę, POD modelem 3D */}
       <div className="hero__layer hero__layer--title">
         <h1 id="hero-title" className="hero__title">
@@ -141,14 +99,14 @@ export default function Hero() {
       <div className="hero__layer hero__layer--intro" aria-hidden="true">
         <span className="hero__scroll-hint">
           <span className="hero__scroll-line" />
-          Przewiń
+          Scroll
         </span>
       </div>
 
-      {/* wskaźnik przewijania w O nas (prawa krawędź): pokazuje, że strona jedzie, choć model stoi */}
+      {/* wskaźnik przewijania (prawa krawędź): pokazuje, że strona jedzie, choć model stoi */}
       <div className="hero__layer hero__layer--progress" aria-hidden="true">
         <span className="hero__progress">
-          <span className="hero__progress-label">Przewiń</span>
+          <span className="hero__progress-label">Scroll</span>
           <span className="hero__progress-track">
             <span className="hero__progress-fill" />
           </span>
@@ -156,7 +114,7 @@ export default function Hero() {
         </span>
       </div>
 
-      {/* obracanie modelu: aktywne dopiero, gdy tekst O nas odjedzie (data-model="on") */}
+      {/* obracanie modelu: aktywne, gdy model jest na całym ekranie (data-model="on") */}
       <div
         className="hero__layer hero__layer--drag"
         onPointerDown={onDown}
@@ -167,59 +125,6 @@ export default function Hero() {
         <span className="hero__hint">Przeciągnij, aby obrócić model</span>
       </div>
 
-      {/* tekst O nas na cały ekran, NAD modelem; po przeczytaniu odjeżdża w górę */}
-      <div className="hero__layer hero__layer--about">
-        <div className="hero__panel">
-          <div className="container hero__about">
-            <h2 className="visually-hidden">O nas</h2>
-
-            {/* nagłówek sekcji — duży, lekki */}
-            <div className="hero__about-header">
-              <h3 className="hero__about-title">
-                Projektujemy przestrzeń.<br />
-                Od 1991 roku.
-              </h3>
-              {/* statystyki w jednej linii */}
-              <p className="hero__stats-line">
-                <span className="hero__stat-item">
-                  <ExperienceCounter since="1991-01-01" start={aboutOn} />
-                </span>
-                <span className="hero__stat-sep">·</span>
-                <span className="hero__stat-item">
-                  <CountUp to={180000} duration={2.2} start={aboutOn} /> <span className="hero__stat-unit">m²</span>
-                </span>
-                <span className="hero__stat-sep">·</span>
-                <span className="hero__stat-item">Kamień Pomorski</span>
-              </p>
-            </div>
-
-            {/* grid 3 kolumny — usługi */}
-            <ul className="hero__story">
-              <li className="hero__story-item">
-                <span className="hero__story-label">Projektowanie</span>
-                <p className="hero__story-text">
-                  Nowoczesne osiedla mieszkaniowe, budynki wielorodzinne i jednorodzinne,
-                  hotele oraz obiekty użyteczności publicznej
-                </p>
-              </li>
-              <li className="hero__story-item">
-                <span className="hero__story-label">Kompleksowo</span>
-                <p className="hero__story-text">
-                  Architektura, konstrukcje, instalacje sanitarne i elektryczne.
-                  Pełnobranżowa dokumentacja
-                </p>
-              </li>
-              <li className="hero__story-item">
-                <span className="hero__story-label">Doświadczenie</span>
-                <p className="hero__story-text">
-                  Ponad trzy dekady praktyki na Pomorzu Zachodnim,
-                  ponad 180 tysięcy m² zaprojektowanej przestrzeni
-                </p>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
     </section>
   )
 }

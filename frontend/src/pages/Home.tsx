@@ -1,5 +1,6 @@
 import Header from '../layout/Header'
 import Hero from '../sections/Hero'
+import About from '../sections/About'
 import Realizations from '../sections/Realizations'
 import Projects from '../sections/Projects'
 import Reviews from '../sections/Reviews'
@@ -33,6 +34,7 @@ export default function Home() {
       <Header />
       <main className="page-content">
         <Hero />
+        <About />
         <Realizations />
         <Projects />
         <Reviews />

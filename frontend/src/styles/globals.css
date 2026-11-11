@@ -210,9 +210,9 @@ textarea {
   z-index: auto;
 }
 
-/* od Realizacji w dół tło strony (--bg) — pełne tło sekcji zasłania tło soczewki (--bg-model) */
-.page-content > #realizations,
-.page-content > #realizations ~ section {
+/* od O nas w dół tło strony (--bg): pełne tło sekcji zasłania tło soczewki (--bg-model) */
+.page-content > #about,
+.page-content > #about ~ section {
   background: var(--bg);
 }
 

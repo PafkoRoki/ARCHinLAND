@@ -8,6 +8,6 @@
 }
 
 /* ukryj zegar w trybie inline (statystyki w jednej linii) */
-.hero__stats-line .experience-clock {
+.about__stats .experience-clock {
   display: none;
 }

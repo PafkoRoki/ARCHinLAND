@@ -62,7 +62,4 @@
 .bg-model__canvas {
   position: absolute;
   inset: 0;
-  /* scena O nas w Hero: model ucieka w bok i wraca z drugiej strony (--model-shift ustawia Hero.tsx
-     na <html>, ułamek szerokości ekranu); tło soczewki zostaje na miejscu */
-  transform: translateX(calc(var(--model-shift, 0) * 100%));
 }
