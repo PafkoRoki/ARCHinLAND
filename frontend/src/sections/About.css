@@ -1,0 +1,405 @@
+/* =====================================================
+   O NAS jak "home-reel" na lusion.co
+   tekst przewija się normalnie; miniatura przelatuje do dużej ramki przyklejonej na środku ekranu
+   ===================================================== */
+
+.about {
+  --frame-ratio: 0.5; /* duża ramka 2:1 (wysokość / szerokość), jak u lusion */
+  /* szerokość treści kontenera i wysokość dużej ramki liczone z szerokości ekranu (nie z wysokości) */
+  --content-w: calc(min(100vw, var(--container)) - 2 * var(--gutter));
+  --frame-h: calc(var(--content-w) * var(--frame-ratio));
+
+  position: relative;
+  overflow: clip; /* łuk w tle wychodzi poza sekcję */
+  padding-top: clamp(72px, 9vw, 150px);
+}
+
+/* ===== ŁUK W TLE ===== */
+/* rysunek łuku przypięty do szerokości treści (kontener), nie ekranu: na szerokim ekranie
+   łuk nie rośnie ani nie odjeżdża od tekstu; końce wychodzą poza rysunek (overflow visible) */
+.about__arc {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 0;
+  width: min(100%, var(--container));
+  height: auto;
+  aspect-ratio: 1440 / 1400;
+  overflow: visible;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.about__arc path {
+  filter: drop-shadow(0 18px 24px rgba(217, 83, 26, 0.18));
+}
+
+/* ===== TEKST ===== */
+.about .about__intro {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 24px;
+  align-items: start;
+}
+
+.about__title {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-family: var(--font-display);
+  /* maksimum = 5.4% szerokości kontenera (1440 px): na szerokim ekranie nagłówek nie rośnie
+     ponad treść i pierwsza linijka się nie łamie */
+  font-size: clamp(2.4rem, 5.4vw, 4.85rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--black);
+}
+
+.about__line {
+  display: block;
+}
+
+/* pierwsza linijka wcięta, druga od lewej krawędzi */
+.about__line--indent {
+  padding-left: 9%;
+}
+
+/* miniatura: po lewej pod nagłówkiem, niżej niż opis (jak u lusion) */
+.about__slot {
+  grid-column: 1 / 6;
+  grid-row: 2;
+  margin-top: clamp(80px, 9vw, 150px);
+  aspect-ratio: 16 / 9;
+}
+
+.about__side {
+  grid-column: 7 / -1;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 28px;
+  margin-top: clamp(40px, 5vw, 80px);
+}
+
+.about__desc {
+  margin: 0;
+  max-width: 34em;
+  font-size: clamp(1rem, 1.5vw, 1.35rem);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--black);
+}
+
+.about__stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 14px;
+  margin: 0;
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: var(--black);
+}
+
+.about__stat-sep {
+  opacity: 0.3;
+}
+
+/* przycisk-pigułka: kropka, napis, a po najechaniu wjeżdża strzałka (jak "Our approach") */
+.about__cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 1em;
+  overflow: hidden;
+  padding: 1em 1.5em 1em 1.625em;
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--black);
+  font-size: clamp(0.875rem, 1vw, 1.1rem);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.about__cta-dot {
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background: var(--black);
+  transition: transform 0.4s cubic-bezier(0.35, 0, 0, 1), background 0.5s;
+}
+
+.about__cta-text {
+  transition: transform 0.4s cubic-bezier(0.35, 0, 0, 1);
+}
+
+.about__cta-arrow {
+  position: absolute;
+  right: 1em;
+  color: var(--orange);
+  transform: translate3d(3em, 0, 0);
+  transition: transform 0.4s cubic-bezier(0.35, 0, 0, 1);
+}
+
+.about__cta:hover .about__cta-dot {
+  transform: scale(0);
+}
+
+.about__cta:hover .about__cta-text {
+  transform: translate3d(-1em, 0, 0);
+}
+
+.about__cta:hover .about__cta-arrow {
+  transform: none;
+}
+
+/* słowa wjeżdżają od dołu spod maski, jedno po drugim */
+.about__word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  /* zapas na ogonki liter (j, y, ę) pod maską */
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+.about__word-inner {
+  display: inline-block;
+  transform: translate3d(0, 105%, 0);
+  transition: transform 0.9s var(--ease);
+  transition-delay: calc(var(--i, 0) * 40ms);
+}
+
+.about.is-in .about__word-inner {
+  transform: none;
+}
+
+.about__stats,
+.about__cta {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+  transition: opacity 0.8s var(--ease) 0.7s, transform 0.8s var(--ease) 0.7s;
+}
+
+.about.is-in .about__stats,
+.about.is-in .about__cta {
+  opacity: 1;
+  transform: none;
+}
+
+/* ===== DUŻA RAMKA ===== */
+/* długość przyklejenia: ramka stoi na środku przez ok. jeden ekran przewijania */
+.about .about__reel {
+  position: relative;
+  z-index: 2;
+  height: calc(var(--frame-h) + 100svh);
+  margin-top: clamp(64px, 7vw, 120px);
+}
+
+.about__stage {
+  position: sticky;
+  top: calc(50svh - var(--frame-h) / 2);
+  height: var(--frame-h);
+}
+
+/* ramka: skrypt ustawia jej położenie i rozmiar (z miniatury do pełnej wielkości) */
+.about__frame {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--black);
+  /* napis i przycisk liczone od szerokości ramki (cqi), nie ekranu: na szerokim ekranie
+     ramka ma najwyżej szerokość kontenera, a napis z vw wychodził poza nią */
+  container-type: inline-size;
+  --reel: 1;
+}
+
+.about__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.06);
+  transition: opacity 1.2s ease-in-out, transform 4.5s linear;
+}
+
+/* zdjęcie na wierzchu: przenika i powoli się oddala (jak kadr z filmu) */
+.about__photo.is-on {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* przyciemnienie pod napisem, gdy ramka urośnie */
+.about__frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 20, 20, 0.26);
+  opacity: var(--reel);
+  pointer-events: none;
+}
+
+/* ZOBACZ [→] REALIZACJE: słowa po obu stronach przycisku, każde w swojej połowie ramki
+   (słowa są różnej długości, więc nie centrujemy ich razem, tylko dosuwamy do przycisku) */
+.about__reel-title {
+  --watch-w: max(56px, 10.4cqi);
+
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr var(--watch-w) 1fr;
+  align-items: center;
+  column-gap: 2.4cqi;
+  transform: translateY(-50%);
+  font-family: var(--font-display);
+  font-size: 6cqi;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--white);
+  opacity: calc(var(--reel) * 2 - 1);
+}
+
+/* litery w okienku wysokości jednej litery; po najechaniu kolumna przesuwa się o literę w górę */
+.about__roll {
+  display: inline-flex;
+  overflow: hidden;
+  height: 1em;
+}
+
+.about__roll:first-child {
+  grid-column: 1;
+  justify-self: end;
+}
+
+.about__roll:last-child {
+  grid-column: 3;
+  justify-self: start;
+}
+
+.about__roll-char {
+  display: inline-flex;
+  flex-direction: column;
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.1, 1);
+  transition-delay: calc(var(--i) * 22ms);
+}
+
+.about__roll-char > span {
+  display: block;
+  height: 1em;
+}
+
+.about__frame:hover .about__roll-char {
+  transform: translate3d(0, -1em, 0);
+}
+
+/* przycisk na środku: biała pigułka, po najechaniu wypełnia się od dołu pomarańczem */
+.about__watch {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: max(56px, 10.4cqi);
+  aspect-ratio: 94 / 60;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--black);
+  transform: translate(-50%, -50%);
+  opacity: calc(var(--reel) * 2 - 1);
+}
+
+.about__watch svg {
+  position: relative;
+  z-index: 1;
+  width: 32%;
+  height: auto;
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.1, 1);
+}
+
+.about__watch-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--orange);
+  transform: scale3d(1, 0, 1);
+  transform-origin: center bottom;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.1, 1);
+}
+
+.about__frame:hover .about__watch-fill {
+  transform: none;
+}
+
+.about__frame:hover .about__watch svg {
+  color: var(--white);
+}
+
+/* ===== TABLET / TELEFON ===== */
+@media (max-width: 860px) {
+  .about {
+    --frame-ratio: 0.75; /* na wąskim ekranie ramka 4:3, żeby zdjęcia nie były paskiem */
+  }
+
+  .about__title {
+    font-size: clamp(2.2rem, 9vw, 4rem);
+  }
+
+  .about__line--indent {
+    padding-left: 7%;
+  }
+
+  .about__side {
+    grid-column: 1 / -1;
+    gap: 20px;
+  }
+
+  .about__slot {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    margin-top: 40px;
+    aspect-ratio: 4 / 3;
+  }
+}
+
+/* bez animacji: zwykły układ, wszystko od razu widoczne, ramka bez przyklejania */
+@media (prefers-reduced-motion: reduce) {
+  .about__slot {
+    display: none;
+  }
+
+  .about .about__reel {
+    height: auto;
+  }
+
+  .about__stage {
+    position: relative;
+    top: auto;
+  }
+
+  .about__word-inner,
+  .about__stats,
+  .about__cta {
+    transform: none;
+    opacity: 1;
+    transition: none;
+  }
+}

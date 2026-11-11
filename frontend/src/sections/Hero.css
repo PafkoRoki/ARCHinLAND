@@ -1,22 +1,12 @@
 /* Przypięta scena: wysoka sekcja, w której warstwy stoją w miejscu (sticky) podczas przewijania.
    --hero-pin = ile ekranów przewijania trwa scena po pierwszym ekranie (patrz Hero.tsx). */
 .hero {
-  --hero-pin: 450svh; /* koniec sceny w 4.5 ekranu (oś czasu w Hero.tsx) */
-  --about: 0;
-  --enter: 0;
-  --lead-out: 0;
+  --hero-pin: 240svh; /* koniec sceny w 2.4 ekranu (oś czasu w Hero.tsx) */
   --model: 0;
 
   position: relative;
   display: grid;
   height: calc(100svh + var(--hero-pin));
-}
-
-/* kotwica "O nas": przewinięcie tutaj pokazuje scenę z widocznym tekstem */
-.hero__anchor {
-  position: absolute;
-  top: 205svh; /* środek czasu na czytanie (1.8 → 2.3) */
-  left: 0;
 }
 
 /* obie warstwy w tej samej komórce siatki, każda przyklejona do góry ekranu */
@@ -30,15 +20,13 @@
 }
 
 /* warstwy względem modelu 3D (.bg-model, z-index 1):
-   napis pod (0), obracanie (2), tekst O nas (3), wskaźnik przewijania (4) */
+   napis pod (0), obracanie (2), wskaźnik przewijania (4) */
 .hero__layer--title {
   z-index: 0;
   pointer-events: none;
-  /* napis stoi w miejscu, ale przygasa, gdy pojawia się tekst O nas */
-  opacity: calc(1 - var(--about) * 0.6);
 }
 
-/* obracanie modelu — włączone dopiero, gdy tekst O nas odjedzie */
+/* obracanie modelu: włączone, gdy model jest na całym ekranie */
 .hero__layer--drag {
   z-index: 2;
   pointer-events: none;
@@ -53,12 +41,6 @@
 
 .hero__layer--drag:active {
   cursor: grabbing;
-}
-
-.hero__layer--about {
-  z-index: 3;
-  pointer-events: none;
-  overflow: hidden; /* panel wyjeżdża w górę poza ekran */
 }
 
 /* podpowiedź przewijania: na dole, nad modelem; znika przy pierwszym ruchu (--intro) */
@@ -107,9 +89,9 @@
   100% { transform: translateY(260%); }
 }
 
-/* wskaźnik przewijania w O nas: pionowa linia przy prawej krawędzi wypełnia się w dół (--pin),
+/* wskaźnik przewijania: pionowa linia przy prawej krawędzi wypełnia się w dół (--pin),
    a strzałka pod nią pulsuje — widać, że strona się przewija, choć model stoi.
-   Pojawia się z tekstem O nas i znika przy odpięciu sceny (--pin-show, Hero.tsx). */
+   Pojawia się, gdy model wypełni ekran, i znika przy odpięciu sceny (--pin-show, Hero.tsx). */
 .hero__layer--progress {
   z-index: 4;
   pointer-events: none;
@@ -187,7 +169,7 @@
 }
 
 /* linijka pod napisem: kto, gdzie, od kiedy — krojem i stylem etykiet (.label).
-   Nisko, nad podpowiedzią "Przewiń" — poza soczewką z modelem (LENS_REST w BackgroundModel). */
+   Nisko, nad podpowiedzią "Scroll", poza soczewką z modelem (LENS_REST w BackgroundModel). */
 .hero__tagline {
   position: absolute;
   left: 50%;
@@ -212,119 +194,6 @@
   font-weight: 800;
 }
 
-/* panel O nas: cały ekran, wjeżdża z dołu jak kolejna strona (--enter), a po przeczytaniu
-   odjeżdża w górę (--lead-out) i odsłania model, który wraca za nim z boku (--model-shift). */
-.hero__panel {
-  position: relative;
-  display: flex;
-  align-items: center;
-  height: 100%;
-  transform: translateY(calc((1 - var(--enter)) * 100% - var(--lead-out) * 100%));
-  will-change: transform;
-  /* jednolite tło strony, nieprzezroczyste — zasłania przeskok modelu z lewej na prawą stronę */
-  background: var(--bg);
-}
-
-/* tekst wjeżdża z dołu (--about), a po przeczytaniu odjeżdża w górę jak przewijana kartka */
-/* =====================================================
-   SEKCJA O NAS
-   lekka typografia, etykiety jak .label, grid 3 kolumny
-   ===================================================== */
-
-.hero .hero__about {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(48px, 8vw, 100px);
-  width: 100%;
-  padding-block: 80px;
-  color: var(--black);
-  /* tekst jedzie razem z panelem (transform na .hero__panel) */
-}
-
-/* ===== NAGŁÓWEK SEKCJI ===== */
-.hero__about-header {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.hero__about-title {
-  font-family: var(--font-display);
-  font-size: clamp(1.875rem, 4vw, 3.5rem);
-  font-weight: 400;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
-}
-
-/* statystyki w jednej linii: 35 lat · 180 000 m² · Kamień Pomorski */
-.hero__stats-line {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 8px 16px;
-  font-size: var(--fs-label);
-  font-weight: 700;
-  line-height: 1.4;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  font-variant-numeric: tabular-nums;
-}
-
-.hero__stat-item {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 4px;
-}
-
-.hero__stat-sep {
-  opacity: 0.3;
-}
-
-.hero__stat-unit {
-  text-transform: lowercase;
-}
-
-/* ===== GRID 3 KOLUMNY — usługi ===== */
-.hero__story {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(32px, 6vw, 80px);
-  padding-top: clamp(32px, 5vw, 64px);
-  border-top: 1px solid rgba(45, 45, 45, 0.15);
-  list-style: none;
-  margin: 0;
-  padding-left: 0;
-}
-
-.hero__story-item {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  text-align: center;
-}
-
-.hero__story-label {
-  font-size: var(--fs-label);
-  font-weight: 700;
-  line-height: 1.25;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--faint);
-}
-
-.hero__story-text {
-  font-size: clamp(0.9rem, 1.1vw, 1rem);
-  font-weight: 450;
-  line-height: 1.6;
-  color: var(--black);
-  opacity: 0.7;
-  max-width: 30ch;
-  margin: 0 auto;
-}
-
 /* podpowiedź obracania: pojawia się, gdy model jest odsłonięty (--model) */
 .hero__hint {
   position: absolute;
@@ -338,47 +207,8 @@
   opacity: calc(var(--model) * var(--outro, 1)); /* gaśnie razem z uciętym modelem */
 }
 
-/* tablet: story 1 kolumna */
-@media (max-width: 860px) {
-  .hero__story {
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
-
-  .hero__story-item {
-    text-align: left;
-  }
-
-  .hero__story-text {
-    margin: 0;
-    max-width: none;
-  }
-}
-
 /* telefon */
 @media (max-width: 560px) {
-  .hero .hero__about {
-    gap: 40px;
-    padding-block: 48px;
-  }
-
-  .hero__about-title {
-    font-size: clamp(1.5rem, 7vw, 2rem);
-  }
-
-  .hero__stats-line {
-    gap: 6px 12px;
-  }
-
-  .hero__story {
-    gap: 32px;
-    padding-top: 24px;
-  }
-
-  .hero__story-text {
-    font-size: 0.85rem;
-  }
-
   .hero__hint {
     bottom: 16px;
   }
