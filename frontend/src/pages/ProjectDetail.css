@@ -735,6 +735,54 @@
   border: none;
 }
 
+/* zanim model się wczyta: okładka projektu z przyciskiem (Sketchfab dopiero po kliknięciu) */
+.projectDetail__model3dStart {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #111 center / cover no-repeat;
+  color: var(--white);
+  font: inherit;
+  cursor: pointer;
+}
+
+.projectDetail__model3dStart::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 20, 20, 0.45);
+  transition: background 0.3s var(--ease);
+}
+
+.projectDetail__model3dStart:hover::before {
+  background: rgba(20, 20, 20, 0.3);
+}
+
+.projectDetail__model3dStartLabel,
+.projectDetail__model3dStartNote {
+  position: relative;
+}
+
+.projectDetail__model3dStartLabel {
+  padding: 14px 24px;
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--black);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.projectDetail__model3dStartNote {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
 .projectDetail__model3dCredit {
   margin: 12px 0 0;
   color: #aaa;

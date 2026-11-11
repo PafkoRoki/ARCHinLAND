@@ -35,8 +35,8 @@
 
   --radius: 24px;
 
-  --font-display: 'Montserrat', Arial, sans-serif; /* nagłówki, menu */
-  --font-body: 'Montserrat', Arial, sans-serif; /* tekst, przyciski, podpisy */
+  --font-display: 'Montserrat Variable', 'Montserrat', Arial, sans-serif; /* nagłówki, menu */
+  --font-body: 'Montserrat Variable', 'Montserrat', Arial, sans-serif; /* tekst, przyciski, podpisy */
 
   /* skala typografii — używaj tych zmiennych w sekcjach zamiast własnych clamp() */
   --fs-hero: clamp(3.5rem, 11vw, 9.5rem);
@@ -112,7 +112,7 @@ h1, h2, h3, h4, p, figure {
   margin: 0;
 }
 
-/* nagłówki w kroju nagłówkowym (Space Grotesk), reszta dziedziczy --font-body */
+/* nagłówki w kroju nagłówkowym (--font-display), reszta dziedziczy --font-body */
 h1, h2, h3 {
   font-family: var(--font-display);
 }

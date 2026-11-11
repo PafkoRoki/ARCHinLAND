@@ -1,11 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
-// kroje strony (lokalnie, bez Google Fonts):
-// Space Grotesk — nagłówki, Inter — tekst i etykiety, Inter Tight — tylko logo ARCHinLAND (SVG)
-import '@fontsource-variable/inter'
+// kroje strony z własnego serwera (bez Google Fonts, więc przeglądarka nie łączy się z Google):
+// Montserrat: cała strona; Inter Tight: tylko logo ARCHinLAND (SVG) i gruby numer telefonu
+import '@fontsource-variable/montserrat'
 import '@fontsource-variable/inter-tight'
-import '@fontsource-variable/space-grotesk'
 import './styles/globals.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
