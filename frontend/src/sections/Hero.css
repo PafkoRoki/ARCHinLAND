@@ -1,7 +1,7 @@
 /* Przypięta scena: wysoka sekcja, w której warstwy stoją w miejscu (sticky) podczas przewijania.
    --hero-pin = ile ekranów przewijania trwa scena po pierwszym ekranie (patrz Hero.tsx). */
 .hero {
-  --hero-pin: 290svh;
+  --hero-pin: 450svh; /* koniec sceny w 4.5 ekranu (oś czasu w Hero.tsx) */
   --about: 0;
   --enter: 0;
   --lead-out: 0;
@@ -15,7 +15,7 @@
 /* kotwica "O nas": przewinięcie tutaj pokazuje scenę z widocznym tekstem */
 .hero__anchor {
   position: absolute;
-  top: 125svh;
+  top: 205svh; /* środek czasu na czytanie (1.8 → 2.3) */
   left: 0;
 }
 

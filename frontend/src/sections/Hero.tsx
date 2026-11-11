@@ -8,16 +8,18 @@ import './Hero.css'
 
 // Przypięta scena jak w STILL (odległości w wysokościach ekranu, liczone od góry strony):
 //   0 → 0.8   koło z modelem rozszerza się do pełnego ekranu (BackgroundModel, REVEAL_DISTANCE)
-//   0.8 → 1.2    panel O nas wjeżdża z dołu (jak kolejna strona), model ucieka w lewo
-//   1.2 → 1.55   panel zasłania cały ekran — czas na czytanie; model przeskakuje (niewidocznie) na prawo
-//   1.55 → 2.1   panel odjeżdża w górę, a model wraca za nim z prawej na środek
-//   od 2.1       model można obracać myszką / palcem; od 2.1 do 2.9 tnie go płaszczyzna (CUT_DISTANCE)
-//   do 3.9    scena stoi w miejscu (--hero-pin w Hero.css), potem wjeżdżają Realizacje
+//   0.8 → 1.8    panel O nas wjeżdża z dołu jak kolejna strona, model ucieka w lewo
+//   1.8 → 2.3    panel zasłania cały ekran: czas na czytanie; model przeskakuje (niewidocznie) na prawo
+//   2.3 → 3.3    panel odjeżdża w górę, a model wraca za nim z prawej na środek
+//   od 3.3       model można obracać myszką / palcem; od 3.7 do 4.5 tnie go płaszczyzna (CUT_DISTANCE)
+//   4.5          koniec sceny (--hero-pin w Hero.css), potem wjeżdżają Realizacje
+// Panel wjeżdża i odjeżdża o jeden ekran na jeden ekran przewinięcia, czyli dokładnie
+// w tempie palca / kółka myszy (wcześniej 2,5 razy szybciej i sekcja "przeskakiwała").
 // Długość sceny = 1 ekran + PIN_LENGTH — ustawiona w Hero.css (--hero-pin).
 const ABOUT_START = 0.8
-const ABOUT_END = 1.2
-const LEAD_OUT_START = 1.55
-const LEAD_OUT_END = 2.1
+const ABOUT_END = 1.8
+const LEAD_OUT_START = 2.3
+const LEAD_OUT_END = 3.3
 const DRAG_SPEED = 0.008 // radiany na piksel przeciągnięcia
 // model a panel O nas (ułamki ich ruchu): model poza ekranem, zanim panel wjedzie na 25% wysokości,
 // i wraca dopiero, gdy panel odjedzie o 60% w górę
