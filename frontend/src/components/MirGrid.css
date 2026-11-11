@@ -62,7 +62,7 @@
   margin-bottom: 8px;
   font-size: 10px;
   font-weight: 500;
-  letter-spacing: 0.2em;
+  letter-spacing: normal; /* bez rozstrzelonych liter */
   text-transform: uppercase;
   opacity: 0.7;
 }
@@ -74,7 +74,7 @@
   font-size: clamp(18px, 2.5vw, 28px);
   font-weight: 400;
   line-height: 1.2;
-  letter-spacing: 0.02em;
+  letter-spacing: normal; /* bez rozstrzelonych liter */
 }
 
 .mir-grid__item--large .mir-grid__title {
@@ -86,7 +86,7 @@
   display: block;
   margin-top: 6px;
   font-size: 12px;
-  letter-spacing: 0.05em;
+  letter-spacing: normal; /* bez rozstrzelonych liter */
   opacity: 0.6;
 }
 

@@ -57,7 +57,7 @@
   font-family: var(--font-body);
   font-size: var(--fs-label);
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: normal; /* bez rozstrzelonych liter */
   text-transform: uppercase;
   color: #f0f0f0;
 }

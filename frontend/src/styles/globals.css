@@ -181,7 +181,7 @@ textarea {
   border: 1px solid var(--border);
   font-size: var(--fs-label);
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: normal; /* bez rozstrzelonych liter */
   text-transform: uppercase;
 }
 
@@ -229,7 +229,7 @@ textarea {
   font-family: var(--font-body);
   font-size: var(--fs-label);
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: normal; /* bez rozstrzelonych liter */
   text-transform: uppercase;
   color: var(--faint);
 }
@@ -262,7 +262,7 @@ textarea {
   font-family: var(--font-body);
   font-size: var(--fs-label);
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: normal; /* bez rozstrzelonych liter */
   line-height: 1;
   text-transform: uppercase;
   transition: background 0.25s var(--ease), color 0.25s var(--ease);

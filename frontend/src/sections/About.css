@@ -105,7 +105,7 @@
   margin: 0;
   font-size: var(--fs-label);
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: normal; /* bez rozstrzelonych liter */
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
   color: var(--black);

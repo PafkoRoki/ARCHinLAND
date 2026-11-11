@@ -2,18 +2,12 @@ import { useEffect, useRef } from 'react'
 import { Mesh, Program, Renderer, Texture, Triangle } from 'ogl'
 
 // Ekran ładowania strony głównej: płynna bańka z "liquid glass" (kilka zlanych kul) na grafitowym tle.
-// Przez szkło widać zmieniające się zdjęcia realizacji — środek przezroczysty, obraz zagina się tylko
-// na wąskiej zaokrąglonej krawędzi; cienkie refleksy światła na brzegu i miękki cień pod spodem. Bańka rośnie razem z postępem wczytywania modelu 3D.
-// Wyjście: bańka zamienia się w koło soczewki z Hero (to samo miejsce i promień), a potem
-// tło i zdjęcie gasną — pod spodem jest już ta sama soczewka z modelem.
-//
-// Zdjęcia: src/assets/loader/*.webp — okładki realizacji 1024×768 (WebP, ~70–110 KB każde).
-// Zdjęcie wypełnia kwadrat wokół bańki, więc 1024 px wystarcza nawet dla dużej bańki na ekranie retina.
-// Nowe: sharp, resize 1024×768 cover, lekkie wyostrzenie, webp quality 76.
-
-const photos = Object.values(
-  import.meta.glob<string>('../assets/loader/*.webp', { eager: true, import: 'default' }),
-)
+// Bańka bez zdjęć: w środku jaśniejszy grafit, wąska zaokrąglona krawędź, cienkie refleksy światła
+// na brzegu i miękki cień pod spodem. Bańka rośnie razem z postępem wczytywania modelu 3D.
+// Wyjście: bańka płynie na miejsce soczewki z Hero (to samo miejsce i promień), a potem
+// tło i wnętrze gasną: pod spodem jest już ta sama szklana soczewka z modelem.
+// (Shader nadal umie pokazać zdjęcie w środku, uHasPhoto; zdjęć nie ładujemy na życzenie klienta.)
+const photos: string[] = []
 
 const PHOTO_ASPECT = 1024 / 768
 const PHOTO_EVERY = 0.65 // s — jak często zmienia się zdjęcie w bańce

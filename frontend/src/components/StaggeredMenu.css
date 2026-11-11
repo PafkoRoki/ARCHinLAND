@@ -65,7 +65,7 @@
   cursor: pointer;
   font-size: var(--fs-label);
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: normal; /* bez rozstrzelonych liter */
   text-transform: uppercase;
   line-height: 1;
   overflow: visible;
@@ -205,7 +205,7 @@
   margin: 0;
   font-size: var(--fs-label);
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: normal; /* bez rozstrzelonych liter */
   text-transform: uppercase;
   color: var(--sm-accent, var(--orange));
 }
@@ -338,7 +338,7 @@
   font-size: var(--fs-label);
   font-weight: 700;
   color: var(--orange);
-  letter-spacing: 0.15em;
+  letter-spacing: normal; /* bez rozstrzelonych liter */
   pointer-events: none;
   user-select: none;
   opacity: var(--sm-num-opacity, 0);
