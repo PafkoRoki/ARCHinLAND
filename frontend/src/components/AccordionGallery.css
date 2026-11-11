@@ -114,7 +114,7 @@
   font-family: inherit;
   font-weight: 600;
   font-size: clamp(1rem, 1.4vw, 1.4rem);
-  letter-spacing: 0.01em;
+  letter-spacing: normal; /* bez rozstrzelonych liter */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

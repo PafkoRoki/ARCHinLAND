@@ -40,7 +40,7 @@
 /* jak opisy w stopce: drobne, przygaszone */
 .reviews__caption {
   font-size: 12px;
-  letter-spacing: 0.15em;
+  letter-spacing: normal; /* bez rozstrzelonych liter */
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.5);
 }
@@ -48,7 +48,7 @@
 .reviews__stars {
   color: var(--orange);
   font-size: 15px;
-  letter-spacing: 0.08em;
+  letter-spacing: normal; /* bez rozstrzelonych liter */
   line-height: 1;
 }
 
@@ -139,7 +139,7 @@
   padding: 13px 0;
   margin: -13px 0;
   font-size: 12px;
-  letter-spacing: 0.15em;
+  letter-spacing: normal; /* bez rozstrzelonych liter */
   text-transform: uppercase;
   color: var(--white);
   text-decoration: underline;
@@ -154,7 +154,7 @@
 .review footer {
   margin-top: auto;
   font-size: 12px;
-  letter-spacing: 0.15em;
+  letter-spacing: normal; /* bez rozstrzelonych liter */
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.7);
 }
@@ -171,7 +171,7 @@
   align-self: center;
   padding: 0 16px;
   font-size: 12px;
-  letter-spacing: 0.15em;
+  letter-spacing: normal; /* bez rozstrzelonych liter */
   color: rgba(255, 255, 255, 0.5);
   font-variant-numeric: tabular-nums;
 }

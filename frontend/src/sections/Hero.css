@@ -180,7 +180,7 @@
   font-size: var(--fs-label);
   font-weight: 700;
   line-height: 1.5;
-  letter-spacing: 0.15em;
+  letter-spacing: normal; /* bez rozstrzelonych liter */
   text-transform: uppercase;
   text-align: center;
   text-wrap: balance;
