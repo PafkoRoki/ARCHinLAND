@@ -115,6 +115,23 @@
   opacity: 0.3;
 }
 
+/* liczniki mają od początku szerokość końcowej wartości ("35 lat", "180 000"). Rosnące cyfry
+   zmieniały szerokość linijki i jej łamanie, a więc wysokość sekcji. Na iPhonie (Safari nie
+   koryguje przewinięcia przy takich zmianach) wszystko poniżej, także kafelki Realizacji, skakało */
+.about__stats .experience-counter,
+.about__stats .count-up {
+  display: inline-block;
+  text-align: right;
+}
+
+.about__stats .experience-counter {
+  min-width: 6.2ch;
+}
+
+.about__stats .count-up {
+  min-width: 7.4ch;
+}
+
 /* przycisk-pigułka: kropka, napis, a po najechaniu wjeżdża strzałka (jak "Our approach") */
 .about__cta {
   position: relative;

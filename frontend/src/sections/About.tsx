@@ -21,8 +21,10 @@ const TEXT =
 const ARC =
   'M -1200 900 C -800 820, -380 540, -120 330 C 140 120, 420 160, 470 420 S 360 980, 760 1080 S 1380 900, 1580 1260 C 1780 1620, 2200 1700, 2700 1720'
 
-// zdjęcie w ramce: pierwsza z wybranych realizacji (statyczne, bez zmieniania i ruchu)
-const PHOTO = [...featuredProjects, ...projects].find((p) => p.image)
+// zdjęcie w ramce (statyczne): realizacja spoza "Wybranych". Gdyby to było zdjęcie pierwszego
+// kafelka Realizacji, które stoi zaraz pod ramką, na wąskim ekranie wyglądało to jak jedno zdjęcie
+// przeskakujące przy przewijaniu
+const PHOTO = projects.find((p) => p.image && !featuredProjects.includes(p)) ?? projects.find((p) => p.image)
 
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x))
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2)
