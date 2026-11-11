@@ -30,8 +30,12 @@
   pointer-events: none;
 }
 
-.about__arc path {
-  filter: drop-shadow(0 18px 24px rgba(217, 83, 26, 0.18));
+/* cień łuku: ta sama linia przesunięta w dół, w półprzezroczystym ciemnym pomarańczu.
+   Bez filtra rozmycia: łuk dorysowuje się przy każdym ruchu przewijania, a rozmycie
+   tak dużej grafiki kosztowało ponad 100 ms pracy karty graficznej (szarpnięcie przy wejściu w O nas) */
+.about__arc-shadow {
+  stroke: rgba(217, 83, 26, 0.16);
+  transform: translate(0, 18px);
 }
 
 /* ===== TEKST ===== */

@@ -9,7 +9,17 @@ import * as THREE from 'three'
 // przejściu bańka z loadera i soczewka wyglądały identycznie, bez cięcia.
 // Szkło gaśnie, gdy koło rośnie na cały ekran (glass = 0) i wtedy scena rysuje się wprost.
 
-export type LensState = { x: number; y: number; r: number; glass: number } // px CSS, glass 0–1
+// x, y, r: soczewka w px CSS; glass 0–1; target: tekstura, do której rysuje się scena pod szkłem;
+// ready: shadery sceny skompilowane (BackgroundModel) — do tego czasu nic nie rysujemy,
+// bo pierwsze rysowanie kompilowałoby je w locie i blokowało stronę
+export type LensState = {
+  x: number
+  y: number
+  r: number
+  glass: number
+  target: THREE.WebGLRenderTarget | null
+  ready: boolean
+}
 
 const vertexShader = /* glsl */ `
 void main() {
@@ -113,6 +123,11 @@ export default function GlassLens({ lens }: { lens: MutableRefObject<LensState> 
     return { target, material, quad, quadScene, quadCamera: new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1) }
   }, [])
 
+  // tekstura dostępna dla wstępnej kompilacji shaderów (BackgroundModel kompiluje wersję "do tekstury")
+  useEffect(() => {
+    lens.current.target = pass.target
+  }, [lens, pass])
+
   useEffect(
     () => () => {
       pass.target.dispose()
@@ -125,6 +140,7 @@ export default function GlassLens({ lens }: { lens: MutableRefObject<LensState> 
   // priorytet 1: ta funkcja przejmuje rysowanie klatki (zamiast automatycznego render() z R3F)
   useFrame(() => {
     const L = lens.current
+    if (!L.ready) return // shadery jeszcze się kompilują w tle (pod ekranem ładowania)
     if (L.glass <= 0.001 || L.r <= 0) {
       gl.setRenderTarget(null)
       gl.render(scene, camera)
