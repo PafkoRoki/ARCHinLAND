@@ -23,7 +23,7 @@ export default function RealizationDetail() {
   return (
     <section className="realizationDetail">
       <div className="realizationDetail__breadcrumb">
-        <Link to="/#realizations">← Wszystkie realizacje</Link>
+        <Link to="/#realizations">← Architektura</Link>
       </div>
 
       <header className="realizationDetail__header">

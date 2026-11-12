@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import CountUp from '../components/CountUp'
 import ExperienceCounter from '../components/ExperienceCounter'
-import { featuredProjects, projects, srcsetOf } from '../data/realizations'
+import { featuredProjects, srcsetOf } from '../data/realizations'
 import './About.css'
 
 // O nas jak sekcja "home-reel" na lusion.co:
@@ -21,10 +21,9 @@ const TEXT =
 const ARC =
   'M -1200 900 C -800 820, -380 540, -120 330 C 140 120, 420 160, 470 420 S 360 980, 760 1080 S 1380 900, 1580 1260 C 1780 1620, 2200 1700, 2700 1720'
 
-// zdjęcie w ramce (statyczne): realizacja spoza "Wybranych". Gdyby to było zdjęcie pierwszego
-// kafelka Realizacji, które stoi zaraz pod ramką, na wąskim ekranie wyglądało to jak jedno zdjęcie
-// przeskakujące przy przewijaniu
-const PHOTO = projects.find((p) => p.image && !featuredProjects.includes(p)) ?? projects.find((p) => p.image)
+// zdjęcie w ramce (statyczne): tylko z "Wybranych" realizacji. Bierzemy drugą, bo pierwsza
+// otwiera listę Realizacji tuż pod ramką i na wąskim ekranie wyglądałoby to jak jedno zdjęcie dwa razy
+const PHOTO = featuredProjects.filter((p) => p.image)[1] ?? featuredProjects.find((p) => p.image)
 
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x))
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2)
@@ -88,6 +87,8 @@ export default function About() {
   // przewijanie: ramka przelatuje z miejsca miniatury na miejsce dużej ramki; łuk w tle się rysuje
   useEffect(() => {
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    // telefon: sekcja przewija się zwyczajnie z całą stroną (ramka bez przyklejania i przelotu)
+    const phone = window.matchMedia('(max-width: 768px)')
     let arcLength = 0
     let lastOffset = -1
     const onScroll = () => {
@@ -116,6 +117,15 @@ export default function About() {
         }
       }
       if (still) return
+      if (phone.matches) {
+        // ramka w zwykłym układzie: bez rozmiarów ustawionych przez przelot (np. po obróceniu ekranu)
+        frame.style.removeProperty('left')
+        frame.style.removeProperty('top')
+        frame.style.removeProperty('width')
+        frame.style.removeProperty('height')
+        frame.style.removeProperty('--reel')
+        return
+      }
 
       const a = slot.getBoundingClientRect()
       const b = stage.getBoundingClientRect()
@@ -211,7 +221,7 @@ export default function About() {
             className="about__frame"
             href="#realizations"
             onClick={toRealizations}
-            aria-label="Zobacz realizacje"
+            aria-label="Zobacz architekturę"
           >
             {PHOTO && (
               <img
@@ -226,7 +236,7 @@ export default function About() {
             )}
             <span className="about__reel-title" aria-hidden="true">
               <RollWord text="Zobacz" />
-              <RollWord text="realizacje" />
+              <RollWord text="architekturę" />
             </span>
             <span className="about__watch" aria-hidden="true">
               <span className="about__watch-fill" />

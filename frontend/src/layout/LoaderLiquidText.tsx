@@ -94,7 +94,7 @@ export default function LoaderLiquidText({ text, progress, fontWeight = 900 }: P
       </defs>
 
       {/* napis w tle — wyszarzony */}
-      <text ref={textRef} {...textProps} fill="rgba(255, 255, 255, 0.16)">
+      <text ref={textRef} {...textProps} fill="rgba(45, 45, 45, 0.12)">
         {text}
       </text>
 
@@ -104,13 +104,13 @@ export default function LoaderLiquidText({ text, progress, fontWeight = 900 }: P
           <path
             className="loader-liquid-text__wave loader-liquid-text__wave--back"
             d={wavePath(x0, x1, length, amp, depth)}
-            fill="rgba(255, 255, 255, 0.45)"
+            fill="rgba(45, 45, 45, 0.4)"
             style={{ '--wave-length': `${length}px` } as CSSProperties}
           />
           <path
             className="loader-liquid-text__wave"
             d={wavePath(x0, x1, length, amp * 0.8, depth)}
-            fill="#ffffff"
+            fill="#2d2d2d"
             style={{ '--wave-length': `${length}px` } as CSSProperties}
           />
         </g>

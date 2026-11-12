@@ -89,13 +89,13 @@ export function realizationMeta(p: Project): PageMeta {
         '@type': 'BreadcrumbList',
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: SITE_NAME, item: `${SITE_URL}/` },
-          { '@type': 'ListItem', position: 2, name: 'Realizacje', item: `${SITE_URL}/#realizations` },
+          { '@type': 'ListItem', position: 2, name: 'Architektura', item: `${SITE_URL}/#realizations` },
           { '@type': 'ListItem', position: 3, name, item: url },
         ],
       },
     ],
     bodyHtml: `<main>
-  <p><a href="/">${SITE_NAME}</a> › <a href="/#realizations">Realizacje</a></p>
+  <p><a href="/">${SITE_NAME}</a> › <a href="/#realizations">Architektura</a></p>
   <h1>${escapeHtml(name)}</h1>
   <p>${escapeHtml(p.category)}${place ? ` · ${escapeHtml(place)}` : ''}${p.year ? ` · ${p.year}` : ''}</p>
   <p>${escapeHtml(description)}</p>
@@ -152,7 +152,7 @@ export function homeMeta(): PageMeta {
   <h1>ARCHinLAND: Architecture in Land Development</h1>
   <p>Biuro architektoniczne Andrzeja Kurki, Kamień Pomorski. 35 lat doświadczenia, 180 000 m² zaprojektowanych powierzchni.
   Pełnobranżowe projekty: architektura, konstrukcje, instalacje sanitarne i elektryczne.</p>
-  <nav><h2>Realizacje</h2><ul>${projects
+  <nav><h2>Architektura</h2><ul>${projects
     .map((p) => `<li><a href="${realizationPath(p)}">${escapeHtml(nameOf(p))}, ${escapeHtml(p.category)}${placeOf(p) ? `, ${escapeHtml(placeOf(p))}` : ''}</a></li>`)
     .join('')}</ul></nav>
 </main>`,
@@ -190,7 +190,7 @@ export function notFoundMeta(): PageMeta {
     bodyHtml: `<main>
   <h1>Nie znaleziono strony</h1>
   <p>Ta strona nie istnieje albo została przeniesiona. <a href="/">Przejdź na stronę główną ${SITE_NAME}</a>.</p>
-  <nav><h2>Realizacje</h2><ul>${projects
+  <nav><h2>Architektura</h2><ul>${projects
     .map((p) => `<li><a href="${realizationPath(p)}">${escapeHtml(nameOf(p))}</a></li>`)
     .join('')}</ul></nav>
 </main>`,

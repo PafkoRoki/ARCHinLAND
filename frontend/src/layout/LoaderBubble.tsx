@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { Mesh, Program, Renderer, Texture, Triangle } from 'ogl'
 
-// Ekran ładowania strony głównej: płynna bańka z "liquid glass" (kilka zlanych kul) na grafitowym tle.
-// Bańka bez zdjęć: w środku jaśniejszy grafit, wąska zaokrąglona krawędź, cienkie refleksy światła
+// Ekran ładowania strony głównej: płynna bańka z "liquid glass" (kilka zlanych kul) na jasnym tle w kolorze strony.
+// Bańka bez zdjęć: w środku odrobinę jaśniej niż tło, wąska zaokrąglona krawędź, cienkie refleksy światła
 // na brzegu i miękki cień pod spodem. Bańka rośnie razem z postępem wczytywania modelu 3D.
 // Wyjście: bańka płynie na miejsce soczewki z Hero (to samo miejsce i promień), a potem
 // tło i wnętrze gasną: pod spodem jest już ta sama szklana soczewka z modelem.
@@ -17,7 +17,7 @@ const CENTER = { x: 0.5, y: 0.45 } // środek bańki (ułamek ekranu); napis sto
 // Wyjście to jedno ciągłe przenikanie, jak w filmie: bańka płynie w soczewkę, a w tym samym czasie
 // grafit wokół i zdjęcie w środku powoli przenikają w stronę pod spodem (zachodzące na siebie etapy, bez cięć).
 const MORPH_S = 1.3 // s, bańka → koło soczewki
-const OUT_START_S = 0.1 // tło wokół koła: grafit przenika w stronę
+const OUT_START_S = 0.1 // tło wokół koła: plansza przenika w stronę
 const OUT_S = 1.7
 const IN_START_S = 0.45 // wnętrze koła: zdjęcie przenika w model z soczewki
 const IN_S = 1.5
@@ -43,7 +43,7 @@ uniform vec2 uCenter;   // px CSS, od lewego górnego rogu
 uniform float uRadius;  // px CSS
 uniform vec3 uLens;     // x, y, r soczewki z Hero (px CSS)
 uniform float uMorph;   // 0 = bańka, 1 = koło soczewki
-uniform float uOutFade; // tło: 0 = grafit, 1 = przezroczyste (widać stronę)
+uniform float uOutFade; // tło: 0 = jasna plansza, 1 = przezroczyste (widać stronę)
 uniform float uInFade;  // wnętrze koła: 0 = zdjęcie, 1 = przezroczyste (widać soczewkę z modelem)
 uniform sampler2D uPhotoA;
 uniform sampler2D uPhotoB;
@@ -51,7 +51,7 @@ uniform float uMix;     // przenikanie A → B
 uniform float uHasPhoto;
 uniform float uPhotoAspect;
 
-const vec3 BG = vec3(0.1765); // #2d2d2d — kolor planszy i stopki
+const vec3 BG = vec3(0.9412); // #f0f0f0: jasna plansza w kolorze tła strony
 
 float smin(float a, float b, float k) {
   float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0);
@@ -116,7 +116,9 @@ void main() {
     float size = 2.0 * R * 1.15;
     inside = vec3(scene(refr + ca, c, size).r, scene(refr, c, size).g, scene(refr - ca, c, size).b);
   } else {
-    inside = BG + 0.06;
+    // szkło na jasnym tle: środek odrobinę jaśniejszy niż plansza, a fazka lekko przyciemniona
+    // (bez tego bańka znikała na jasnym tle; białe refleksy dodają się niżej)
+    inside = vec3(0.975) * (1.0 - 0.09 * bevel);
   }
 
   // światło na szkle: dwa refleksy z przeciwnych stron (góra-lewo mocniej, dół-prawo słabiej)
@@ -127,10 +129,11 @@ void main() {
   inside = mix(inside, vec3(1.0), 0.035 * glass);   // szkło lekko rozjaśnia to, co pod nim
   inside += (rimLine * (0.22 + 0.75 * lightA + 0.4 * lightB) + sheen) * glass;
 
-  // na zewnątrz: grafit i miękki cień pod szkłem (bańka "unosi się" nad tłem)
+  // na zewnątrz: jasna plansza i miękki cień pod szkłem (bańka "unosi się" nad tłem)
   float ds = sdf(p - vec2(0.0, R * 0.08));
-  float shadow = 0.32 * smoothstep(R * 0.35, -R * 0.1, ds) * glass;
-  // tło zostaje grafitowe i tylko staje się przezroczyste: czyste przenikanie z warstwą strony.
+  float shadow = 0.2 * // na jasnym tle słabszy cień niż na grafitowym (0.32)
+    smoothstep(R * 0.35, -R * 0.1, ds) * glass;
+  // tło zostaje w kolorze planszy i tylko staje się przezroczyste: czyste przenikanie z warstwą strony.
   // (Wcześniej kolor jednocześnie jaśniał i znikał, więc jasność rosła skokiem w połowie wyjścia.)
   vec3 outside = BG * (1.0 - shadow);
 
