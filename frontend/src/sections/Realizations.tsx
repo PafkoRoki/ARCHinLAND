@@ -29,7 +29,7 @@ export default function Realizations() {
   return (
     <section id="realizations" className="section realizations" aria-labelledby="realizations-title">
       <div className="container">
-        <SectionHeader index="02" label="Realizacje" id="realizations-title" />
+        <SectionHeader index="02" label="Architektura" id="realizations-title" />
 
         <div className="realizations__tabs" role="tablist" aria-label="Rodzaj realizacji">
           {TABS.map((t) => {

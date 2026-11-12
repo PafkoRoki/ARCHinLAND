@@ -38,7 +38,9 @@
     />
     <meta name="twitter:image" content="https://archinland.pl/og-image.jpg" />
 
-    <meta name="theme-color" content="#2d2d2d" />
+    <!-- jasny jak tło strony i ekran ładowania: grafit dawał na iPhonie ciemne paski u góry i u dołu -->
+    <meta name="theme-color" content="#f0f0f0" />
+    <meta name="color-scheme" content="light" />
 
     <!-- kroje (Montserrat, Inter Tight) ładowane z własnego serwera, przez main.tsx -->
 
@@ -46,9 +48,9 @@
     <style>
       html, body { background: #f0f0f0; margin: 0; }
       /* treść z prerendera (scripts/prerender.mjs) dla robotów bez JavaScriptu i podglądów linków.
-         Do startu Reacta odwiedzający widzi tylko grafitową planszę (jak ekran ładowania), bez napisów.
+         Do startu Reacta odwiedzający widzi tylko jasną planszę (jak ekran ładowania), bez napisów.
          React usuwa ten blok przy pierwszym renderze, więc Google (renderuje JS) indeksuje zwykłą stronę. */
-      .seo-fallback { position: fixed; inset: 0; overflow: hidden; background: #2d2d2d; }
+      .seo-fallback { position: fixed; inset: 0; overflow: hidden; background: #f0f0f0; }
       .seo-fallback main { visibility: hidden; }
       .seo-fallback img { max-width: 100%; height: auto; }
     </style>

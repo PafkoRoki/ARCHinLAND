@@ -213,16 +213,16 @@ function AppLoaderAnimation({
       preserveAspectRatio="none"
       aria-hidden="true"
     >
-      {/* plansza w jednolitych kolorach strony (bez gradientów): grafitowa (#2d2d2d, jak stopka) na wierzchu,
-          pod nią fala w tle strony (#f0f0f0) */}
+      {/* jasna plansza w kolorach strony (bez gradientów): na wierzchu tło strony (#f0f0f0),
+          pod nią fala o ton ciemniejsza, żeby zejście planszy było widać */}
       <path
         className="shape-overlays__path"
-        fill="#f0f0f0"
+        fill="#e2e1dd"
       />
 
       <path
         className="shape-overlays__path"
-        fill="#2d2d2d"
+        fill="#f0f0f0"
       />
     </svg>
   )

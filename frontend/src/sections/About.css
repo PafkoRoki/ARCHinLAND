@@ -229,7 +229,7 @@
   column-gap: 2.4cqi;
   transform: translateY(-50%);
   font-family: var(--font-display);
-  font-size: 6cqi;
+  font-size: 5.4cqi; /* "architekturę" (12 liter) mieści się w połowie ramki */
   font-weight: 400;
   line-height: 1;
   letter-spacing: -0.03em;
@@ -240,10 +240,11 @@
 }
 
 /* litery w okienku wysokości jednej litery; po najechaniu kolumna przesuwa się o literę w górę */
+/* okienko 1.2em: mieści też ogonek "Ę" w "architekturę" */
 .about__roll {
   display: inline-flex;
   overflow: hidden;
-  height: 1em;
+  height: 1.2em;
 }
 
 .about__roll:first-child {
@@ -265,11 +266,12 @@
 
 .about__roll-char > span {
   display: block;
-  height: 1em;
+  height: 1.2em;
+  line-height: 1.2em; /* litera w środku swojego okienka: kolejna (zapasowa) nie wystaje od dołu */
 }
 
 .about__frame:hover .about__roll-char {
-  transform: translate3d(0, -1em, 0);
+  transform: translate3d(0, -1.2em, 0);
 }
 
 /* przycisk na środku: biała pigułka, po najechaniu wypełnia się od dołu pomarańczem */
@@ -342,21 +344,39 @@
   }
 }
 
-/* bez animacji: zwykły układ, wszystko od razu widoczne, ramka bez przyklejania */
-@media (prefers-reduced-motion: reduce) {
+/* telefon i bez animacji: sekcja przewija się zwyczajnie z całą stroną; ramka stoi pod tekstem,
+   bez przyklejania i przelotu z miniatury (miejsce na miniaturę niepotrzebne) */
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
   .about__slot {
     display: none;
   }
 
   .about .about__reel {
     height: auto;
+    margin-top: 40px;
+    padding-bottom: var(--section-pad);
   }
 
   .about__stage {
     position: relative;
     top: auto;
   }
+}
 
+/* telefon: mała ramka, więc mniejszy przycisk i litery, żeby "architekturę" zmieściło się w połowie */
+@media (max-width: 768px) {
+  .about__reel-title {
+    --watch-w: max(44px, 10.4cqi);
+    column-gap: 2cqi;
+    font-size: 5cqi;
+  }
+
+  .about__watch {
+    width: max(44px, 10.4cqi);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
   .about__word-inner,
   .about__stats {
     transform: none;

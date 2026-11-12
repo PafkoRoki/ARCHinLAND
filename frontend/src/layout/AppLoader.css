@@ -59,7 +59,7 @@
   font-weight: 600;
   letter-spacing: normal; /* bez rozstrzelonych liter */
   text-transform: uppercase;
-  color: #f0f0f0;
+  color: var(--black);
 }
 
 .app-loader__percent span {
@@ -80,11 +80,11 @@
 
 /* ---- strona główna: szklana bańka (LoaderBubble, WebGL) ---- */
 
-/* płótno na cały ekran; grafitowe tło zasłania stronę do pierwszej klatki (potem LoaderBubble je zdejmuje) */
+/* płótno na cały ekran; jasne tło zasłania stronę do pierwszej klatki (potem LoaderBubble je zdejmuje) */
 .loader-bubble {
   position: fixed;
   inset: 0;
-  background: #2d2d2d;
+  background: #f0f0f0;
   z-index: 9999;
 }
 
@@ -115,11 +115,9 @@
   font-weight: 900;
   letter-spacing: -0.04em;
   line-height: 1;
-  color: #ffffff;
-  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.45);
+  color: var(--black);
 }
 
 .app-loader__mark .app-loader__percent {
   text-align: center;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
 }
