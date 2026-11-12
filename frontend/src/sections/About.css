@@ -213,19 +213,16 @@
   pointer-events: none;
 }
 
-/* ZOBACZ [→] REALIZACJE: słowa po obu stronach przycisku, każde w swojej połowie ramki
-   (słowa są różnej długości, więc nie centrujemy ich razem, tylko dosuwamy do przycisku) */
+/* ZOBACZ [→] ARCHITEKTURĘ: słowa i przycisk w jednym rzędzie, cały rząd wyśrodkowany w ramce */
 .about__reel-title {
-  --watch-w: max(56px, 10.4cqi);
-
   position: absolute;
   top: 50%;
   left: 0;
   right: 0;
   z-index: 1;
-  display: grid;
-  grid-template-columns: 1fr var(--watch-w) 1fr;
+  display: flex;
   align-items: center;
+  justify-content: center;
   column-gap: 2.4cqi;
   transform: translateY(-50%);
   font-family: var(--font-display);
@@ -247,15 +244,6 @@
   height: 1.2em;
 }
 
-.about__roll:first-child {
-  grid-column: 1;
-  justify-self: end;
-}
-
-.about__roll:last-child {
-  grid-column: 3;
-  justify-self: start;
-}
 
 .about__roll-char {
   display: inline-flex;
@@ -276,10 +264,8 @@
 
 /* przycisk na środku: biała pigułka, po najechaniu wypełnia się od dołu pomarańczem */
 .about__watch {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  z-index: 1;
+  position: relative;
+  flex: none;
   display: grid;
   place-items: center;
   width: max(56px, 10.4cqi);
@@ -288,8 +274,6 @@
   border-radius: 999px;
   background: var(--white);
   color: var(--black);
-  transform: translate(-50%, -50%);
-  opacity: calc(var(--reel) * 2 - 1);
 }
 
 .about__watch svg {
@@ -366,7 +350,6 @@
 /* telefon: mała ramka, więc mniejszy przycisk i litery, żeby "architekturę" zmieściło się w połowie */
 @media (max-width: 768px) {
   .about__reel-title {
-    --watch-w: max(44px, 10.4cqi);
     column-gap: 2cqi;
     font-size: 5cqi;
   }

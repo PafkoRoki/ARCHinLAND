@@ -234,15 +234,16 @@ export default function About() {
                 decoding="async"
               />
             )}
+            {/* ZOBACZ [→] ARCHITEKTURĘ: cały rząd wyśrodkowany w ramce */}
             <span className="about__reel-title" aria-hidden="true">
               <RollWord text="Zobacz" />
+              <span className="about__watch">
+                <span className="about__watch-fill" />
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                  <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
               <RollWord text="architekturę" />
-            </span>
-            <span className="about__watch" aria-hidden="true">
-              <span className="about__watch-fill" />
-              <svg viewBox="0 0 24 24" width="24" height="24">
-                <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
             </span>
           </a>
         </div>
