@@ -10,32 +10,7 @@
   --frame-h: calc(var(--content-w) * var(--frame-ratio));
 
   position: relative;
-  overflow: clip; /* łuk w tle wychodzi poza sekcję */
   padding-top: clamp(72px, 9vw, 150px);
-}
-
-/* ===== ŁUK W TLE ===== */
-/* rysunek łuku przypięty do szerokości treści (kontener), nie ekranu: na szerokim ekranie
-   łuk nie rośnie ani nie odjeżdża od tekstu; końce wychodzą poza rysunek (overflow visible) */
-.about__arc {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  z-index: 0;
-  width: min(100%, var(--container));
-  height: auto;
-  aspect-ratio: 1440 / 1400;
-  overflow: visible;
-  transform: translateX(-50%);
-  pointer-events: none;
-}
-
-/* cień łuku: ta sama linia przesunięta w dół, w półprzezroczystym ciemnym pomarańczu.
-   Bez filtra rozmycia: łuk dorysowuje się przy każdym ruchu przewijania, a rozmycie
-   tak dużej grafiki kosztowało ponad 100 ms pracy karty graficznej (szarpnięcie przy wejściu w O nas) */
-.about__arc-shadow {
-  stroke: rgba(217, 83, 26, 0.16);
-  transform: translate(0, 18px);
 }
 
 /* ===== TEKST ===== */

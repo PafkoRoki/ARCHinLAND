@@ -9,17 +9,13 @@ import './About.css'
 // 2. po prawej opis, liczby i przycisk-pigułka; po lewej, pod nagłówkiem, miniatura ze zdjęciami,
 // 3. przy przewijaniu miniatura "przelatuje" ze swojego miejsca do dużej ramki, która zatrzymuje się
 //    na środku ekranu, z napisem ZOBACZ [→] REALIZACJE (litery przewijają się po najechaniu),
-// 4. w tle gruby pomarańczowy łuk rysuje się razem z przewijaniem.
 // Tekst przewija się normalnie (nie jest przyklejony), przyklejona jest tylko duża ramka.
 
-const HEADLINE = ['Projektujemy przestrzeń.', 'Od 1991 roku.']
+const HEADLINE = ['Projektujemy', 'od 1991']
 const TEXT =
   'Nowoczesne osiedla, budynki wielorodzinne i jednorodzinne, hotele oraz obiekty użyteczności publicznej. ' +
   'Kompleksowo: architektura, konstrukcje, instalacje sanitarne i elektryczne. ' +
   'Ponad trzy dekady praktyki na Pomorzu Zachodnim.'
-// łuk w tle (współrzędne rysunku 1440 × 1400); końce biegną daleko poza rysunek
-const ARC =
-  'M -1200 900 C -800 820, -380 540, -120 330 C 140 120, 420 160, 470 420 S 360 980, 760 1080 S 1380 900, 1580 1260 C 1780 1620, 2200 1700, 2700 1720'
 
 // zdjęcie w ramce (statyczne): tylko z "Wybranych" realizacji. Bierzemy drugą, bo pierwsza
 // otwiera listę Realizacji tuż pod ramką i na wąskim ekranie wyglądałoby to jak jedno zdjęcie dwa razy
@@ -66,8 +62,6 @@ export default function About() {
   const slotRef = useRef<HTMLDivElement>(null) // miejsce miniatury (pod nagłówkiem, po lewej)
   const stageRef = useRef<HTMLDivElement>(null) // miejsce dużej ramki (przyklejone na środku ekranu)
   const frameRef = useRef<HTMLAnchorElement>(null) // ramka, która przelatuje z miniatury do dużej ramki
-  const arcRef = useRef<SVGPathElement>(null)
-  const shadowRef = useRef<SVGPathElement>(null)
   const [inView, setInView] = useState(false)
 
   // tekst wjeżdża raz, gdy nagłówek pokaże się na ekranie
@@ -84,13 +78,11 @@ export default function About() {
     return () => reveal.disconnect()
   }, [])
 
-  // przewijanie: ramka przelatuje z miejsca miniatury na miejsce dużej ramki; łuk w tle się rysuje
+  // przewijanie: ramka przelatuje z miejsca miniatury na miejsce dużej ramki
   useEffect(() => {
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     // telefon: sekcja przewija się zwyczajnie z całą stroną (ramka bez przyklejania i przelotu)
     const phone = window.matchMedia('(max-width: 768px)')
-    let arcLength = 0
-    let lastOffset = -1
     const onScroll = () => {
       const section = sectionRef.current
       const slot = slotRef.current
@@ -99,23 +91,6 @@ export default function About() {
       if (!section || !slot || !stage || !frame) return
       const vh = window.innerHeight
 
-      // łuk w tle: rysuje się od wejścia sekcji na ekran do połowy jej długości
-      const arc = arcRef.current
-      const shade = shadowRef.current
-      if (arc && shade) {
-        if (!arcLength) {
-          arcLength = arc.getTotalLength()
-          arc.style.strokeDasharray = shade.style.strokeDasharray = `${arcLength}`
-        }
-        const s = section.getBoundingClientRect()
-        const draw = still ? 1 : clamp01((vh - s.top) / (s.height * 0.55))
-        // łuk przerysowujemy tylko, gdy realnie urósł (każda zmiana to praca karty graficznej)
-        const offset = Math.round(arcLength * (1 - draw))
-        if (offset !== lastOffset) {
-          lastOffset = offset
-          arc.style.strokeDashoffset = shade.style.strokeDashoffset = `${offset}`
-        }
-      }
       if (still) return
       if (phone.matches) {
         // ramka w zwykłym układzie: bez rozmiarów ustawionych przez przelot (np. po obróceniu ekranu)
@@ -162,21 +137,6 @@ export default function About() {
       className={`about${inView ? ' is-in' : ''}`}
       aria-labelledby="about-title"
     >
-      {/* gruby łuk w tle (jak niebieska rura na lusion.co), rysuje się przy przewijaniu.
-          Rysunek ma szerokość treści strony (jak tekst), a końce łuku biegną daleko w bok,
-          więc na szerokim ekranie łuk dalej przechodzi przez nagłówek i znika za krawędziami ekranu */}
-      <svg className="about__arc" viewBox="0 0 1440 1400" preserveAspectRatio="xMidYMin slice" aria-hidden="true">
-        <defs>
-          <linearGradient id="about-arc-shade" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#ff8a52" />
-            <stop offset="0.55" stopColor="#ff6b2c" />
-            <stop offset="1" stopColor="#d9531a" />
-          </linearGradient>
-        </defs>
-        <path ref={shadowRef} className="about__arc-shadow" d={ARC} fill="none" strokeWidth="70" strokeLinecap="round" />
-        <path ref={arcRef} d={ARC} fill="none" stroke="url(#about-arc-shade)" strokeWidth="70" strokeLinecap="round" />
-      </svg>
-
       <div className="container about__intro">
         <h2 id="about-title" className="about__title">
           <span className="visually-hidden">O nas: </span>
@@ -184,7 +144,7 @@ export default function About() {
             <Words text={HEADLINE[0]} />
           </span>
           <span className="about__line">
-            <Words text={HEADLINE[1]} from={2} />
+            <Words text={HEADLINE[1]} from={1} />
           </span>
         </h2>
 
@@ -193,7 +153,7 @@ export default function About() {
 
         <div className="about__side">
           <p className="about__desc">
-            <Words text={TEXT} from={4} />
+            <Words text={TEXT} from={3} />
           </p>
           <p className="about__stats">
             <span>

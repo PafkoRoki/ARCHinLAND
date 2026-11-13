@@ -2,7 +2,7 @@ import { MutableRefObject, useEffect, useMemo } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 
-// Soczewka w Hero jako ta sama szklana bańka co ekran ładowania (LoaderBubble.tsx):
+// Soczewka w Hero jako szklana bańka (liczby jak w dawnym szklanym ekranie ładowania):
 // scena rysuje się najpierw do tekstury, a potem przez "szkło", czyli zaokrągloną krawędź,
 // która zagina obraz do środka, rozszczepia lekko kolory i ma dwa refleksy światła.
 // Liczby (szerokość fazki, siła zagięcia, refleksy) są skopiowane z shadera loadera, żeby przy
