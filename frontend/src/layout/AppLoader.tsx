@@ -1,15 +1,12 @@
 import {
   useCallback,
-  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
   useState,
 } from 'react'
 import { gsap } from 'gsap'
-import { modelReady, onModelProgress } from '../lib/modelControls'
-import LoaderLiquidText from './LoaderLiquidText'
-import LoaderBubble, { canUseBubble } from './LoaderBubble'
+import { modelReady } from '../lib/modelControls'
 import './AppLoader.css'
 
 const NUM_POINTS = 5
@@ -21,7 +18,7 @@ const DURATION = 1.9
 // ale nie dłużej niż MAX_WAIT_MS — przy wolnym łączu strona pokazuje się bez modelu,
 // a model dorysowuje się w soczewce, gdy dojdzie (plik ma ~8.6 MB).
 const MAX_WAIT_MS = 4000
-// po wczytaniu pasek postępu dopełnia się do 100% — chwila, żeby to było widać
+// po wczytaniu modelu krótka chwila, zanim plansza zacznie schodzić
 const BAR_FINISH_MS = 450
 // na model czekamy tylko przy wejściu na górę strony głównej — z adresem sekcji
 // (np. /#realizations) model jest poza ekranem, więc nie ma na co czekać
@@ -228,44 +225,18 @@ function AppLoaderAnimation({
   )
 }
 
+// Ekran ładowania na każdej stronie taki sam: jasna plansza w kolorach strony, która schodzi falą.
+// Na górze strony głównej plansza czeka na model 3D (najwyżej MAX_WAIT_MS), na pozostałych schodzi od razu.
 function AppLoader() {
   const [isVisible, setIsVisible] = useState(true)
   const [isWaiting, setIsWaiting] = useState(true)
-  const [progress, setProgress] = useState(0)
   const start = useMemo(waitForPage, [])
-  const showStatus = useMemo(isHome, [])
-  // strona główna: szklana bańka (WebGL); bez WebGL albo z ograniczonym ruchem — napis wypełniany falą
-  const [mode, setMode] = useState<'bubble' | 'wave'>(() =>
-    isHome() && !prefersReducedMotion() && canUseBubble() ? 'bubble' : 'wave',
-  )
   const loaderRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (DEV_PREVIEW !== null) return setProgress(Number(DEV_PREVIEW) / 100)
-    return onModelProgress(setProgress)
-  }, [])
-  // gotowe (albo limit czasu) → pasek dopełnia się do 100% przed odsłonięciem
-  useEffect(() => {
-    if (DEV_PREVIEW !== null) return
-    Promise.race([modelReady, wait(MAX_WAIT_MS)]).then(() => setProgress(1))
-  }, [])
 
   useLayoutEffect(() => {
     if (!isVisible || !loaderRef.current) return
     return blockSiblings(loaderRef.current)
   }, [isVisible])
-
-  // bańka sama prowadzi wyjście — tu tylko sygnał, że strona jest gotowa (fala robi to w AppLoaderAnimation)
-  useEffect(() => {
-    if (mode !== 'bubble') return
-    let cancelled = false
-    start.then(() => {
-      if (!cancelled) setIsWaiting(false)
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [mode, start])
 
   const handleStart = useCallback(() => {
     setIsWaiting(false)
@@ -275,50 +246,16 @@ function AppLoader() {
     setIsVisible(false)
   }, [])
 
-  const handleBubbleFail = useCallback(() => setMode('wave'), [])
-
   if (!isVisible) {
     return null
   }
-
-  const percent = (
-    <p className="app-loader__percent" aria-hidden="true">
-      <span>{Math.round(progress * 100)}%</span>
-    </p>
-  )
 
   return (
     <div ref={loaderRef} className="app-loader" style={{ position: 'fixed', inset: 0, zIndex: 9999 }}>
       <p className="visually-hidden" role="status">
         {isWaiting ? 'Wczytywanie strony…' : 'Strona wczytana'}
       </p>
-      {mode === 'bubble' ? (
-        <>
-          <LoaderBubble
-            progress={progress}
-            exiting={!isWaiting}
-            onExited={handleComplete}
-            onFail={handleBubbleFail}
-          />
-          {/* napis i licznik na środku bańki; gasną, gdy bańka zaczyna zamieniać się w soczewkę */}
-          <div className={`app-loader__mark${isWaiting ? '' : ' app-loader__mark--out'}`}>
-            <span className="app-loader__wordmark">ARCHinLAND</span>
-            {percent}
-          </div>
-        </>
-      ) : (
-        <>
-          <AppLoaderAnimation start={start} onStart={handleStart} onComplete={handleComplete} />
-          {/* bez WebGL: napis ARCHinLAND wypełnia się od dołu falą; przy odsłonięciu gaśnie,
-              a plansza schodzi falą */}
-          {showStatus && (
-            <div className={`app-loader__brand${isWaiting ? '' : ' app-loader__brand--out'}`}>
-              <LoaderLiquidText text="ARCHinLAND" progress={progress} />
-              {percent}
-            </div>
-          )}
-        </>
-      )}
+      <AppLoaderAnimation start={start} onStart={handleStart} onComplete={handleComplete} />
     </div>
   )
 }
