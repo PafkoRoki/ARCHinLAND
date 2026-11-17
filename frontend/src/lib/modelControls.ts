@@ -2,7 +2,13 @@
 // - sekcja About zmienia dragRotation (przeciąganie myszką), BackgroundModel czyta go w każdej klatce,
 // - BackgroundModel zgłasza postęp wczytywania i gotowość, AppLoader na to czeka.
 export const modelControls = {
-  dragRotation: 0, // dodatkowy obrót wokół osi Y z przeciągania (radiany)
+  dragRotation: 0, // dodatkowy obrót wokół osi Y (nieużywany: przeciąganie chwyta pojedyncze bryły)
+  /** mysz trzyma bryłę: pozycja kursora w px ekranu (Hero), null = puszczona */
+  grab: null as { x: number; y: number } | null,
+  /** stuknięcia palcem do obsłużenia w następnej klatce (px ekranu) */
+  taps: [] as { x: number; y: number }[],
+  /** czy kursor stoi nad bryłą (BackgroundModel ustawia, Hero pokazuje "rączkę") */
+  hoverShape: false,
 }
 
 type ProgressListener = (progress: number) => void

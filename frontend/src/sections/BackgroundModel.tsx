@@ -6,7 +6,7 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import { modelControls, reportModelProgress, reportModelReady } from '../lib/modelControls'
 import { screenHeight } from '../lib/viewport'
-import { createShapeCluster, type ClusterCursor } from './shapeCluster'
+import { createShapeCluster, type ClusterCursor, type ClusterInput } from './shapeCluster'
 import GlassLens, { type LensState } from './GlassLens'
 import './BackgroundModel.css'
 
@@ -16,9 +16,9 @@ const MODEL_URL = '/models/Eryk.glb'
 const USE_SHAPE = true
 const TARGET = 4.6 // najdłuższy bok modelu w jednostkach sceny
 const MODEL_SCALE = 0.62 // ogólny rozmiar modelu na ekranie
-// telefon (ekran pionowy): model po rozszerzeniu koła niżej (ułamek wysokości ekranu) i nieco mniejszy
-const PORTRAIT_DROP = 0.08
-const PORTRAIT_SCALE = 0.85
+// telefon (ekran pionowy): model na środku i większy (Hero bez napisów, nie robi już miejsca na tekst)
+const PORTRAIT_DROP = 0
+const PORTRAIT_SCALE = 1.35
 const BASE_ROTATION = -0.5 // obrót startowy (rad) — widok 3/4
 
 // Soczewka w Hero (jak w STILL): model widać tylko w kole, które podąża za kursorem.
@@ -26,7 +26,6 @@ const BASE_ROTATION = -0.5 // obrót startowy (rad) — widok 3/4
 const LENS_RADIUS = 180 // px, promień koła w Hero (na telefonie mniejszy, patrz lensRadius)
 const LENS_ZOOM = 1.15 // model w soczewce jest lekko przybliżony
 const LENS_REST = { x: 0.5, y: 0.42 } // pozycja koła bez kursora (ułamek ekranu)
-const REVEAL_DISTANCE = 0.8 // ile wysokości ekranu przewijania trwa powiększanie koła
 // Koniec sceny O nas: pozioma płaszczyzna tnie model od dachu do podstawy (jak rzut na planie),
 // aż model zniknie tuż przed odpięciem sceny. Tyle wysokości ekranu przewijania trwa cięcie.
 const CUT_DISTANCE = 0.8
@@ -48,7 +47,12 @@ const MAX_DPR =
 const { lerp, clamp, smoothstep } = THREE.MathUtils
 
 // tick = animacja obiektu (gromada kul), wołana w każdej klatce
-type Loaded = { obj: THREE.Object3D; height: number; tick?: (t: number, dt: number, cursor: ClusterCursor) => void }
+type Loaded = {
+  obj: THREE.Object3D
+  height: number
+  tick?: (t: number, dt: number, cursor: ClusterCursor, input?: ClusterInput) => void
+  hoverable?: (ray: THREE.Ray) => boolean
+}
 
 // Materiały z modelu mają roughness 1 i zero metalu (wyglądają jak papier).
 // Stroimy je po nazwie; env = względna siła odbić otoczenia (RoomEnvironment w <Reflections />).
@@ -252,6 +256,7 @@ function Model({ reveal, cut, pointer, layer, lensState }: Motion) {
   }, [gl, loaded])
 
   const lens = useRef({ x: 0, y: 0, ready: false })
+  const scroll = useRef(typeof window !== 'undefined' ? window.scrollY : 0) // do prędkości przewijania
   const tmp = useRef({
     ndc: new THREE.Vector3(),
     dir: new THREE.Vector3(),
@@ -355,16 +360,35 @@ function Model({ reveal, cut, pointer, layer, lensState }: Motion) {
     // gromada brył: kursor jako przeszkoda — promień spod kursora przeliczony do układu gromady.
     // Działa po rozszerzeniu soczewki (w Hero kursor i tak prowadzi soczewkę z modelem).
     if (loaded?.tick) {
+      g.updateMatrixWorld(true)
+      const { raycaster, inverse } = tmp.current
+      inverse.copy(loaded.obj.matrixWorld).invert()
+      // promień spod punktu ekranu (px) w układzie gromady
+      const rayAt = (x: number, y: number) => {
+        raycaster.setFromCamera(new THREE.Vector2((x / w) * 2 - 1, -(y / hgt) * 2 + 1), camera)
+        return raycaster.ray.clone().applyMatrix4(inverse)
+      }
       let cursor: ClusterCursor = null
       const p = pointer.current
-      if (p && r > 0.5) {
-        g.updateMatrixWorld(true)
-        const { raycaster, inverse } = tmp.current
-        raycaster.setFromCamera(new THREE.Vector2((p.x / w) * 2 - 1, -(p.y / hgt) * 2 + 1), camera)
-        inverse.copy(loaded.obj.matrixWorld).invert()
-        cursor = { ray: raycaster.ray.clone().applyMatrix4(inverse), strength: smoothstep(r, 0.5, 1) }
+      const grab = modelControls.grab
+      // kursor odpycha bryły, ale nie wtedy, gdy którąś trzyma (wtedy niesie ją zamiast odpychać)
+      if (p && r > 0.5 && !grab) {
+        const ray = rayAt(p.x, p.y)
+        cursor = { ray, strength: smoothstep(r, 0.5, 1) }
+        modelControls.hoverShape = loaded.hoverable?.(ray) ?? false
+      } else if (!grab) {
+        modelControls.hoverShape = false
       }
-      loaded.tick(state.clock.elapsedTime, dt, cursor)
+      // przewijanie: prędkość strony (px/s) buja bryłami
+      const y = window.scrollY
+      const scrollSpeed = dt > 0 ? (y - scroll.current) / dt : 0
+      scroll.current = y
+      const input: ClusterInput = {
+        grab: grab ? rayAt(grab.x, grab.y) : null,
+        taps: modelControls.taps.splice(0).map((tp) => rayAt(tp.x, tp.y)),
+        scrollSpeed: Math.max(-4000, Math.min(4000, scrollSpeed)),
+      }
+      loaded.tick(state.clock.elapsedTime, dt, cursor, input)
     }
 
     // cięcie od góry: wysokość płaszczyzny zjeżdża od dachu do podstawy modelu
@@ -456,7 +480,8 @@ export default function BackgroundModel() {
       }
       setHidden(offset >= vh)
 
-      reveal.current = smoothstep(y, 0, vh * REVEAL_DISTANCE)
+      // model od razu na całym ekranie (bez soczewki w kole): stan "po rozszerzeniu"
+      reveal.current = 1
       cut.current = smoothstep(y, pinEnd - vh * CUT_DISTANCE, pinEnd)
     }
     // tylko prawdziwa mysz — na dotyku soczewka stoi w LENS_REST

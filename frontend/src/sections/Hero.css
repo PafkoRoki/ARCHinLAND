@@ -1,15 +1,14 @@
-/* Przypięta scena: wysoka sekcja, w której warstwy stoją w miejscu (sticky) podczas przewijania.
-   --hero-pin = ile ekranów przewijania trwa scena po pierwszym ekranie (patrz Hero.tsx). */
+/* Przypięta scena: wysoka sekcja, w której warstwa obracania stoi w miejscu (sticky) podczas przewijania.
+   --hero-pin = ile ekranów przewijania trwa scena po pierwszym ekranie (oś czasu w Hero.tsx). */
 .hero {
-  --hero-pin: 240svh; /* koniec sceny w 2.4 ekranu (oś czasu w Hero.tsx) */
-  --model: 0;
+  --hero-pin: 160svh; /* koniec sceny w 1.6 ekranu: obracanie 0 → 0.8, cięcie 0.8 → 1.6 */
 
   position: relative;
   display: grid;
   height: calc(100svh + var(--hero-pin));
 }
 
-/* obie warstwy w tej samej komórce siatki, każda przyklejona do góry ekranu */
+/* warstwa przyklejona do góry ekranu, nad modelem 3D (.bg-model, z-index 1) */
 .hero__layer {
   grid-area: 1 / 1;
   align-self: start;
@@ -19,197 +18,18 @@
   min-height: 560px;
 }
 
-/* warstwy względem modelu 3D (.bg-model, z-index 1):
-   napis pod (0), obracanie (2), wskaźnik przewijania (4) */
-.hero__layer--title {
-  z-index: 0;
-  pointer-events: none;
-}
-
-/* obracanie modelu: włączone, gdy model jest na całym ekranie */
+/* chwytanie brył myszą (rączka tylko nad bryłą) i stuknięcia palcem; palcem w pionie przewijamy */
 .hero__layer--drag {
   z-index: 2;
-  pointer-events: none;
-  cursor: grab;
-  touch-action: pan-y; /* palcem w pionie przewijamy, w poziomie obracamy */
+  touch-action: pan-y;
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.hero[data-model='on'] .hero__layer--drag {
-  pointer-events: auto;
+.hero__layer--drag[data-hover='1'] {
+  cursor: grab;
 }
 
-.hero__layer--drag:active {
+.hero__layer--drag[data-grabbing='1'] {
   cursor: grabbing;
-}
-
-/* podpowiedź przewijania: na dole, nad modelem; znika przy pierwszym ruchu (--intro) */
-.hero__layer--intro {
-  z-index: 2;
-  pointer-events: none;
-  opacity: var(--intro, 1);
-}
-
-.hero__scroll-hint {
-  position: absolute;
-  left: 50%;
-  bottom: 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  transform: translateX(-50%);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--black);
-}
-
-/* pionowa linia 1px, po której w dół biegnie odcinek — "przewiń w dół" */
-.hero__scroll-line {
-  position: relative;
-  width: 1px;
-  height: 56px;
-  overflow: hidden;
-  background: rgba(45, 45, 45, 0.2);
-}
-
-.hero__scroll-line::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 1px;
-  height: 40%;
-  background: var(--black);
-  animation: hero-scroll-line 1.8s var(--ease) infinite;
-}
-
-@keyframes hero-scroll-line {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(260%); }
-}
-
-/* wskaźnik przewijania: pionowa linia przy prawej krawędzi wypełnia się w dół (--pin),
-   a strzałka pod nią pulsuje — widać, że strona się przewija, choć model stoi.
-   Pojawia się, gdy model wypełni ekran, i znika przy odpięciu sceny (--pin-show, Hero.tsx). */
-.hero__layer--progress {
-  z-index: 4;
-  pointer-events: none;
-  opacity: var(--pin-show, 0);
-}
-
-.hero__progress {
-  position: absolute;
-  top: 50%;
-  right: calc(var(--gutter) / 2);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  transform: translateY(-50%);
-  color: var(--black);
-}
-
-.hero__progress-label {
-  writing-mode: vertical-rl;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.hero__progress-track {
-  position: relative;
-  width: 1px;
-  height: 140px;
-  background: rgba(45, 45, 45, 0.2);
-}
-
-.hero__progress-fill {
-  position: absolute;
-  inset: 0;
-  background: var(--black);
-  transform: scaleY(var(--pin, 0));
-  transform-origin: top;
-}
-
-/* strzałka w dół (dwie krawędzie obróconego kwadratu) */
-.hero__progress-arrow {
-  width: 8px;
-  height: 8px;
-  border-right: 1px solid var(--black);
-  border-bottom: 1px solid var(--black);
-  transform: rotate(45deg);
-  animation: hero-progress-arrow 1.4s var(--ease) infinite;
-}
-
-@keyframes hero-progress-arrow {
-  0% { transform: translateY(-4px) rotate(45deg); opacity: 0; }
-  40% { opacity: 1; }
-  100% { transform: translateY(6px) rotate(45deg); opacity: 0; }
-}
-
-.hero__title {
-  position: relative;
-  display: grid;
-  height: 100%;
-  place-items: center;
-  margin: 0;
-  padding: 0 var(--gutter);
-  font: inherit;
-  font-family: var(--font-display); /* napis ARCHinLAND w SVG dziedziczy krój */
-}
-
-.hero__title .stroke-text {
-  width: min(100%, 760px);
-  font-family: 'Inter Tight Variable', 'Inter Tight', Arial, sans-serif;
-}
-
-/* wysokość z proporcji napisu — na całą szerokość ekranu */
-.hero__title .stroke-text__svg {
-  height: auto;
-}
-
-/* linijka pod napisem: kto, gdzie, od kiedy — krojem i stylem etykiet (.label).
-   Nisko, nad podpowiedzią "Scroll", poza soczewką z modelem (LENS_REST w BackgroundModel). */
-.hero__tagline {
-  position: absolute;
-  left: 50%;
-  bottom: 160px;
-  width: min(100% - 2 * var(--gutter), 640px);
-  transform: translateX(-50%);
-  font-family: var(--font-body);
-  font-size: var(--fs-label);
-  font-weight: 700;
-  line-height: 1.5;
-  letter-spacing: normal; /* bez rozstrzelonych liter */
-  text-transform: uppercase;
-  text-align: center;
-  text-wrap: balance;
-  color: var(--black);
-}
-
-/* pełna nazwa biura — osobna, mocniejsza linijka nad "kto, gdzie, od kiedy" */
-.hero__tagline-name {
-  display: block;
-  margin-bottom: 4px;
-  font-weight: 800;
-}
-
-/* podpowiedź obracania: pojawia się, gdy model jest odsłonięty (--model) */
-.hero__hint {
-  position: absolute;
-  left: 50%;
-  bottom: 40px;
-  transform: translateX(-50%);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--black);
-  white-space: nowrap;
-  opacity: calc(var(--model) * var(--outro, 1)); /* gaśnie razem z uciętym modelem */
-}
-
-/* telefon */
-@media (max-width: 560px) {
-  .hero__hint {
-    bottom: 16px;
-  }
 }
