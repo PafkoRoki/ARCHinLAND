@@ -19,6 +19,13 @@ const CURSOR_R = 0.35 // promień przeszkody (jednostki gromady)
 const SPRING = 14 // siła powrotu na miejsce
 const DAMPING = 5 // tłumienie — im więcej, tym mniej się kołysze
 const KICK_SPIN = 2.5 // ile obrotu dostaje bryła przy uderzeniu
+// chwytanie myszką: bryła najbliżej promienia spod kursora (z zapasem, bo kursor odpycha bryły)
+const PICK_MARGIN = 0.45
+// stuknięcie palcem: fala, która rozpycha bryły w tym promieniu od miejsca stuknięcia
+const TAP_RADIUS = 1.3
+const TAP_FORCE = 7
+// przewijanie: bryły bujają się w pionie, jakby zostawały za ruchem strony
+const SCROLL_KICK = 0.0009
 
 // Bryły architektoniczne: wieża, płyta, sześcian, kolumna, łuk, dom z dwuspadowym dachem,
 // schody, kształt L, sklepienie, piramida i klin. Każda wyśrodkowana i przeskalowana tak,
@@ -102,6 +109,10 @@ type Item = {
 
 /** Promień spod kursora w układzie gromady (createShapeCluster().obj); strength 0–1 = siła odpychania. */
 export type ClusterCursor = { ray: THREE.Ray; strength: number } | null
+
+/** Wejście z Hero w układzie gromady: trzymanie myszą (promień, null = puszczone), stuknięcia palcem
+ *  (promienie) i prędkość przewijania (px/s, dodatnia w dół). */
+export type ClusterInput = { grab: THREE.Ray | null; taps: THREE.Ray[]; scrollSpeed: number }
 
 // prosty, powtarzalny los (ta sama gromada przy każdym wejściu)
 function rng(seed: number) {
@@ -225,9 +236,91 @@ export function createShapeCluster() {
   const centre = new THREE.Vector3()
   const closest = new THREE.Vector3()
 
-  function tick(t: number, dt = 0, cursor: ClusterCursor = null) {
-    const step = Math.min(dt, 1 / 30) // po przerwie (karta w tle) bez wielkiego skoku
+  // chwycona bryła: płaszczyzna, po której ją przesuwamy (prostopadła do patrzenia), i punkt chwytu
+  let held: Item | null = null
+  const grabPlane = new THREE.Plane()
+  const grabOffset = new THREE.Vector3()
+  const hit = new THREE.Vector3()
+  const drift = new THREE.Vector3()
+
+  const centreOf = (it: Item, out: THREE.Vector3) => out.set(it.pos.x, it.pos.y + centreY, it.pos.z)
+  const driftOf = (it: Item, t: number, out: THREE.Vector3) => {
+    const w = t * it.speed + it.phase
+    return out.set(
+      it.rest.x + Math.sin(w) * DRIFT,
+      it.rest.y + Math.sin(w * 1.3 + 1.7) * DRIFT,
+      it.rest.z + Math.cos(w * 0.9) * DRIFT,
+    )
+  }
+
+  /** Czy pod promieniem jest bryła (do kursora "rączki") */
+  function pickShape(ray: THREE.Ray): Item | null {
+    let best: Item | null = null
+    let bestT = Infinity
     for (const it of items) {
+      centreOf(it, centre)
+      const along = ray.closestPointToPoint(centre, closest).distanceTo(ray.origin)
+      if (closest.distanceTo(centre) < it.r + PICK_MARGIN && along < bestT) {
+        bestT = along
+        best = it
+      }
+    }
+    return best
+  }
+
+  function input(inp: ClusterInput | undefined, t: number, step: number) {
+    if (!inp) return
+    // chwytanie: wciśnięcie łapie bryłę, przeciąganie ją niesie, puszczenie rzuca (zostaje prędkość)
+    if (inp.grab) {
+      if (!held) {
+        held = pickShape(inp.grab)
+        if (held) {
+          centreOf(held, centre)
+          grabPlane.setFromNormalAndCoplanarPoint(inp.grab.direction.clone().negate(), centre)
+          if (inp.grab.intersectPlane(grabPlane, hit)) grabOffset.subVectors(centre, hit)
+          else grabOffset.set(0, 0, 0)
+        }
+      }
+      if (held && inp.grab.intersectPlane(grabPlane, hit) && step > 0) {
+        hit.add(grabOffset)
+        hit.y -= centreY
+        // wychylenie tak, żeby środek bryły był pod kursorem; prędkość z ruchu (do rzutu po puszczeniu)
+        const want = hit.sub(driftOf(held, t, drift))
+        held.vel.subVectors(want, held.off).divideScalar(step)
+        held.off.copy(want)
+      }
+    } else {
+      held = null
+    }
+    // stuknięcie palcem: bryły w pobliżu odskakują od miejsca stuknięcia i trochę się obracają
+    for (const ray of inp.taps) {
+      for (const it of items) {
+        centreOf(it, centre)
+        ray.closestPointToPoint(centre, closest)
+        d.subVectors(centre, closest)
+        const dist = d.length()
+        if (dist > TAP_RADIUS) continue
+        if (dist < 1e-3) d.set(it.phase - Math.PI, 1, 0)
+        d.normalize().multiplyScalar(TAP_FORCE * (1 - dist / TAP_RADIUS))
+        it.vel.add(d)
+        it.spinVel += (it.phase > Math.PI ? 1 : -1) * 4 * (1 - dist / TAP_RADIUS)
+      }
+    }
+    // przewijanie: bryły zostają lekko w tyle za ruchem strony i dobijają sprężyną (każda trochę inaczej)
+    if (inp.scrollSpeed) {
+      for (const it of items) it.vel.y += inp.scrollSpeed * SCROLL_KICK * (0.6 + 0.8 * (it.speed - 0.4)) * step * 60
+    }
+  }
+
+  function tick(t: number, dt = 0, cursor: ClusterCursor = null, inp?: ClusterInput) {
+    const step = Math.min(dt, 1 / 30) // po przerwie (karta w tle) bez wielkiego skoku
+    input(inp, t, step)
+    for (const it of items) {
+      if (it === held) {
+        // trzymana bryła: tylko tam, gdzie kursor (bez sprężyny i odpychania od kursora)
+        it.pos.copy(driftOf(it, t, drift)).add(it.off)
+        continue
+      }
       // 1. sprężyna ściąga wychylenie z powrotem do zera (półjawny Euler — stabilny)
       it.vel.addScaledVector(it.off, -SPRING * step).multiplyScalar(Math.max(0, 1 - DAMPING * step))
       it.off.addScaledVector(it.vel, step)
@@ -270,9 +363,14 @@ export function createShapeCluster() {
           const dist = d.length() || 1e-4
           const overlap = a.r + c.r - dist
           if (overlap <= 0) continue
-          d.multiplyScalar((overlap / dist) * 0.5)
-          a.pos.sub(d)
-          c.pos.add(d)
+          // trzymana bryła się nie cofa: rozpycha sąsiadki całą różnicą
+          if (a === held) c.pos.addScaledVector(d, overlap / dist)
+          else if (c === held) a.pos.addScaledVector(d, -overlap / dist)
+          else {
+            d.multiplyScalar((overlap / dist) * 0.5)
+            a.pos.sub(d)
+            c.pos.add(d)
+          }
         }
       }
     }
@@ -286,5 +384,6 @@ export function createShapeCluster() {
   }
 
   tick(0)
-  return { obj: group as THREE.Object3D, height, tick }
+  const hoverable = (ray: THREE.Ray) => pickShape(ray) !== null
+  return { obj: group as THREE.Object3D, height, tick, hoverable }
 }
