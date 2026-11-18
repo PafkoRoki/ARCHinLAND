@@ -8,13 +8,11 @@ import Contact from '../sections/Contact'
 import Footer from '../layout/Footer'
 import { lazy, Suspense, useEffect } from 'react'
 import { scrollToTarget } from '../lib/smoothScroll'
-import { useMagnet } from '../lib/useMagnet'
 
 // three.js ładowany osobno, żeby nie blokował pierwszego renderu
 const BackgroundModel = lazy(() => import('../sections/BackgroundModel'))
 
 export default function Home() {
-  useMagnet() // magnes: strona dojeżdża do ważnych momentów, gdy przestajesz przewijać obok nich
   // adres z sekcją (np. /#realizations): przeglądarka próbuje przewinąć, zanim React zbuduje stronę,
   // więc po wyrenderowaniu przewijamy do sekcji sami (bez płynnej animacji)
   useEffect(() => {

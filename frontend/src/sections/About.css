@@ -13,21 +13,9 @@
   padding-top: clamp(72px, 9vw, 150px);
 }
 
-/* ===== PRZYTRZYMANIE =====
-   Tekst z miniaturą przykleja się na chwilę (sticky) pod górną krawędzią, a pod nim przewija się
-   pusty odstęp. Gdy odstęp się skończy, tekst jedzie dalej i zaczyna się przelot ramki. */
-.about__hold {
-  position: relative;
-}
-
-.about__hold-space {
-  height: 45svh; /* jak długo tekst stoi (pół ekranu przewijania) */
-}
-
 /* ===== TEKST ===== */
 .about .about__intro {
-  position: sticky;
-  top: 72px; /* pod przyciskiem MENU */
+  position: relative;
   z-index: 1;
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -190,6 +178,37 @@
   object-fit: cover; /* zdjęcie statyczne: bez zmieniania i ruchu */
 }
 
+/* ===== PRZELOT W WEBGL (komputer) =====
+   Płótno na cały ekran pod dużą ramką. Gdy działa (klasa about--gl), ramka w HTML jest
+   przezroczysta: zdjęcie i przyciemnienie rysuje shader, ramka trzyma napis i kliknięcie. */
+.about__gl {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.about:not(.about--gl) .about__gl {
+  display: none;
+}
+
+.about--gl .about__frame {
+  background: transparent;
+  pointer-events: none; /* klikalna dopiero, gdy zdjęcie doleci (is-live) */
+}
+
+.about--gl .about__frame.is-live {
+  pointer-events: auto;
+}
+
+.about--gl .about__photo,
+.about--gl .about__frame::after {
+  display: none;
+}
+
 /* przyciemnienie pod napisem, gdy ramka urośnie */
 .about__frame::after {
   content: '';
@@ -261,6 +280,13 @@
   border-radius: 999px;
   background: var(--white);
   color: var(--black);
+  transition: background-color 0s;
+}
+
+/* po wypełnieniu pomarańczem tło pigułki też jest pomarańczowe: bez białej obwódki na brzegu */
+.about__frame:hover .about__watch {
+  background-color: var(--orange);
+  transition: background-color 0s 0.38s;
 }
 
 .about__watch svg {
@@ -319,16 +345,6 @@
    bez przyklejania i przelotu z miniatury (miejsce na miniaturę niepotrzebne) */
 @media (max-width: 768px), (prefers-reduced-motion: reduce) {
   .about__slot {
-    display: none;
-  }
-
-  /* telefon: bez przytrzymania, zwykłe przewijanie */
-  .about .about__intro {
-    position: relative;
-    top: auto;
-  }
-
-  .about__hold-space {
     display: none;
   }
 
