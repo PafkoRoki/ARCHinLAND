@@ -211,8 +211,8 @@ textarea {
   z-index: auto;
 }
 
-/* od O nas w dół tło strony (--bg): pełne tło sekcji zasłania tło soczewki (--bg-model) */
-.page-content > #about,
+/* O nas bez własnego tła: przez sekcję widać odlatujące bryły z Hero.
+   Od Architektury w dół pełne tło strony (--bg) zasłania warstwę z bryłami */
 .page-content > #about ~ section {
   background: var(--bg);
 }

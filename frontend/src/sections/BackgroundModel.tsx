@@ -478,7 +478,13 @@ export default function BackgroundModel() {
       const pinEnd = hero ? hero.getBoundingClientRect().top + y + hero.offsetHeight - vh : Infinity
       const gone = y >= pinEnd + vh * 1.05 // O nas zakrywa cały ekran
       setHidden(gone)
-      if (layer.current) layer.current.style.visibility = gone ? 'hidden' : ''
+      if (layer.current) {
+        layer.current.style.visibility = gone ? 'hidden' : ''
+        // O nas nie ma własnego tła: bryły, które jeszcze nie odleciały, łagodnie znikają,
+        // zanim warstwa się schowa (bez nagłego zniknięcia za tekstem)
+        const fade = 1 - smoothstep(y, pinEnd + vh * 0.35, pinEnd + vh)
+        layer.current.style.opacity = fade < 1 ? fade.toFixed(3) : ''
+      }
 
       // model od razu na całym ekranie (bez soczewki w kole): stan "po rozszerzeniu"
       reveal.current = 1

@@ -29,9 +29,6 @@ export default function RealizationDetail() {
 
       <header className="realizationDetail__header">
         <div>
-          <span className="realizationDetail__eyebrow">
-            {project.number} · {project.category}
-          </span>
           <h1>{project.name}</h1>
         </div>
 

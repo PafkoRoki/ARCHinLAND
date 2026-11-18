@@ -36,7 +36,6 @@ export default function MirGrid({ projects }: MirGridProps) {
             </div>
             <div className="mir-grid__overlay">
               <div className="mir-grid__content">
-                <span className="mir-grid__category">{project.category}</span>
                 <h3 className="mir-grid__title">{project.displayName ?? project.name}</h3>
                 <span className="mir-grid__location">{project.location}</span>
               </div>
