@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
-import { projects, srcsetOf } from '../data/realizations'
+import { projects, sizeOf, srcsetOf } from '../data/realizations'
 import { scrollToTarget } from '../lib/smoothScroll'
 import './RealizationDetail.css'
 
@@ -54,6 +54,8 @@ export default function RealizationDetail() {
             src={src}
             srcSet={srcsetOf(src) || undefined}
             sizes="(min-width: 1500px) 1400px, 100vw"
+            width={sizeOf(src)?.width}
+            height={sizeOf(src)?.height}
             alt={`${project.name}, zdjęcie ${i + 1} z ${images.length}, ${project.location}`}
             loading={i === 0 ? 'eager' : 'lazy'}
             decoding="async"
