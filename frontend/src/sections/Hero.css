@@ -1,7 +1,7 @@
 /* Przypięta scena: wysoka sekcja, w której warstwa obracania stoi w miejscu (sticky) podczas przewijania.
    --hero-pin = ile ekranów przewijania trwa scena po pierwszym ekranie (oś czasu w Hero.tsx). */
 .hero {
-  --hero-pin: 160svh; /* koniec sceny w 1.6 ekranu: obracanie 0 → 0.8, cięcie 0.8 → 1.6 */
+  --hero-pin: 50svh; /* po pół ekranu wjeżdża O nas; bryły rozsypują się od 0.12 do 1.25 ekranu */
 
   position: relative;
   display: grid;

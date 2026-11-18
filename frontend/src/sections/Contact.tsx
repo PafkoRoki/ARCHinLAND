@@ -1,5 +1,4 @@
 import SectionHeader from '../components/SectionHeader'
-import StrokeText from '../components/StrokeText'
 import './Contact.css'
 
 // Kontakt: grafitowe tło jak Opinie i stopka, ale z jednym dużym działaniem — numer telefonu na całą szerokość.
@@ -25,24 +24,7 @@ export default function Contact() {
         <div className="contact__details">
           <div className="contact__block">
             <span className="contact__label">Studio</span>
-            {/* logo jak w Hero, w odwróconych kolorach (grafitowe tło): biały obrys, grafitowe litery; bez animacji */}
-            <div className="contact__logo">
-              <StrokeText
-                text="ARCHinLAND"
-                strokeColor="#ffffff"
-                fillColor="#2d2d2d"
-                strokeWidth={50}
-                drawDuration={1.6}
-                fillDelay={0.2}
-                stagger={0.095}
-                ease="power2.out"
-                trigger="static"
-                fillMode="wipe"
-                fontSize={150}
-                fontWeight={900}
-                letterSpacing={-5}
-              />
-            </div>
+            <p className="contact__value">ARCHinLAND</p>
           </div>
 
           <div className="contact__block">

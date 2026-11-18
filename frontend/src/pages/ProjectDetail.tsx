@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { MdOutlineBed, MdOutlineGarage, MdOutlineStairs } from "react-icons/md";
 import type { Project } from "../data/projects";
+import { scrollToTarget } from "../lib/smoothScroll";
 import "./ProjectDetail.css";
 
 /**
@@ -90,7 +91,7 @@ export function ProjectDetail({ projects }: ProjectDetailProps) {
   const [show3d, setShow3d] = useState(false);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    scrollToTarget(0, { immediate: true });
     setMirrored(false);
     setLightbox(null);
     setActiveTab("visualizations");

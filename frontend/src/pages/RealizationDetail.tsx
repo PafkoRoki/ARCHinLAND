@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { projects, srcsetOf } from '../data/realizations'
+import { scrollToTarget } from '../lib/smoothScroll'
 import './RealizationDetail.css'
 
 export default function RealizationDetail() {
@@ -9,7 +10,7 @@ export default function RealizationDetail() {
   const project = index !== -1 ? projects[index] : undefined
 
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+    scrollToTarget(0, { immediate: true })
   }, [slug])
 
   if (!project) {

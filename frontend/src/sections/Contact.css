@@ -89,19 +89,6 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
-/* logo ARCHinLAND (StrokeText) — ten sam krój co w Hero */
-.contact__logo {
-  width: min(240px, 100%);
-}
-
-.contact__logo .stroke-text {
-  font-family: 'Inter Tight Variable', 'Inter Tight', Arial, sans-serif;
-}
-
-.contact__logo .stroke-text__svg {
-  height: auto;
-}
-
 .contact__value {
   font-size: 15px;
   line-height: 1.5;

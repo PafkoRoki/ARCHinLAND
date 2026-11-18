@@ -65,7 +65,8 @@
 
 html {
   text-size-adjust: 100%;
-  scroll-behavior: smooth;
+  /* płynne przewijanie robi Lenis (lib/smoothScroll.ts); natywne "smooth" by mu przeszkadzało */
+  scroll-behavior: auto;
   min-height: 100%;
 }
 

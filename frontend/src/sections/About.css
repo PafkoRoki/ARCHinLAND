@@ -13,9 +13,21 @@
   padding-top: clamp(72px, 9vw, 150px);
 }
 
+/* ===== PRZYTRZYMANIE =====
+   Tekst z miniaturą przykleja się na chwilę (sticky) pod górną krawędzią, a pod nim przewija się
+   pusty odstęp. Gdy odstęp się skończy, tekst jedzie dalej i zaczyna się przelot ramki. */
+.about__hold {
+  position: relative;
+}
+
+.about__hold-space {
+  height: 45svh; /* jak długo tekst stoi (pół ekranu przewijania) */
+}
+
 /* ===== TEKST ===== */
 .about .about__intro {
-  position: relative;
+  position: sticky;
+  top: 72px; /* pod przyciskiem MENU */
   z-index: 1;
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -307,6 +319,16 @@
    bez przyklejania i przelotu z miniatury (miejsce na miniaturę niepotrzebne) */
 @media (max-width: 768px), (prefers-reduced-motion: reduce) {
   .about__slot {
+    display: none;
+  }
+
+  /* telefon: bez przytrzymania, zwykłe przewijanie */
+  .about .about__intro {
+    position: relative;
+    top: auto;
+  }
+
+  .about__hold-space {
     display: none;
   }
 
