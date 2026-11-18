@@ -132,7 +132,7 @@ type Item = {
   spinAngle: number // dodatkowy obrót od uderzeń
   spinVel: number
   idle: number // spokojny obrót gromady (zatrzymuje się, gdy bryły odlatują)
-  away: THREE.Vector3 // kierunek odlotu przy rozsypaniu (od środka gromady, trochę w górę)
+  away: THREE.Vector3 // kierunek odlotu przy rozsypaniu (na boki i w górę, nigdy w dół)
   awayFactor: number // każda bryła leci trochę inaczej
 }
 
@@ -217,10 +217,10 @@ export function createShapeCluster() {
       spinAngle: 0,
       spinVel: 0,
       idle: 0,
-      away: rest
-        .clone()
+      // odlot tylko w górę i na boki (nigdy w dół): kierunek od osi gromady w poziomie plus wzlot
+      away: new THREE.Vector3(rest.x, 0, rest.z)
         .normalize()
-        .add(new THREE.Vector3((rand() - 0.5) * 0.6, 0.35 + rand() * 0.3, (rand() - 0.5) * 0.6))
+        .add(new THREE.Vector3((rand() - 0.5) * 0.5, 0.35 + rand() * 0.55, (rand() - 0.5) * 0.5))
         .normalize(),
       awayFactor: 0.75 + rand() * 0.5,
     })

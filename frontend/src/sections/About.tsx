@@ -197,6 +197,12 @@ export default function About() {
     let flying = false
     let lastY = lenis?.scroll ?? 0
     let dir = 0
+    // tylko ruch użytkownika (kółko, touchpad, klawisze) uruchamia dokończenie przelotu.
+    // Przewijanie z menu, linków i przycisku do góry przejeżdża przez przelot bez zatrzymania
+    let userAt = -Infinity
+    const markUser = () => {
+      userAt = performance.now()
+    }
     const flyRange = () => {
       const stage = stageRef.current
       const reelEl = stage?.parentElement
@@ -211,6 +217,7 @@ export default function About() {
       const y = l.scroll
       if (y !== lastY) dir = y > lastY ? 1 : -1
       lastY = y
+      if (performance.now() - userAt > 300) return // przewija skrypt (menu, link), nie użytkownik
       const r = flyRange()
       const target = l.targetScroll
       if (!r || target <= r.from + 4 || target >= r.to - 4) return
@@ -229,6 +236,8 @@ export default function About() {
       })
     }
     const offLenis = lenis?.on('scroll', onLenis)
+    const offVirtual = lenis?.on('virtual-scroll', markUser)
+    window.addEventListener('keydown', markUser)
 
     const io = new IntersectionObserver(
       ([en]) => {
@@ -250,6 +259,8 @@ export default function About() {
     return () => {
       disposed = true
       offLenis?.()
+      offVirtual?.()
+      window.removeEventListener('keydown', markUser)
       io.disconnect()
       cancelAnimationFrame(raf)
       gl?.dispose()

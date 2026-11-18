@@ -81,7 +81,7 @@
   font-size: var(--fs-label);
   font-weight: 700;
   letter-spacing: normal; /* bez rozstrzelonych liter */
-  text-transform: uppercase;
+  /* zwykłe litery, bez wersalików */
   font-variant-numeric: tabular-nums;
   color: var(--black);
 }
