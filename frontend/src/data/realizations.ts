@@ -20,6 +20,18 @@ const srcsetByUrl = new Map(Object.keys(photoFiles).map((file) => [photoFiles[fi
 /** srcset (mniejsze wersje WebP) dla adresu zdjęcia z `image` / `gallery`; pusty, gdy go nie ma. */
 export const srcsetOf = (src: string) => srcsetByUrl.get(src) ?? ''
 
+// Wymiary zdjęć (odczytane przy budowaniu): z width/height przeglądarka rezerwuje miejsce na zdjęcie,
+// zanim się wczyta, więc treść pod nim (opis, nawigacja, stopka) nie przeskakuje w dół
+const photoSizes = import.meta.glob<{ width: number; height: number }>('../assets/realizacje/*/*.{jpg,jpeg,png,webp}', {
+  eager: true,
+  import: 'default',
+  query: { as: 'meta:width;height' },
+})
+const sizeByUrl = new Map(Object.keys(photoFiles).map((file) => [photoFiles[file], photoSizes[file]]))
+
+/** Wymiary zdjęcia w pikselach (do atrybutów width/height); undefined, gdy nieznane. */
+export const sizeOf = (src: string) => sizeByUrl.get(src)
+
 // zdjęcie z `cover` idzie na początek, reszta według nazw plików
 const photosOf = (slug: string, cover?: string) =>
   Object.keys(photoFiles)
