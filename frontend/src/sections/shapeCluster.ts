@@ -35,8 +35,8 @@ const MAX_SPEED = 9 // najszybszy lot (jednostki/s): szarpnięcie kółkiem nie 
 const FLIGHT_DRAG = 0.35 // hamowanie w locie (na sekundę), dużo mniejsze niż w gromadzie
 const MAX_FLIGHT = 16 // dalej nie lecą (i tak są już poza ekranem)
 
-// Bryły architektoniczne: wieża, płyta, sześcian, kolumna, łuk, dom z dwuspadowym dachem,
-// schody, kształt L, sklepienie, piramida i klin. Każda wyśrodkowana i przeskalowana tak,
+// Bryły architektoniczne: wieża, rotunda, sześcian, kolumna, łuk, dom z dwuspadowym dachem,
+// schody, kształt L, sklepienie, ściana z oknem i klin. Każda wyśrodkowana i przeskalowana tak,
 // żeby mieściła się w kuli o promieniu 1; fill = ile miejsca zajmuje przy rozpychaniu.
 const BEVEL = { bevelEnabled: true, bevelSize: 0.025, bevelThickness: 0.025, bevelSegments: 3 }
 
@@ -75,6 +75,24 @@ function vault() {
   return new THREE.ExtrudeGeometry(s, { depth: 1.2, curveSegments: 32, ...BEVEL })
 }
 
+// ściana z prostokątnym oknem: prostokąt z otworem, wyciągnięty na grubość ściany
+function windowWall() {
+  const s = new THREE.Shape()
+  s.moveTo(-0.6, 0)
+  s.lineTo(0.6, 0)
+  s.lineTo(0.6, 1.2)
+  s.lineTo(-0.6, 1.2)
+  s.lineTo(-0.6, 0)
+  const hole = new THREE.Path()
+  hole.moveTo(-0.28, 0.4)
+  hole.lineTo(-0.28, 0.9)
+  hole.lineTo(0.28, 0.9)
+  hole.lineTo(0.28, 0.4)
+  hole.lineTo(-0.28, 0.4)
+  s.holes.push(hole)
+  return new THREE.ExtrudeGeometry(s, { depth: 0.3, curveSegments: 8, ...BEVEL })
+}
+
 function normalize(g: THREE.BufferGeometry) {
   g.center()
   g.computeBoundingSphere()
@@ -86,7 +104,7 @@ function normalize(g: THREE.BufferGeometry) {
 
 const SHAPES: { geometry: THREE.BufferGeometry; fill: number }[] = [
   { geometry: new RoundedBoxGeometry(0.5, 1.6, 0.5, 2, 0.03), fill: 0.45 }, // wieża
-  { geometry: new RoundedBoxGeometry(1.5, 0.22, 1.0, 2, 0.03), fill: 0.55 }, // płyta stropu
+  { geometry: new THREE.CylinderGeometry(0.42, 0.42, 1.1, 48), fill: 0.6 }, // rotunda (walec)
   { geometry: new RoundedBoxGeometry(1, 1, 1, 2, 0.04), fill: 0.7 }, // sześcian
   { geometry: new THREE.CylinderGeometry(0.16, 0.16, 1.5, 32), fill: 0.35 }, // kolumna
   { geometry: arch(), fill: 0.65 }, // łuk
@@ -94,7 +112,7 @@ const SHAPES: { geometry: THREE.BufferGeometry; fill: number }[] = [
   { geometry: extrude([[0, 0], [1.2, 0], [1.2, 0.3], [0.9, 0.3], [0.9, 0.6], [0.6, 0.6], [0.6, 0.9], [0.3, 0.9], [0.3, 1.2], [0, 1.2]], 0.6), fill: 0.6 }, // schody
   { geometry: extrude([[0, 0], [1.1, 0], [1.1, 0.4], [0.4, 0.4], [0.4, 1.1], [0, 1.1]], 0.5), fill: 0.6 }, // kształt L
   { geometry: vault(), fill: 0.6 }, // sklepienie
-  { geometry: new THREE.ConeGeometry(0.7, 0.9, 4), fill: 0.6 }, // piramida
+  { geometry: windowWall(), fill: 0.6 }, // ściana z oknem
   { geometry: extrude([[0, 0], [1.2, 0], [0, 0.7]], 0.8), fill: 0.55 }, // klin (rampa)
 ].map((s) => ({ geometry: normalize(s.geometry), fill: s.fill }))
 
