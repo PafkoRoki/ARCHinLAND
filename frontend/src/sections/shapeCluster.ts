@@ -26,6 +26,14 @@ const TAP_RADIUS = 1.3
 const TAP_FORCE = 7
 // przewijanie: bryły bujają się w pionie, jakby zostawały za ruchem strony
 const SCROLL_KICK = 0.0009
+// rozsypanie przy przejściu do O nas: przewijanie w dół działa jak uderzenie. Każdy ruch kółka/palca
+// popycha bryły od środka gromady (trochę w górę), a one lecą swobodnie z rozpędem i powoli hamują.
+// Im dalej w przejściu, tym słabsza sprężyna, która trzyma je w gromadzie; po powrocie na górę strony
+// sprężyna wraca i ściąga bryły z powrotem.
+const IMPACT = 0.0028 // rozpęd z przewijania (jednostki/s na px/s, na klatkę)
+const MAX_SPEED = 9 // najszybszy lot (jednostki/s): szarpnięcie kółkiem nie wystrzeliwuje brył w ułamku sekundy
+const FLIGHT_DRAG = 0.35 // hamowanie w locie (na sekundę), dużo mniejsze niż w gromadzie
+const MAX_FLIGHT = 16 // dalej nie lecą (i tak są już poza ekranem)
 
 // Bryły architektoniczne: wieża, płyta, sześcian, kolumna, łuk, dom z dwuspadowym dachem,
 // schody, kształt L, sklepienie, piramida i klin. Każda wyśrodkowana i przeskalowana tak,
@@ -105,6 +113,9 @@ type Item = {
   vel: THREE.Vector3 // prędkość wychylenia
   spinAngle: number // dodatkowy obrót od uderzeń
   spinVel: number
+  idle: number // spokojny obrót gromady (zatrzymuje się, gdy bryły odlatują)
+  away: THREE.Vector3 // kierunek odlotu przy rozsypaniu (od środka gromady, trochę w górę)
+  awayFactor: number // każda bryła leci trochę inaczej
 }
 
 /** Promień spod kursora w układzie gromady (createShapeCluster().obj); strength 0–1 = siła odpychania. */
@@ -112,7 +123,7 @@ export type ClusterCursor = { ray: THREE.Ray; strength: number } | null
 
 /** Wejście z Hero w układzie gromady: trzymanie myszą (promień, null = puszczone), stuknięcia palcem
  *  (promienie) i prędkość przewijania (px/s, dodatnia w dół). */
-export type ClusterInput = { grab: THREE.Ray | null; taps: THREE.Ray[]; scrollSpeed: number }
+export type ClusterInput = { grab: THREE.Ray | null; taps: THREE.Ray[]; scrollSpeed: number; scatter: number }
 
 // prosty, powtarzalny los (ta sama gromada przy każdym wejściu)
 function rng(seed: number) {
@@ -122,59 +133,23 @@ function rng(seed: number) {
   }
 }
 
-// szum do chropowatych materiałów (beton, piaskowany metal): mała tekstura liczona w przeglądarce
-function noiseTexture(rand: () => number) {
-  const size = 128
-  const canvas = document.createElement('canvas')
-  canvas.width = canvas.height = size
-  const ctx = canvas.getContext('2d')!
-  const img = ctx.createImageData(size, size)
-  for (let i = 0; i < size * size; i++) {
-    const v = 150 + rand() * 105
-    img.data.set([v, v, v, 255], i * 4)
-  }
-  ctx.putImageData(img, 0, 0)
-  const tex = new THREE.CanvasTexture(canvas)
-  tex.wrapS = tex.wrapT = THREE.RepeatWrapping
-  tex.repeat.set(3, 3)
-  return tex
-}
-
-// materiały: połysk (lakier), mat (tynk, guma, beton), metal (chrom, satyna, miedź) i efekty
-// (perła mieniąca się kolorami, mleczne szkło). Waga = jak często wypada.
-function materials(rand: () => number): { material: THREE.MeshPhysicalMaterial; weight: number }[] {
-  const noise = noiseTexture(rand)
-  const gloss = { clearcoat: 1, clearcoatRoughness: 0.06 }
-  const M = (p: THREE.MeshPhysicalMaterialParameters, weight: number) => ({
-    material: new THREE.MeshPhysicalMaterial(p),
-    weight,
-  })
+// pierwsze kolory gromady: błyszczący lakier w bieli, graficie i pomarańczu (paleta strony) oraz chrom.
+// Waga = jak często wypada (dużo bieli, trochę grafitu, kilka pomarańczowych i chromowanych).
+function materials(): { material: THREE.MeshPhysicalMaterial; weight: number }[] {
+  const gloss = { clearcoat: 1, clearcoatRoughness: 0.08 }
+  const M = (p: THREE.MeshPhysicalMaterialParameters, weight: number) => ({ material: new THREE.MeshPhysicalMaterial(p), weight })
   return [
-    // połysk
-    M({ ...gloss, color: '#f4f2ee', roughness: 0.3, envMapIntensity: 0.9 }, 3), // biały lakier
-    M({ ...gloss, color: '#2d2d2d', roughness: 0.25, envMapIntensity: 0.7 }, 1.5), // grafitowy lakier
-    M({ ...gloss, color: '#ff6b2c', roughness: 0.28, envMapIntensity: 0.8 }, 1.5), // pomarańczowy lakier
-    // mat
-    M({ color: '#ecebe7', roughness: 0.95, envMapIntensity: 0.3 }, 2.5), // biały tynk
-    M({ color: '#cfccc6', roughness: 1, roughnessMap: noise, bumpMap: noise, bumpScale: 0.6, envMapIntensity: 0.25 }, 2), // beton
-    M({ color: '#262626', roughness: 0.85, envMapIntensity: 0.2 }, 1.5), // czarna guma
-    M({ color: '#ff7a40', roughness: 0.9, sheen: 1, sheenColor: '#ffd2b8', sheenRoughness: 0.5, envMapIntensity: 0.3 }, 1), // pomarańczowy welur
-    // metal
-    M({ color: '#e6e6e6', metalness: 1, roughness: 0.06, envMapIntensity: 1.4 }, 1.5), // chrom
-    M({ color: '#c9c9c9', metalness: 1, roughness: 0.38, roughnessMap: noise, envMapIntensity: 1.2 }, 1.5), // satynowa stal
-    M({ color: '#c8774a', metalness: 1, roughness: 0.22, envMapIntensity: 1.2 }, 1), // miedź
-    // efekty
-    M({ ...gloss, color: '#f6f3f0', roughness: 0.2, iridescence: 1, iridescenceIOR: 1.6, iridescenceThicknessRange: [250, 900], envMapIntensity: 1 }, 1.2), // perła
-    // porcelana zamiast mlecznego szkła: szkło (transmission) zmuszało kartę graficzną do rysowania
-    // całej sceny drugi raz w każdej klatce, co na słabszych telefonach dawało ścinki
-    M({ ...gloss, color: '#fbfbf8', roughness: 0.12, sheen: 0.4, sheenColor: '#dfe6ee', envMapIntensity: 1.1 }, 1), // porcelana
+    M({ ...gloss, color: '#f4f2ee', roughness: 0.32, envMapIntensity: 0.9 }, 5), // biel
+    M({ ...gloss, color: '#2d2d2d', roughness: 0.28, envMapIntensity: 0.7 }, 3), // grafit
+    M({ ...gloss, color: '#ff6b2c', roughness: 0.3, envMapIntensity: 0.8 }, 2), // pomarańcz
+    M({ color: '#d9d9d9', roughness: 0.1, metalness: 1, envMapIntensity: 1.3 }, 1), // chrom
   ]
 }
 
 export function createShapeCluster() {
   const rand = rng(11)
   const group = new THREE.Group()
-  const mats = materials(rand)
+  const mats = materials()
   const total = mats.reduce((sum, m) => sum + m.weight, 0)
   const pick = () => {
     let x = rand() * total
@@ -223,6 +198,13 @@ export function createShapeCluster() {
       vel: new THREE.Vector3(),
       spinAngle: 0,
       spinVel: 0,
+      idle: 0,
+      away: rest
+        .clone()
+        .normalize()
+        .add(new THREE.Vector3((rand() - 0.5) * 0.6, 0.35 + rand() * 0.3, (rand() - 0.5) * 0.6))
+        .normalize(),
+      awayFactor: 0.75 + rand() * 0.5,
     })
   }
 
@@ -306,6 +288,16 @@ export function createShapeCluster() {
         it.spinVel += (it.phase > Math.PI ? 1 : -1) * 4 * (1 - dist / TAP_RADIUS)
       }
     }
+    // uderzenie przewijaniem: w przejściu każdy ruch w dół wybija bryły od środka (każdą trochę inaczej)
+    if (inp.scatter > 0 && inp.scrollSpeed > 0 && step > 0) {
+      for (const it of items) {
+        if (it === held) continue
+        const k = Math.min(inp.scrollSpeed, 2500) * IMPACT * it.awayFactor * step * 60 * Math.min(1, inp.scatter * 6)
+        it.vel.addScaledVector(it.away, k)
+        if (it.vel.length() > MAX_SPEED) it.vel.setLength(MAX_SPEED)
+        // bez dodatkowego obrotu: wybite bryły odlatują, zachowując ułożenie
+      }
+    }
     // przewijanie: bryły zostają lekko w tyle za ruchem strony i dobijają sprężyną (każda trochę inaczej)
     if (inp.scrollSpeed) {
       for (const it of items) it.vel.y += inp.scrollSpeed * SCROLL_KICK * (0.6 + 0.8 * (it.speed - 0.4)) * step * 60
@@ -315,6 +307,13 @@ export function createShapeCluster() {
   function tick(t: number, dt = 0, cursor: ClusterCursor = null, inp?: ClusterInput) {
     const step = Math.min(dt, 1 / 30) // po przerwie (karta w tle) bez wielkiego skoku
     input(inp, t, step)
+    const scatter = inp?.scatter ?? 0
+    // w przejściu sprężyna słabnie (bryły lecą swobodnie), a tłumienie spada do oporu powietrza
+    // po krótkim początku przejścia sprężyny już nie ma: wybite bryły lecą dalej swobodnie i nie wracają,
+    // dopóki strona nie wróci na górę
+    const hold = Math.pow(1 - Math.min(1, scatter * 5), 2)
+    const spring = SPRING * hold
+    const damping = DAMPING * hold + FLIGHT_DRAG * (1 - hold)
     for (const it of items) {
       if (it === held) {
         // trzymana bryła: tylko tam, gdzie kursor (bez sprężyny i odpychania od kursora)
@@ -322,9 +321,13 @@ export function createShapeCluster() {
         continue
       }
       // 1. sprężyna ściąga wychylenie z powrotem do zera (półjawny Euler — stabilny)
-      it.vel.addScaledVector(it.off, -SPRING * step).multiplyScalar(Math.max(0, 1 - DAMPING * step))
+      it.vel.addScaledVector(it.off, -spring * step).multiplyScalar(Math.max(0, 1 - damping * step))
       it.off.addScaledVector(it.vel, step)
-      it.spinVel *= Math.max(0, 1 - 2 * step)
+      if (it.off.length() > MAX_FLIGHT) {
+        it.off.setLength(MAX_FLIGHT)
+        it.vel.multiplyScalar(0.5)
+      }
+      it.spinVel *= Math.max(0, 1 - (0.4 + 1.6 * hold) * step) // w locie obrót wygasa wolniej
       it.spinAngle += it.spinVel * step
 
       // 2. bryła pływa wokół swojego miejsca (+ wychylenie)
@@ -374,10 +377,12 @@ export function createShapeCluster() {
         }
       }
     }
-    // 3. położenie, obrót i rozmiar
+    // 3. położenie (z rozsypaniem), obrót i rozmiar
     for (const it of items) {
       it.mesh.position.set(it.pos.x, it.pos.y + centreY, it.pos.z)
-      spin.setFromAxisAngle(it.axis, t * SPIN * it.speed + it.spinAngle)
+      // obrót tylko w gromadzie: przy odlocie (hold → 0) bryły przestają się obracać
+      it.idle += SPIN * it.speed * step * hold
+      spin.setFromAxisAngle(it.axis, it.idle + it.spinAngle)
       it.mesh.quaternion.multiplyQuaternions(spin, it.base)
       it.mesh.scale.setScalar(it.size)
     }

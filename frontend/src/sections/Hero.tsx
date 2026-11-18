@@ -4,9 +4,9 @@ import './Hero.css'
 
 // Hero: sam model 3D na całym ekranie od pierwszej chwili (bez napisu, soczewki i podpowiedzi).
 // Przypięta scena (odległości w wysokościach ekranu, liczone od góry strony):
-//   0 → 0.8      bryły stoją; myszą można chwycić pojedynczą bryłę i ją rzucić, palcem stuknąć
-//   0.8 → 1.6    tnie je płaszczyzna od dachu do podstawy (CUT_DISTANCE w BackgroundModel)
-//   1.6          koniec sceny (--hero-pin w Hero.css), potem sekcja O nas (About.tsx)
+//   od 0         bryły stoją; myszą można chwycić pojedynczą bryłę i ją rzucić, palcem stuknąć
+//   0.12 → 1.25  bryły rozsypują się poza ekran (SCATTER_* w BackgroundModel)
+//   0.5          koniec przypięcia (--hero-pin w Hero.css): O nas wjeżdża od dołu na model
 const TAP_MS = 300 // stuknięcie: krótsze niż tyle…
 const TAP_MOVE = 10 // …i bez przesunięcia palca o więcej niż tyle px (inaczej to przewijanie)
 

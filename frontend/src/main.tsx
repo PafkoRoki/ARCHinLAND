@@ -6,6 +6,7 @@ import App from './App'
 import '@fontsource-variable/montserrat'
 import '@fontsource-variable/inter-tight'
 import './styles/globals.css'
+import './lib/smoothScroll' // płynne przewijanie całej strony (Lenis)
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

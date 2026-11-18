@@ -26,9 +26,10 @@ const BASE_ROTATION = -0.5 // obrót startowy (rad) — widok 3/4
 const LENS_RADIUS = 180 // px, promień koła w Hero (na telefonie mniejszy, patrz lensRadius)
 const LENS_ZOOM = 1.15 // model w soczewce jest lekko przybliżony
 const LENS_REST = { x: 0.5, y: 0.42 } // pozycja koła bez kursora (ułamek ekranu)
-// Koniec sceny O nas: pozioma płaszczyzna tnie model od dachu do podstawy (jak rzut na planie),
-// aż model zniknie tuż przed odpięciem sceny. Tyle wysokości ekranu przewijania trwa cięcie.
-const CUT_DISTANCE = 0.8
+// Przejście do O nas: rozsypanie brył od SCATTER_FROM ekranu przewinięcia do odpięcia Hero + SCATTER_TO
+// (O nas wjeżdża od odpięcia, czyli od ok. 0,5 ekranu; patrz --hero-pin w Hero.css)
+const SCATTER_FROM = 0.12
+const SCATTER_TO = 0.75
 
 // reakcja na kursor w Hero (radiany)
 const HOVER_TILT_Y = 0.45
@@ -224,12 +225,13 @@ const lensRadius = (w: number) => Math.min(LENS_RADIUS, w * 0.32)
 type Motion = {
   reveal: MutableRefObject<number> // 0 = soczewka w Hero, 1 = pełny ekran
   cut: MutableRefObject<number> // 0 = cały model, 1 = model ucięty do podstawy (zniknął)
+  scatter: MutableRefObject<number> // 0 = gromada, 1 = bryły rozsypane poza ekran
   pointer: MutableRefObject<{ x: number; y: number } | null> // kursor w px, null = brak
   layer: RefObject<HTMLDivElement> // tu ustawiamy zmienne CSS soczewki
   lensState: MutableRefObject<LensState> // soczewka dla szkła (GlassLens)
 }
 
-function Model({ reveal, cut, pointer, layer, lensState }: Motion) {
+function Model({ reveal, cut, scatter, pointer, layer, lensState }: Motion) {
   const group = useRef<THREE.Group>(null!)
   const { viewport, camera, size, gl } = useThree()
   const loaded = useSubject()
@@ -387,6 +389,7 @@ function Model({ reveal, cut, pointer, layer, lensState }: Motion) {
         grab: grab ? rayAt(grab.x, grab.y) : null,
         taps: modelControls.taps.splice(0).map((tp) => rayAt(tp.x, tp.y)),
         scrollSpeed: Math.max(-4000, Math.min(4000, scrollSpeed)),
+        scatter: scatter.current,
       }
       loaded.tick(state.clock.elapsedTime, dt, cursor, input)
     }
@@ -399,7 +402,8 @@ function Model({ reveal, cut, pointer, layer, lensState }: Motion) {
       const bottom = g.position.y - half
       cutPlane.current.constant = c > 0 ? lerp(top + 0.01, bottom - 0.01, c) : 1e6
       // cień na ziemi gaśnie na sam koniec, gdy z domu zostaje tylko podstawa
-      ground.current.opacity = GROUND_SHADOW * (1 - smoothstep(c, 0.85, 1))
+      // cień na ziemi gaśnie, gdy bryły się rozsypują (i na koniec cięcia, gdyby było włączone)
+      ground.current.opacity = GROUND_SHADOW * (1 - smoothstep(c, 0.85, 1)) * (1 - smoothstep(scatter.current, 0, 0.5))
     }
   })
 
@@ -457,6 +461,7 @@ export default function BackgroundModel() {
   const layer = useRef<HTMLDivElement>(null)
   const reveal = useRef(0)
   const cut = useRef(0)
+  const scatter = useRef(0) // rozsypanie brył przy przejściu do O nas (0–1)
   const pointer = useRef<{ x: number; y: number } | null>(null)
   const lensState = useRef<LensState>({ x: 0, y: 0, r: 0, glass: 0, target: null, ready: false })
   // po zniknięciu modelu (sekcja Realizacje) scena przestaje się renderować
@@ -466,23 +471,19 @@ export default function BackgroundModel() {
     const onScroll = () => {
       const vh = screenHeight() // stała wysokość (bez skoków przy chowaniu paska adresu na telefonie)
       const y = window.scrollY
-      // po odpięciu sceny Hero (O nas) model odjeżdża w górę razem z nią i znika z ekranu.
-      // Warstwa przechodzi z fixed na absolute w miejscu odpięcia — przewija ją sama przeglądarka,
-      // równo z tekstem O nas. (Przesuwanie transformem z JS na telefonie spóźnia się
-      // za przewijaniem palcem i model podskakuje.)
+      // Przejście do O nas: warstwa z modelem zostaje przyklejona do ekranu, a sekcja O nas
+      // (pełne tło) wjeżdża na nią od dołu. W tym czasie bryły rozsypują się na boki i poza ekran,
+      // więc zanim O nas zasłoni ekran, po gromadzie zostaje pustka. Potem scena przestaje się rysować.
       const hero = document.getElementById('top')
       const pinEnd = hero ? hero.getBoundingClientRect().top + y + hero.offsetHeight - vh : Infinity
-      const offset = Math.max(0, y - pinEnd)
-      const el = layer.current
-      if (el) {
-        el.style.position = offset > 0 ? 'absolute' : ''
-        el.style.top = offset > 0 ? `${pinEnd}px` : ''
-      }
-      setHidden(offset >= vh)
+      const gone = y >= pinEnd + vh * 1.05 // O nas zakrywa cały ekran
+      setHidden(gone)
+      if (layer.current) layer.current.style.visibility = gone ? 'hidden' : ''
 
       // model od razu na całym ekranie (bez soczewki w kole): stan "po rozszerzeniu"
       reveal.current = 1
-      cut.current = smoothstep(y, pinEnd - vh * CUT_DISTANCE, pinEnd)
+      cut.current = 0 // zamiast cięcia płaszczyzną: rozsypanie
+      scatter.current = smoothstep(y, vh * SCATTER_FROM, pinEnd + vh * SCATTER_TO)
     }
     // tylko prawdziwa mysz — na dotyku soczewka stoi w LENS_REST
     const onMove = (e: PointerEvent) => {
@@ -523,7 +524,7 @@ export default function BackgroundModel() {
             <hemisphereLight args={['#f4f1ea', '#b9b2a6', 0.15]} />
             {/* chłodne światło kontrowe od tyłu — rysuje krawędzie bryły */}
             <directionalLight position={[-5, 4, -6]} intensity={0.9} color="#dfe7f2" />
-            <Model reveal={reveal} cut={cut} pointer={pointer} layer={layer} lensState={lensState} />
+            <Model reveal={reveal} cut={cut} scatter={scatter} pointer={pointer} layer={layer} lensState={lensState} />
             <GlassLens lens={lensState} />
           </Canvas>
         </div>

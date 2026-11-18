@@ -2,6 +2,7 @@ import { Fragment, useEffect, useRef, useState } from 'react'
 import CountUp from '../components/CountUp'
 import ExperienceCounter from '../components/ExperienceCounter'
 import { featuredProjects, srcsetOf } from '../data/realizations'
+import { scrollToTarget } from '../lib/smoothScroll'
 import './About.css'
 
 // O nas jak sekcja "home-reel" na lusion.co:
@@ -127,7 +128,8 @@ export default function About() {
 
   const toRealizations = (e: React.MouseEvent) => {
     e.preventDefault()
-    document.getElementById('realizations')?.scrollIntoView({ behavior: 'smooth' })
+    const target = document.getElementById('realizations')
+    if (target) scrollToTarget(target)
   }
 
   return (
@@ -137,6 +139,8 @@ export default function About() {
       className={`about${inView ? ' is-in' : ''}`}
       aria-labelledby="about-title"
     >
+      {/* przytrzymanie: nagłówek, miniatura i opis stoją chwilę w miejscu, zanim zacznie się przelot ramki */}
+      <div className="about__hold">
       <div className="container about__intro">
         <h2 id="about-title" className="about__title">
           <span className="visually-hidden">O nas: </span>
@@ -171,6 +175,8 @@ export default function About() {
             <span>Kamień Pomorski</span>
           </p>
         </div>
+      </div>
+      <div className="about__hold-space" aria-hidden="true" />
       </div>
 
       {/* duża ramka: przyklejona na środku ekranu na czas przewinięcia o ok. jeden ekran */}

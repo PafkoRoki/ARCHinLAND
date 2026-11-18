@@ -3,6 +3,7 @@ import { SiSketchfab } from "react-icons/si";
 import { FiArrowUp } from "react-icons/fi";
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { scrollToTarget } from "../lib/smoothScroll";
 
 
 const cn = (...classes: Array<string | undefined | false>) =>
@@ -21,7 +22,7 @@ const Link = ({
       onClick?.(event);
       if (href === "#top" && !document.getElementById("top")) {
         event.preventDefault();
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        scrollToTarget(0);
       }
     }}
     {...props}
