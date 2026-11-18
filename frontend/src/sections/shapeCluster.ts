@@ -151,28 +151,105 @@ function rng(seed: number) {
   }
 }
 
-// pierwsze kolory gromady: błyszczący lakier w bieli, graficie i pomarańczu (paleta strony) oraz chrom.
-// Waga = jak często wypada (dużo bieli, trochę grafitu, kilka pomarańczowych i chromowanych).
-function materials(): { material: THREE.MeshPhysicalMaterial; weight: number }[] {
-  const gloss = { clearcoat: 1, clearcoatRoughness: 0.08 }
-  const M = (p: THREE.MeshPhysicalMaterialParameters, weight: number) => ({ material: new THREE.MeshPhysicalMaterial(p), weight })
-  return [
-    M({ ...gloss, color: '#f4f2ee', roughness: 0.32, envMapIntensity: 0.9 }, 5), // biel
-    M({ ...gloss, color: '#2d2d2d', roughness: 0.28, envMapIntensity: 0.7 }, 3), // grafit
-    M({ ...gloss, color: '#ff6b2c', roughness: 0.3, envMapIntensity: 0.8 }, 2), // pomarańcz
-    M({ color: '#d9d9d9', roughness: 0.1, metalness: 1, envMapIntensity: 1.3 }, 1), // chrom
-  ]
+// Kolory gromady (paleta strony): biel, grafit, pomarańcz i chrom. Waga = jak często wypada.
+// Wykończenie jak na lusion.co: większość brył matowa (miękki, satynowy wygląd), co czwarta
+// błyszcząca (lakier). Chrom zawsze błyszczący.
+type Finish = { color: string; weight: number; metal?: boolean }
+const FINISHES: Finish[] = [
+  { color: '#f4f2ee', weight: 5 }, // biel
+  { color: '#2d2d2d', weight: 3 }, // grafit
+  { color: '#ff6b2c', weight: 2 }, // pomarańcz
+  { color: '#d9d9d9', weight: 1, metal: true }, // chrom
+]
+const GLOSSY_SHARE = 0.27 // jaka część brył jest błyszcząca (u lusion 6 z 22)
+
+function makeMaterial(f: Finish, glossy: boolean) {
+  let m: THREE.MeshPhysicalMaterial
+  if (f.metal) m = new THREE.MeshPhysicalMaterial({ color: f.color, roughness: 0.12, metalness: 1, envMapIntensity: 1.3 })
+  else if (glossy) m = new THREE.MeshPhysicalMaterial({ color: f.color, roughness: 0.18, clearcoat: 1, clearcoatRoughness: 0.06, envMapIntensity: 0.9 })
+  else m = new THREE.MeshPhysicalMaterial({ color: f.color, roughness: 0.72, envMapIntensity: 1.35 })
+  // ziarno renderu: matowe mocno, błyszczące i metal ledwie
+  m.userData.grain = f.metal ? GRAIN * 0.15 : glossy ? GRAIN * 0.25 : GRAIN
+  return m
+}
+
+// Ziarno jak w renderze liczonym promieniami (raytracing, jak na lusion.co): w każdym pikselu
+// normalna powierzchni jest lekko losowo przekrzywiona, więc światło i odbicia "szumią" mocniej
+// w półcieniach i przy krawędziach, a słabiej w pełnym świetle. Szum zmienia się kilkanaście
+// razy na sekundę, jak kolejne próbki renderu. Do tego bardzo lekkie ziarno jasności.
+const GRAIN = 0.14 // siła przekrzywienia normalnej na matowych bryłach
+const GRAIN_FPS = 18 // ile razy na sekundę szum się zmienia
+const grainSeed = { value: 0 } // wspólne dla wszystkich brył
+
+// Cień kontaktowy: bryły zacieniają się nawzajem tam, gdzie są blisko (jak u lusion). Każda bryła
+// zna środki i promienie sąsiadów (w układzie kamery) i liczy, ile nieba zasłaniają jej powierzchni
+// (przybliżenie kulą). Przyciemnia to głównie światło z otoczenia, trochę też światło główne.
+const CONTACT = 0.85 // siła zacienienia
+const CONTACT_R = 1.15 // promień sąsiada jako kuli (względem promienia do rozpychania)
+function addContactShade(m: THREE.MeshPhysicalMaterial, near: number) {
+  const uNear = { value: Array.from({ length: near }, () => new THREE.Vector4(0, 0, 0, 0)) }
+  m.userData.uNear = uNear
+  const uGrain = { value: (m.userData.grain as number) ?? 0 }
+  m.onBeforeCompile = (shader) => {
+    shader.uniforms.uNear = uNear
+    shader.uniforms.uGrain = uGrain
+    shader.uniforms.uGrainSeed = grainSeed
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>', `#include <common>
+uniform vec4 uNear[${near}];
+uniform float uGrain;
+uniform float uGrainSeed;
+float grainHash(vec2 p) {
+  vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+  p3 += dot(p3, p3.yzx + 33.33);
+  return fract((p3.x + p3.y) * p3.z);
+}`)
+      .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
+{
+  vec2 gp = gl_FragCoord.xy + uGrainSeed * vec2(37.0, 17.0);
+  vec3 jitter = vec3(grainHash(gp), grainHash(gp + 71.3), grainHash(gp + 143.7)) - 0.5;
+  normal = normalize(normal + jitter * uGrain);
+}`)
+      .replace('#include <dithering_fragment>', `#include <dithering_fragment>
+gl_FragColor.rgb += (grainHash(gl_FragCoord.xy * 1.31 + uGrainSeed * 11.0) - 0.5) * uGrain * 0.08;`)
+      .replace('#include <aomap_fragment>', `#include <aomap_fragment>
+{
+  float occ = 1.0;
+  vec3 p = -vViewPosition;
+  for (int i = 0; i < ${near}; i++) {
+    vec3 d = uNear[i].xyz - p;
+    float l = max(length(d), 1e-4);
+    float r = uNear[i].w;
+    float o = max(dot(normal, d / l), 0.0) * (r * r) / (l * l);
+    occ *= 1.0 - clamp(o, 0.0, 1.0) * ${CONTACT.toFixed(2)};
+  }
+  reflectedLight.indirectDiffuse *= occ;
+  reflectedLight.indirectSpecular *= occ;
+  reflectedLight.directDiffuse *= mix(1.0, occ, 0.4);
+  reflectedLight.directSpecular *= mix(1.0, occ, 0.4);
+}`)
+  }
+  m.customProgramCacheKey = () => 'cluster-contact-' + near
 }
 
 export function createShapeCluster() {
   const rand = rng(11)
   const group = new THREE.Group()
-  const mats = materials()
-  const total = mats.reduce((sum, m) => sum + m.weight, 0)
+  const total = FINISHES.reduce((sum, f) => sum + f.weight, 0)
+  // osobny los na połysk, żeby układ gromady (rand) został taki sam jak wcześniej
+  const glossRand = rng(7)
+  // każda bryła ma własny materiał (własne dane o sąsiadach do cienia kontaktowego);
+  // program shadera jest wspólny, więc to nic nie kosztuje przy kompilacji
   const pick = () => {
     let x = rand() * total
-    for (const m of mats) if ((x -= m.weight) <= 0) return m.material
-    return mats[0].material
+    let f = FINISHES[0]
+    for (const it of FINISHES) if ((x -= it.weight) <= 0) {
+      f = it
+      break
+    }
+    const m = makeMaterial(f, glossRand() < GLOSSY_SHARE)
+    addContactShade(m, COUNT - 1)
+    return m
   }
   // wnętrze brył czarne jak przekrój ścian w modelu — widać je, gdy płaszczyzna cięcia przetnie gromadę
   const sectionFill = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.BackSide })
@@ -235,6 +312,30 @@ export function createShapeCluster() {
 
   const centre = new THREE.Vector3()
   const closest = new THREE.Vector3()
+
+  // cień kontaktowy: raz na klatkę środki i promienie brył w układzie kamery, potem każda bryła
+  // dostaje listę pozostałych (bez siebie)
+  const viewCentres = items.map(() => new THREE.Vector4())
+  const wp = new THREE.Vector3()
+  const ws = new THREE.Vector3()
+  let lastFrame = -1
+  items.forEach((it, idx) => {
+    it.mesh.onBeforeRender = (renderer, _scene, camera) => {
+      const frame = renderer.info.render.frame
+      if (frame !== lastFrame) {
+        lastFrame = frame
+        grainSeed.value = Math.floor((performance.now() / 1000) * GRAIN_FPS) % 997
+        items.forEach((o, k) => {
+          o.mesh.getWorldPosition(wp).applyMatrix4(camera.matrixWorldInverse)
+          o.mesh.getWorldScale(ws)
+          viewCentres[k].set(wp.x, wp.y, wp.z, ws.x * (o.r / o.size) * CONTACT_R)
+        })
+      }
+      const list = (it.mesh.material as THREE.Material).userData.uNear.value as THREE.Vector4[]
+      let j = 0
+      for (let k = 0; k < items.length; k++) if (k !== idx) list[j++].copy(viewCentres[k])
+    }
+  })
 
   // chwycona bryła: płaszczyzna, po której ją przesuwamy (prostopadła do patrzenia), i punkt chwytu
   let held: Item | null = null
