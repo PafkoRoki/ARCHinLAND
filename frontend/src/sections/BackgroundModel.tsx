@@ -3,7 +3,6 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
-import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import { modelControls, reportModelProgress, reportModelReady } from '../lib/modelControls'
 import { screenHeight } from '../lib/viewport'
 import { createShapeCluster, type ClusterCursor, type ClusterInput } from './shapeCluster'
@@ -38,7 +37,7 @@ const HOVER_TILT_X = 0.12
 // światło główne: przesunięcie względem modelu i zasięg mapy cieni (jednostki sceny)
 const KEY_OFFSET: [number, number, number] = [4, 8, 5]
 const SHADOW_EXTENT = 3.2
-const ENV_INTENSITY = 0.45 // siła odbić i światła z otoczenia (RoomEnvironment)
+const ENV_INTENSITY = 0.45 // siła odbić i światła z otoczenia (studio w studioEnvironment)
 
 // gęstość pikseli sceny: model w tle nie potrzebuje pełnej rozdzielczości Retina,
 // a na telefonach (ekran dotykowy) każdy piksel kosztuje baterię
@@ -82,6 +81,38 @@ function enhanceMaterial(m: THREE.Material) {
   m.needsUpdate = true
 }
 
+// Miękkie studio (jak światło na lusion.co): jasne niebo u góry, ciemniejsza podłoga, duży
+// softbox z przodu z lewej (główny blask na bryłach), wąski pas z prawej (rysuje krawędź)
+// i słabe światło od dołu. Bez ostrych lamp i pudełkowych odbić jak w RoomEnvironment.
+function studioEnvironment() {
+  const scene = new THREE.Scene()
+  // kopuła z gradientem: góra 1.0, horyzont 0.55, dół 0.22
+  const canvas = document.createElement('canvas')
+  canvas.width = 2
+  canvas.height = 256
+  const ctx = canvas.getContext('2d')!
+  const g = ctx.createLinearGradient(0, 0, 0, 256)
+  g.addColorStop(0, '#ffffff')
+  g.addColorStop(0.5, '#8c8c8c')
+  g.addColorStop(1, '#383838')
+  ctx.fillStyle = g
+  ctx.fillRect(0, 0, 2, 256)
+  const sky = new THREE.CanvasTexture(canvas)
+  sky.colorSpace = THREE.SRGBColorSpace
+  scene.add(new THREE.Mesh(new THREE.SphereGeometry(10, 32, 16), new THREE.MeshBasicMaterial({ map: sky, side: THREE.BackSide })))
+  const panel = (w: number, h: number, power: number, pos: [number, number, number]) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ side: THREE.DoubleSide }))
+    m.material.color.setScalar(power)
+    m.position.set(...pos)
+    m.lookAt(0, 0, 0)
+    scene.add(m)
+  }
+  panel(7, 5, 3.2, [-4, 5, 5]) // duży softbox: przód, lewo, góra
+  panel(1.2, 7, 2.2, [6.5, 1.5, -1.5]) // pas z prawej
+  panel(6, 2, 0.6, [0, -6, 3]) // słabe odbicie od podłogi
+  return scene
+}
+
 // Odbicia bez zewnętrznych plików HDR: studyjne otoczenie generowane w przeglądarce.
 // Mapę przypinamy do każdego materiału osobno (material.envMap), bo tylko wtedy działa
 // envMapIntensity z LOOKS — scene.environment świeciłoby jednakowo na wszystko.
@@ -90,7 +121,16 @@ function Reflections({ object }: { object: THREE.Object3D | undefined }) {
   useEffect(() => {
     if (!object) return
     const pmrem = new THREE.PMREMGenerator(gl)
-    const env = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+    const studio = studioEnvironment()
+    const env = pmrem.fromScene(studio, 0.04).texture
+    studio.traverse((o) => {
+      const mesh = o as THREE.Mesh
+      if (!mesh.isMesh) return
+      mesh.geometry.dispose()
+      const mat = mesh.material as THREE.MeshBasicMaterial
+      mat.map?.dispose()
+      mat.dispose()
+    })
     object.traverse((child) => {
       const mesh = child as THREE.Mesh
       if (!mesh.isMesh) return
