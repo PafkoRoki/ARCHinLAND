@@ -2,5 +2,10 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "architecture-in-land-development",
   "compatibility_date": "2026-08-19",
-  "pages_build_output_dir": "./dist"
+  "pages_build_output_dir": "./dist",
+  // licznik odwiedzin w stopce (functions/api/odwiedziny.js): suma wizyt z zamkniętych dni.
+  // Klucz API do statystyk jest sekretem CF_ANALYTICS_TOKEN w ustawieniach projektu w Cloudflare.
+  "kv_namespaces": [
+    { "binding": "VISITS", "id": "93e7687bd1ca4bbc894a76d4e05b3536" }
+  ]
 }
