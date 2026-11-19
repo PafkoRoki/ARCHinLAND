@@ -257,6 +257,21 @@ export function Footer({
     additionalText: "ARCHITECTURE in LAND DEVELOPMENT"
   }
 }: FooterProps) {
+  // licznik odwiedzin od początku (Cloudflare Web Analytics przez /api/odwiedziny, odświeżany co godzinę).
+  // Gdy liczby nie ma (np. lokalnie albo bez klucza w Cloudflare), napis się nie pokazuje
+  const [visits, setVisits] = useState<number | null>(null);
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/odwiedziny")
+      .then((r) => (r.ok && r.status === 200 ? r.json() : null))
+      .then((d) => {
+        if (alive && d && typeof d.visits === "number" && d.visits > 0) setVisits(d.visits);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   return (
   <footer className="w-full bg-[#2d2d2d] text-white relative z-50">
@@ -346,6 +361,9 @@ export function Footer({
         <div className="py-6 min-[1250px]:py-8 text-center text-xs text-white/50">
           <p>{copyright.companyName} ©{copyright.year} Wszelkie prawa zastrzeżone</p>
           {copyright.additionalText && <p className="mt-2">{copyright.additionalText}</p>}
+          {visits !== null && (
+            <p className="mt-2 tabular-nums">Odwiedziny: {visits.toLocaleString("pl-PL")}</p>
+          )}
         </div>
         </div>
       </div>
