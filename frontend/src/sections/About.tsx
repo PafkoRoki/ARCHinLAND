@@ -2,7 +2,7 @@ import { Fragment, useEffect, useRef, useState } from 'react'
 import CountUp from '../components/CountUp'
 import ExperienceCounter from '../components/ExperienceCounter'
 import { featuredProjects, srcsetOf } from '../data/realizations'
-import { lenis, scrollToTarget } from '../lib/smoothScroll'
+import { scrollToTarget } from '../lib/smoothScroll'
 import type { ReelMesh } from './reelMesh'
 import './About.css'
 
@@ -29,13 +29,10 @@ const PHOTO = featuredProjects.filter((p) => p.image)[1] ?? featuredProjects.fin
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x))
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2)
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t
-const easeOutSine = (t: number) => Math.sin((t * Math.PI) / 2)
 
 // Przelot zaczyna się dopiero, gdy góra dużej ramki dojedzie do tej części wysokości ekranu
 // (1 = od razu, gdy ramka wjeżdża od dołu). Do tego czasu miniatura czeka na środku ekranu.
 const FLY_START = 0.6
-// Raz zaczęty przelot zawsze dojeżdża do końca w stronę przewijania (tylko mysz i touchpad)
-const FLY_DURATION = 1.7 // s, wolno i płynnie
 
 /** Tekst rozbity na słowa; każde wjeżdża od dołu z opóźnieniem (--i), gdy sekcja dostanie .is-in */
 function Words({ text, from = 0 }: { text: string; from?: number }) {
@@ -191,54 +188,6 @@ export default function About() {
       })
     }
 
-    // raz zaczęty przelot dojeżdża do końca: gdy przewijanie wejdzie w jego zakres, strona sama
-    // jedzie do dużej ramki (w dół) albo z powrotem do miniatury (w górę); kółko czeka do końca
-    const fine = window.matchMedia('(pointer: fine)').matches
-    let flying = false
-    let lastY = lenis?.scroll ?? 0
-    let dir = 0
-    // tylko ruch użytkownika (kółko, touchpad, klawisze) uruchamia dokończenie przelotu.
-    // Przewijanie z menu, linków i przycisku do góry przejeżdża przez przelot bez zatrzymania
-    let userAt = -Infinity
-    const markUser = () => {
-      userAt = performance.now()
-    }
-    const flyRange = () => {
-      const stage = stageRef.current
-      const reelEl = stage?.parentElement
-      if (!stage || !reelEl) return null
-      const vh = window.innerHeight
-      const reelTop = reelEl.getBoundingClientRect().top + window.scrollY
-      return { from: reelTop - vh * FLY_START, to: reelTop - (vh - stage.offsetHeight) / 2 }
-    }
-    const onLenis = () => {
-      const l = lenis
-      if (!l || flying || !fine || still || phone.matches) return
-      const y = l.scroll
-      if (y !== lastY) dir = y > lastY ? 1 : -1
-      lastY = y
-      if (performance.now() - userAt > 300) return // przewija skrypt (menu, link), nie użytkownik
-      const r = flyRange()
-      const target = l.targetScroll
-      if (!r || target <= r.from + 4 || target >= r.to - 4) return
-      const d = target !== y ? Math.sign(target - y) : dir
-      if (!d) return
-      flying = true
-      l.scrollTo(d > 0 ? r.to : Math.max(0, r.from), {
-        duration: FLY_DURATION,
-        easing: easeOutSine,
-        lock: true,
-        force: true,
-        onComplete: () => {
-          flying = false
-          lastY = l.scroll
-        },
-      })
-    }
-    const offLenis = lenis?.on('scroll', onLenis)
-    const offVirtual = lenis?.on('virtual-scroll', markUser)
-    window.addEventListener('keydown', markUser)
-
     const io = new IntersectionObserver(
       ([en]) => {
         near = en.isIntersecting
@@ -258,9 +207,6 @@ export default function About() {
     phone.addEventListener('change', update)
     return () => {
       disposed = true
-      offLenis?.()
-      offVirtual?.()
-      window.removeEventListener('keydown', markUser)
       io.disconnect()
       cancelAnimationFrame(raf)
       gl?.dispose()
