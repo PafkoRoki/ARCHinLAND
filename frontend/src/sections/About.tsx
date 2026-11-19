@@ -2,7 +2,7 @@ import { Fragment, useEffect, useRef, useState } from 'react'
 import CountUp from '../components/CountUp'
 import ExperienceCounter from '../components/ExperienceCounter'
 import { featuredProjects, srcsetOf } from '../data/realizations'
-import { scrollToTarget } from '../lib/smoothScroll'
+import { lenis, scrollToTarget } from '../lib/smoothScroll'
 import type { ReelMesh } from './reelMesh'
 import './About.css'
 
@@ -33,6 +33,16 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t
 // Przelot zaczyna się dopiero, gdy góra dużej ramki dojedzie do tej części wysokości ekranu
 // (1 = od razu, gdy ramka wjeżdża od dołu). Do tego czasu miniatura czeka na środku ekranu.
 const FLY_START = 0.6
+// Przelot na komputerze (WebGL): gdy przewijanie wejdzie w przelot (postęp z przewijania > FLY_GO),
+// zdjęcie samo dolatuje do końca w FLY_TIME sekund, a strona przewija się dalej bez zatrzymania.
+// Po przewinięciu z powrotem przed przelot (postęp < FLY_BACK) zdjęcie samo wraca do miniatury.
+const FLY_GO = 0.2
+const FLY_BACK = 0.05
+const FLY_TIME = 1.4
+// Razem z przelotem strona sama dojeżdża do miejsca, w którym duża ramka stoi na środku ekranu
+// (w górę: do miniatury). Tylko po ruchu kółkiem/touchpadem; każdy kolejny ruch kółka przejmuje
+// przewijanie od razu (bez blokowania), a menu i linki przejeżdżają bez zatrzymania.
+const easeInOutSine = (x: number) => -(Math.cos(Math.PI * x) - 1) / 2
 
 /** Tekst rozbity na słowa; każde wjeżdża od dołu z opóźnieniem (--i), gdy sekcja dostanie .is-in */
 function Words({ text, from = 0 }: { text: string; from?: number }) {
@@ -98,6 +108,9 @@ export default function About() {
     let gl: ReelMesh | null = null
     let glReady = false
     let raf = 0
+    let anim = 0 // postęp przelotu w WebGL (0 = miniatura, 1 = duża ramka), biegnie sam w czasie
+    let animDir = 0 // 1 = leci do dużej ramki, -1 = wraca do miniatury
+    let lastT = performance.now()
     let near = false
     let disposed = false
 
@@ -136,20 +149,28 @@ export default function About() {
     }
 
     // przelot w WebGL: płachta rysowana co klatkę, gdy sekcja jest blisko ekranu
-    const glStep = () => {
+    const glStep = (now: number) => {
       raf = 0
+      const dt = Math.min(0.05, Math.max(0, (now - lastT) / 1000))
+      lastT = now
       const frame = frameRef.current
       const m = measure()
       if (!gl || !frame || !m || !near || phone.matches) return
       const { a, b, t } = m
+      // przewijanie tylko uruchamia przelot (w dół) albo powrót (w górę); dalej biegnie sam w czasie
+      const prevDir = animDir
+      if (t > FLY_GO) animDir = 1
+      else if (t < FLY_BACK) animDir = -1
+      if (animDir !== prevDir && prevDir !== 0) pullScroll(animDir)
+      anim = clamp01(anim + (animDir * dt) / FLY_TIME)
       // napis i przyciemnienie dopiero pod koniec przelotu (jak "Play Reel" u lusion)
-      const reel = clamp01((t - 0.75) / 0.25)
+      const reel = clamp01((anim - 0.75) / 0.25)
       frame.style.setProperty('--reel', reel.toFixed(3))
-      frame.classList.toggle('is-live', t > 0.92)
+      frame.classList.toggle('is-live', anim > 0.92)
       gl.draw(
         { x: a.left, y: a.top, w: a.width, h: a.height },
         { x: b.left, y: b.top, w: b.width, h: b.height },
-        t,
+        anim,
         reel,
       )
       raf = requestAnimationFrame(glStep)
@@ -188,6 +209,27 @@ export default function About() {
       })
     }
 
+    // dociąganie przewijania razem z przelotem
+    const fine = window.matchMedia('(pointer: fine)').matches
+    let userAt = -Infinity
+    const markUser = () => {
+      userAt = performance.now()
+    }
+    const offVirtual = lenis?.on('virtual-scroll', markUser)
+    const pullScroll = (dir: number) => {
+      const l = lenis
+      const stage = stageRef.current
+      const reelEl = stage?.parentElement
+      if (!l || !fine || !stage || !reelEl) return
+      if (performance.now() - userAt > 400) return // przewija menu albo link, nie użytkownik
+      const vh = window.innerHeight
+      const reelTop = reelEl.getBoundingClientRect().top + window.scrollY
+      // w dół: duża ramka na środku ekranu; w górę: tuż przed początkiem przelotu (miniatura)
+      const target = dir > 0 ? reelTop - (vh - stage.offsetHeight) / 2 : reelTop - vh * FLY_START - 1
+      if ((target - l.scroll) * dir <= 0) return // cel już za nami
+      l.scrollTo(Math.max(0, target), { duration: FLY_TIME, easing: easeInOutSine })
+    }
+
     const io = new IntersectionObserver(
       ([en]) => {
         near = en.isIntersecting
@@ -207,6 +249,7 @@ export default function About() {
     phone.addEventListener('change', update)
     return () => {
       disposed = true
+      offVirtual?.()
       io.disconnect()
       cancelAnimationFrame(raf)
       gl?.dispose()

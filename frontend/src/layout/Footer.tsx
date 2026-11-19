@@ -362,7 +362,8 @@ export function Footer({
           <p>{copyright.companyName} ©{copyright.year} Wszelkie prawa zastrzeżone</p>
           {copyright.additionalText && <p className="mt-2">{copyright.additionalText}</p>}
           {visits !== null && (
-            <p className="mt-2 tabular-nums">Odwiedziny: {visits.toLocaleString("pl-PL")}</p>
+            // sama liczba, zapisana jak numer (01.475 = 475 odwiedzin), żeby nie rzucała się w oczy
+            <p className="mt-2 tabular-nums" aria-hidden="true">01.{String(visits).padStart(3, "0")}</p>
           )}
         </div>
         </div>
